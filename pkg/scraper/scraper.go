@@ -45,7 +45,12 @@ func (s *Scraper) Scrap(i interface{}) model.Structure {
 	return s.structure
 }
 
-func (s *Scraper) scrap(v reflect.Value, name string, parentID string, level int) {
+func (s *Scraper) scrap(
+	v reflect.Value,
+	name string,
+	parentID string,
+	level int,
+) {
 	if v.Kind() == reflect.Interface {
 		v = v.Elem()
 	}
@@ -61,15 +66,39 @@ func (s *Scraper) scrap(v reflect.Value, name string, parentID string, level int
 	}
 
 	info, ok := s.getInfoFromInterface(v)
-	if !ok {
-		info, ok = s.getInfoFromRules(v, name)
-	}
-
-	if !info.IsZero() {
-		s.scrapAllFields(v, parentID, level)
+	if ok {
+		c := s.addComponent(v, info, name, parentID)
+		s.scrapAllFields(v, c.ID, level)
 		return
 	}
 
+	info, ok = s.getInfoFromRules(v, name)
+	if ok {
+		c := s.addComponent(v, info, name, parentID)
+		s.scrapAllFields(v, c.ID, level)
+		return
+	}
+
+	s.scrapAllFields(v, parentID, level)
+	return
+}
+
+func (s *Scraper) scrapAllFields(
+	v reflect.Value,
+	parentID string,
+	level int,
+) {
+	for i := 0; i < v.NumField(); i++ {
+		s.scrap(v.Field(i), v.Type().Field(i).Name, parentID, level+1)
+	}
+}
+
+func (s *Scraper) addComponent(
+	v reflect.Value,
+	info model.Info,
+	name string,
+	parentID string,
+) model.Component {
 	c := model.Component{
 		ID:          componentID(v, name),
 		Kind:        info.Kind,
@@ -79,14 +108,7 @@ func (s *Scraper) scrap(v reflect.Value, name string, parentID string, level int
 		Tags:        info.Tags,
 	}
 	s.structure.AddComponent(c, parentID)
-
-	s.scrapAllFields(v, c.ID, level)
-}
-
-func (s *Scraper) scrapAllFields(v reflect.Value, parentID string, level int) {
-	for i := 0; i < v.NumField(); i++ {
-		s.scrap(v.Field(i), v.Type().Field(i).Name, parentID, level+1)
-	}
+	return c
 }
 
 func (s *Scraper) isScrappable(v reflect.Value) bool {

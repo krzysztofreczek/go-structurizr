@@ -5,7 +5,7 @@ type HasInfo interface {
 }
 
 const (
-	infoKindComponent = "COMPONENT"
+	infoKindComponent = "component"
 )
 
 type Info struct {

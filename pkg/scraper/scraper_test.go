@@ -19,7 +19,7 @@ func TestScraper_Scrap(t *testing.T) {
 	app := NewApp()
 	out := s.Scrap(app)
 
-	fmt.Print(render.GraphViz(out))
+	fmt.Print(render.StructurizrDSL(out))
 }
 
 type App struct {
