@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/krzysztofreczek/go-structurizr/pkg/render"
+
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 	"github.com/krzysztofreczek/go-structurizr/pkg/scraper"
 )
 
-const pkg = "github.com/karhoo/go-structurizr"
+const pkg = "github.com/krzysztofreczek/go-structurizr"
 
 func TestScraper_Scrap(t *testing.T) {
 	sConfig := scraper.NewConfiguration(pkg)
@@ -17,8 +19,7 @@ func TestScraper_Scrap(t *testing.T) {
 	app := NewApp()
 	out := s.Scrap(app)
 
-	fmt.Print(out)
-	fmt.Print(s.RenderGraphViz())
+	fmt.Print(render.GraphViz(out))
 }
 
 type App struct {

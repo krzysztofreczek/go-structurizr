@@ -2,7 +2,6 @@ package scraper
 
 import (
 	"errors"
-	"fmt"
 	"reflect"
 	"strings"
 	"unsafe"
@@ -20,17 +19,15 @@ type Scraper struct {
 
 	sb strings.Builder
 
-	components map[string]struct{}
-	relations  map[string]map[string]struct{}
+	structure model.Structure
 }
 
 func NewScraper(config Configuration) *Scraper {
 	return &Scraper{
-		config:     config,
-		rules:      make([]Rule, 0),
-		sb:         strings.Builder{},
-		components: make(map[string]struct{}),
-		relations:  make(map[string]map[string]struct{}),
+		config:    config,
+		rules:     make([]Rule, 0),
+		sb:        strings.Builder{},
+		structure: model.NewStructure(),
 	}
 }
 
@@ -42,13 +39,13 @@ func (s *Scraper) RegisterRule(r Rule) error {
 	return nil
 }
 
-func (s *Scraper) Scrap(i interface{}) string {
+func (s *Scraper) Scrap(i interface{}) model.Structure {
 	v := reflect.ValueOf(i)
 	s.scrap(v, rootElementName, "", 0)
-	return s.sb.String()
+	return s.structure
 }
 
-func (s *Scraper) scrap(v reflect.Value, name string, parent string, level int) {
+func (s *Scraper) scrap(v reflect.Value, name string, parentID string, level int) {
 	if v.Kind() == reflect.Interface {
 		v = v.Elem()
 	}
@@ -57,75 +54,97 @@ func (s *Scraper) scrap(v reflect.Value, name string, parent string, level int) 
 		v = v.Elem()
 	}
 
-	scrapable := false
-	for _, pkg := range s.config.packages {
-		if strings.HasPrefix(v.Type().PkgPath(), pkg) {
-			scrapable = true
-		}
-	}
-	if !scrapable {
+	v = normalize(v)
+
+	if !s.isScrappable(v) {
 		return
 	}
 
-	str := fmt.Sprintln(strings.Repeat("  ", level) + v.Type().String() + ":" + name)
-	s.sb.WriteString(str)
-
-	componentName := strings.Replace(v.Type().String(), ".", "_", -1) + "_" + name
-	s.components[componentName] = struct{}{}
-	if parent != "" {
-		_, ok := s.relations[parent]
-		if !ok {
-			s.relations[parent] = make(map[string]struct{})
-		}
-		s.relations[parent][componentName] = struct{}{}
+	info, ok := s.getInfoFromInterface(v)
+	if !ok {
+		info, ok = s.getInfoFromRules(v, name)
 	}
 
-	if v.CanAddr() {
-		// supports unexported fields
-		if !v.CanInterface() && v.CanAddr() {
-			v = reflect.NewAt(v.Type(), unsafe.Pointer(v.UnsafeAddr())).Elem()
-		}
-
-		// v.Addr() instead of v supports both value and pointer receiver
-		info, ok := v.Addr().Interface().(model.HasInfo)
-		if ok {
-			str = fmt.Sprintln(strings.Repeat("  ", level) + info.Info().Name + ":" + info.Info().Kind)
-			s.sb.WriteString(str)
-		}
+	if !info.IsZero() {
+		s.scrapAllFields(v, parentID, level)
+		return
 	}
 
+	c := model.Component{
+		ID:          componentID(v, name),
+		Kind:        info.Kind,
+		Name:        info.Name,
+		Description: info.Description,
+		Technology:  info.Technology,
+		Tags:        info.Tags,
+	}
+	s.structure.AddComponent(c, parentID)
+
+	s.scrapAllFields(v, c.ID, level)
+}
+
+func (s *Scraper) scrapAllFields(v reflect.Value, parentID string, level int) {
 	for i := 0; i < v.NumField(); i++ {
-		s.scrap(v.Field(i), v.Type().Field(i).Name, componentName, level+1)
+		s.scrap(v.Field(i), v.Type().Field(i).Name, parentID, level+1)
 	}
 }
 
-func (s *Scraper) RenderPlantUML() string {
-	sb := strings.Builder{}
-
-	for name, _ := range s.components {
-		s := fmt.Sprintf("component [%s] as %s\n", name, name)
-		sb.WriteString(s)
-	}
-
-	for src, targets := range s.relations {
-		for trg, _ := range targets {
-			s := fmt.Sprintf("%s -> %s\n", src, trg)
-			sb.WriteString(s)
+func (s *Scraper) isScrappable(v reflect.Value) bool {
+	vPkg := valuePackage(v)
+	for _, pkg := range s.config.packages {
+		if strings.HasPrefix(vPkg, pkg) {
+			return true
 		}
 	}
-
-	return sb.String()
+	return false
 }
 
-func (s *Scraper) RenderGraphViz() string {
-	sb := strings.Builder{}
-
-	for src, targets := range s.relations {
-		for trg, _ := range targets {
-			s := fmt.Sprintf("%s -> %s;\n", src, trg)
-			sb.WriteString(s)
-		}
+func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
+	// v.Addr() instead of v supports both value and pointer receiver
+	info, ok := v.Addr().Interface().(model.HasInfo)
+	if !ok {
+		return model.Info{}, false
 	}
 
-	return sb.String()
+	return info.Info(), true
+}
+
+func (s *Scraper) getInfoFromRules(v reflect.Value, name string) (model.Info, bool) {
+	vPkg := valuePackage(v)
+	for _, r := range s.rules {
+		if !r.Applies(vPkg, name) {
+			continue
+		}
+
+		info, err := r.Apply(name)
+		if err != nil {
+			// TODO: log
+			continue
+		}
+
+		return info, true
+	}
+
+	return model.Info{}, false
+}
+
+func normalize(v reflect.Value) reflect.Value {
+	if !v.CanAddr() {
+		return v
+	}
+
+	// supports unexported fields
+	if !v.CanInterface() {
+		v = reflect.NewAt(v.Type(), unsafe.Pointer(v.UnsafeAddr())).Elem()
+	}
+
+	return v
+}
+
+func componentID(v reflect.Value, name string) string {
+	return strings.Replace(v.Type().String(), ".", "_", -1) + "_" + name
+}
+
+func valuePackage(v reflect.Value) string {
+	return v.Type().PkgPath()
 }

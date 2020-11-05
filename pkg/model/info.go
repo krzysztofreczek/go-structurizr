@@ -46,3 +46,7 @@ func info(kind string, s ...string) Info {
 
 	return info
 }
+
+func (i Info) IsZero() bool {
+	return i.Name == ""
+}
