@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/render"
-
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
+	"github.com/krzysztofreczek/go-structurizr/pkg/render"
 	"github.com/krzysztofreczek/go-structurizr/pkg/scraper"
 )
 

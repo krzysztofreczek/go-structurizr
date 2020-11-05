@@ -122,6 +122,10 @@ func (s *Scraper) isScrappable(v reflect.Value) bool {
 }
 
 func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
+	if !v.CanAddr() {
+		return model.Info{}, false
+	}
+
 	// v.Addr() instead of v supports both value and pointer receiver
 	info, ok := v.Addr().Interface().(model.HasInfo)
 	if !ok {
