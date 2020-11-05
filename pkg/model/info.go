@@ -10,7 +10,6 @@ const (
 
 type Info struct {
 	Kind        string
-	Name        string
 	Description string
 	Technology  string
 	Tags        []string
@@ -27,19 +26,15 @@ func info(kind string, s ...string) Info {
 	}
 
 	if len(s) > 0 {
-		info.Name = s[0]
+		info.Description = s[0]
 	}
 
 	if len(s) > 1 {
-		info.Description = s[1]
-	}
-
-	if len(s) > 2 {
-		info.Technology = s[2]
+		info.Technology = s[1]
 	}
 
 	for i, tag := range s {
-		if i > 2 {
+		if i > 1 {
 			info.Tags = append(info.Tags, tag)
 		}
 	}
@@ -48,5 +43,5 @@ func info(kind string, s ...string) Info {
 }
 
 func (i Info) IsZero() bool {
-	return i.Name == ""
+	return i.Kind == ""
 }

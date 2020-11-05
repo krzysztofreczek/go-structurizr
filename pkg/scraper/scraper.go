@@ -2,6 +2,8 @@ package scraper
 
 import (
 	"errors"
+	"fmt"
+	"hash/fnv"
 	"reflect"
 	"strings"
 	"unsafe"
@@ -67,14 +69,14 @@ func (s *Scraper) scrap(
 
 	info, ok := s.getInfoFromInterface(v)
 	if ok {
-		c := s.addComponent(v, info, name, parentID)
+		c := s.addComponent(v, info, parentID)
 		s.scrapAllFields(v, c.ID, level)
 		return
 	}
 
-	info, ok = s.getInfoFromRules(v, name)
+	info, ok = s.getInfoFromRules(v)
 	if ok {
-		c := s.addComponent(v, info, name, parentID)
+		c := s.addComponent(v, info, parentID)
 		s.scrapAllFields(v, c.ID, level)
 		return
 	}
@@ -96,13 +98,12 @@ func (s *Scraper) scrapAllFields(
 func (s *Scraper) addComponent(
 	v reflect.Value,
 	info model.Info,
-	name string,
 	parentID string,
 ) model.Component {
 	c := model.Component{
-		ID:          componentID(v, name),
+		ID:          componentID(v),
 		Kind:        info.Kind,
-		Name:        info.Name,
+		Name:        componentName(v),
 		Description: info.Description,
 		Technology:  info.Technology,
 		Tags:        info.Tags,
@@ -135,14 +136,15 @@ func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
 	return info.Info(), true
 }
 
-func (s *Scraper) getInfoFromRules(v reflect.Value, name string) (model.Info, bool) {
+func (s *Scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 	vPkg := valuePackage(v)
+	vType := v.Type().Name()
 	for _, r := range s.rules {
-		if !r.Applies(vPkg, name) {
+		if !r.Applies(vPkg, vType) {
 			continue
 		}
 
-		info, err := r.Apply(name)
+		info, err := r.Apply()
 		if err != nil {
 			// TODO: log
 			continue
@@ -167,8 +169,18 @@ func normalize(v reflect.Value) reflect.Value {
 	return v
 }
 
-func componentID(v reflect.Value, name string) string {
-	return strings.Replace(v.Type().String(), ".", "_", -1) + "_" + name
+func componentID(v reflect.Value) string {
+	id := fmt.Sprintf("%s/%s", valuePackage(v), v.Type().Name())
+	h := fnv.New32a()
+	// TODO: handle
+	_, _ = h.Write([]byte(id))
+	return fmt.Sprintf("%d", h.Sum32())
+}
+
+func componentName(v reflect.Value) string {
+	pkg := strings.Split(valuePackage(v), "/")
+	name := fmt.Sprintf("%s.%s", pkg[len(pkg)-1], v.Type().Name())
+	return name
 }
 
 func valuePackage(v reflect.Value) string {
