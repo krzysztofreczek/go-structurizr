@@ -11,16 +11,9 @@ import (
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 )
 
-const (
-	rootElementName = "ROOT"
-)
-
 type Scraper struct {
-	config Configuration
-	rules  []Rule
-
-	sb strings.Builder
-
+	config    Configuration
+	rules     []Rule
 	structure model.Structure
 }
 
@@ -28,7 +21,6 @@ func NewScraper(config Configuration) *Scraper {
 	return &Scraper{
 		config:    config,
 		rules:     make([]Rule, 0),
-		sb:        strings.Builder{},
 		structure: model.NewStructure(),
 	}
 }
@@ -43,13 +35,12 @@ func (s *Scraper) RegisterRule(r Rule) error {
 
 func (s *Scraper) Scrap(i interface{}) model.Structure {
 	v := reflect.ValueOf(i)
-	s.scrap(v, rootElementName, "", 0)
+	s.scrap(v, "", 0)
 	return s.structure
 }
 
 func (s *Scraper) scrap(
 	v reflect.Value,
-	name string,
 	parentID string,
 	level int,
 ) {
@@ -91,7 +82,7 @@ func (s *Scraper) scrapAllFields(
 	level int,
 ) {
 	for i := 0; i < v.NumField(); i++ {
-		s.scrap(v.Field(i), v.Type().Field(i).Name, parentID, level+1)
+		s.scrap(v.Field(i), parentID, level+1)
 	}
 }
 
