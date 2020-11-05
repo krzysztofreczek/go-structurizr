@@ -135,13 +135,7 @@ func (s *Scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 			continue
 		}
 
-		info, err := r.Apply()
-		if err != nil {
-			// TODO: log
-			continue
-		}
-
-		return info, true
+		return r.Apply(), true
 	}
 
 	return model.Info{}, false

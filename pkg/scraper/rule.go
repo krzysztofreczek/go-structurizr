@@ -12,11 +12,11 @@ var (
 	matchAllRegexp = regexp.MustCompile("^.*$")
 )
 
-type RuleApplyFunc func() (model.Info, error)
+type RuleApplyFunc func() model.Info
 
 type Rule interface {
 	Applies(pkg string, name string) bool
-	Apply() (model.Info, error)
+	Apply() model.Info
 }
 
 type rule struct {
@@ -67,7 +67,7 @@ func (r rule) Applies(pkg string, name string) bool {
 	return r.nameApplies(name) && r.pkgApplies(pkg)
 }
 
-func (r rule) Apply() (model.Info, error) {
+func (r rule) Apply() model.Info {
 	return r.applyFunc()
 }
 
