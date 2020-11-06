@@ -52,6 +52,21 @@ func (s *Scraper) scrap(
 		v = v.Elem()
 	}
 
+	if v.Kind() == reflect.Map {
+		iterator := v.MapRange()
+		for true {
+			if !iterator.Next() {
+				break
+			}
+			s.scrap(iterator.Value(), parentID, level)
+		}
+		return
+	}
+
+	if v.Kind() == reflect.Slice || v.Kind() == reflect.Array {
+		// TODO: ???
+	}
+
 	v = normalize(v)
 
 	if !s.isScrappable(v) {
