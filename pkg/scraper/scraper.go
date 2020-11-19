@@ -67,6 +67,7 @@ func (s *Scraper) scrap(
 		for i := 0; i < v.Len(); i++ {
 			s.scrap(v.Index(i), parentID, level)
 		}
+		return
 	}
 
 	v = normalize(v)
