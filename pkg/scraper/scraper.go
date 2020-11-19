@@ -64,7 +64,9 @@ func (s *Scraper) scrap(
 	}
 
 	if v.Kind() == reflect.Slice || v.Kind() == reflect.Array {
-		// TODO: ???
+		for i := 0; i < v.Len(); i++ {
+			s.scrap(v.Index(i), parentID, level)
+		}
 	}
 
 	v = normalize(v)
