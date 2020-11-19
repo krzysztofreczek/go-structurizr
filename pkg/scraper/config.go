@@ -9,4 +9,3 @@ func NewConfiguration(packages ...string) Configuration {
 		packages: packages,
 	}
 }
-

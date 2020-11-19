@@ -25,10 +25,14 @@ type Info struct {
 
 ### Scraper
 
+Scraper may be instantiated in one of two ways:
+* from the code
+* from the YAML file
+
 In order to instantiate the scraper you need to provide scraper configuration which contains a slice of prefixes of packages that you want to reflect. Types that do not match any of the given prefixes will not be traversed. 
 ```go
 config := scraper.NewConfiguration(
-    "github.com/karhoo/svc-billing",
+    "github.com/krzysztofreczek/pkg",
 )
 s := scraper.NewScraper(config)
 ```
@@ -41,7 +45,7 @@ Each rule consists of:
 * Apply function - function that produces `model.Info` describing the component included in the scraped structure
 
 ```go
-r, _ := scraper.NewRule().
+r, err := scraper.NewRule().
     WithPkgRegexps("github.com/krzysztofreczek/pkg/foo/.*").
     WithNameRegexp("^(.*)Client$").
     WithApplyFunc(
@@ -49,7 +53,29 @@ r, _ := scraper.NewRule().
             return model.ComponentInfo("foo client", "client of a foo service", "TAG")
         }).
     Build()
-_ = s.RegisterRule(r)
+err = s.RegisterRule(r)
+```
+
+Alternatively, you can instantiate the scraper form YAML configuration file:
+```yaml
+// go-structurizr.yml
+configuration:
+  pkgs:
+    - "github.com/krzysztofreczek/pkg"
+
+rules:
+  - name_regexp: "^(.*)Client$"
+    pkg_regexps:
+      - "github.com/krzysztofreczek/pkg/foo/.*"
+    component:
+      description: "foo client"
+      technology: "client of a foo service"
+      tags:
+      - TAG
+```
+
+```go
+s, err := scraper.NewScraperFromConfigFile("./go-structurizr.yml")
 ```
 
 Eventually, having the scraper instantiated and configured you can use it to scrape any structure you want. Scraper returns a struct `model.Structure`.
@@ -58,6 +84,10 @@ structure := s.Scrap(app)
 ```
 
 ### View
+
+Similarly to the scraper, view may be instantiated in one of two ways:
+* from the code
+* from the YAML file
 
 In order to render scraped structure, you will need to instantiate and configure a view.
 View consists of:
@@ -73,6 +103,7 @@ v := view.NewView().Build()
 In case you need to customize it, use available builder methods:
 ```go
 v := view.NewView().
+    WithTitle("Title")
     WithComponentStyle(
         view.NewComponentStyle("TAG").
             WithBackgroundColor(color.White).
@@ -80,6 +111,23 @@ v := view.NewView().
             Build(),
     ).
     Build()
+```
+
+Alternatively, you can instantiate the view form YAML configuration file:
+```yaml
+// go-structurizr.yml
+view:
+  title: "Title"
+  line_color: 000000ff
+  styles:
+    - id: TAG
+      background_color: ffffffff
+      font_color: 000000ff
+      border_color: 000000ff
+```
+
+```go
+v, err := view.NewViewFromConfigFile("./go-structurizr.yml")
 ```
 
 As the view is initialized, you can now render the structure into planUML diagram.

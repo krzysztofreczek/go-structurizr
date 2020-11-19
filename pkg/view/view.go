@@ -1,6 +1,11 @@
 package view
 
-import "image/color"
+import (
+	"image/color"
+
+	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
+	"github.com/pkg/errors"
+)
 
 type View struct {
 	title           string
@@ -32,6 +37,22 @@ func NewView() *Builder {
 			lineColor:       color.Black,
 		},
 	}
+}
+
+func NewViewFromConfigFile(fileName string) (View, error) {
+	configuration, err := yaml.LoadFromFile(fileName)
+	if err != nil {
+		return View{}, errors.Wrapf(err,
+			"could not load configuration from file `%s`", fileName)
+	}
+
+	v, err := toView(configuration)
+	if err != nil {
+		return View{}, errors.Wrapf(err,
+			"could not load view from file `%s`", fileName)
+	}
+
+	return v, nil
 }
 
 func (b *Builder) WithTitle(t string) *Builder {
