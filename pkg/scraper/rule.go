@@ -3,9 +3,8 @@ package scraper
 import (
 	"regexp"
 
-	"github.com/pkg/errors"
-
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
+	"github.com/pkg/errors"
 )
 
 var (
