@@ -82,9 +82,9 @@ func buildSkinParamRectangle(
 ) string {
 	s := snippetSkinParamRectangle
 	s = strings.Replace(s, paramRectangleName, name, -1)
-	s = strings.Replace(s, paramBackgroundColor, hex(backgroundColor), -1)
-	s = strings.Replace(s, paramFontColor, hex(fontColor), -1)
-	s = strings.Replace(s, paramBorderColor, hex(borderColor), -1)
+	s = strings.Replace(s, paramBackgroundColor, toHex(backgroundColor), -1)
+	s = strings.Replace(s, paramFontColor, toHex(fontColor), -1)
+	s = strings.Replace(s, paramBorderColor, toHex(borderColor), -1)
 	return s
 }
 
@@ -118,11 +118,11 @@ func buildComponentConnection(
 	s := snippetComponentConnection
 	s = strings.Replace(s, paramComponentIDFrom, fromID, -1)
 	s = strings.Replace(s, paramComponentIDTo, toID, -1)
-	s = strings.Replace(s, paramLineColor, hex(lineColor), -1)
+	s = strings.Replace(s, paramLineColor, toHex(lineColor), -1)
 	return s
 }
 
-func hex(c color.Color) string {
+func toHex(c color.Color) string {
 	rgba := color.RGBAModel.Convert(c).(color.RGBA)
 	return fmt.Sprintf("#%.2x%.2x%.2x", rgba.R, rgba.G, rgba.B)
 }

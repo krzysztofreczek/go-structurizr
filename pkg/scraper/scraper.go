@@ -1,7 +1,6 @@
 package scraper
 
 import (
-	"errors"
 	"fmt"
 	"hash/fnv"
 	"reflect"
@@ -9,6 +8,8 @@ import (
 	"unsafe"
 
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
+	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
+	"github.com/pkg/errors"
 )
 
 type Scraper struct {
@@ -23,6 +24,27 @@ func NewScraper(config Configuration) *Scraper {
 		rules:     make([]Rule, 0),
 		structure: model.NewStructure(),
 	}
+}
+
+func NewScraperFromConfigFile(fileName string) (*Scraper, error) {
+	configuration, err := yaml.LoadFromFile(fileName)
+	if err != nil {
+		return nil, errors.Wrapf(err,
+			"could not load configuration from file `%s`", fileName)
+	}
+
+	config := toScraperConfig(configuration)
+	rules, err := toScraperRules(configuration)
+	if err != nil {
+		return nil, errors.Wrapf(err,
+			"could not load scraper rules from from configuration file `%s`", fileName)
+	}
+
+	return &Scraper{
+		config:    config,
+		rules:     rules,
+		structure: model.NewStructure(),
+	}, nil
 }
 
 func (s *Scraper) RegisterRule(r Rule) error {
@@ -67,7 +89,6 @@ func (s *Scraper) scrap(
 		for i := 0; i < v.Len(); i++ {
 			s.scrap(v.Index(i), parentID, level)
 		}
-		return
 	}
 
 	v = normalize(v)
