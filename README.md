@@ -2,12 +2,12 @@
 This library allows you to auto-generate C4 component diagrams out from the Golang code.
 
 ## How it works?
-The library provides a set of tools that allow you to scrape and render given object into a [C4 component](https://c4model.com/) diagram in [*.plantuml](https://plantuml.com/) format.
-Scraper component reflects given structure in accordance with structure interfaces, predefined rules and configuration. You may pass the scraped structure into a view definition with you can then rendered into a plantUML diagram code. 
+The library provides a set of tools that allow you to scrape and render given Golang object/structure into a [C4 component](https://c4model.com/) diagram in [*.plantuml](https://plantuml.com/) format.
+Scraper component reflects given structure in accordance with structure interfaces, predefined rules and configuration. You may pass the scraped structure into a view definition which you can then render into a plantUML diagram code. 
 
-Scraper identifies components to scrape in one od the following scenarios:
-* type that is scraped implements an interface `model.HasInfo`.
-* type that is scraped applies to one of the rules registered in the scraper.
+Scraper identifies components to scrape in one of the following cases:
+* type that is being examined implements an interface `model.HasInfo`.
+* type that is being examined applies to one of the rules registered in the scraper.
 
 ## Components
 
@@ -33,11 +33,11 @@ config := scraper.NewConfiguration(
 s := scraper.NewScraper(config)
 ```
 
-Having a scraper instantiated, you can register a set of rules that will allow the scraper to identify the components you want to include in the output structure.
+Having a scraper instantiated, you can register a set of rules that will allow the scraper to identify the components to include in the output structure.
 
 Each rule consists of:
-* Set of package regexp's - only types of package matching at least one package regexp is processed
-* Name regexp - only type of name matching regexp is processed
+* Set of package regexp's - only types in a package matching at least one of the package regexp's will be processed
+* Name regexp - only type of name matching regexp will be processed
 * Apply function - function that produces `model.Info` describing the component included in the scraped structure
 
 ```go
