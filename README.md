@@ -71,7 +71,7 @@ rules:
       description: "foo client"
       technology: "gRPC"
       tags:
-      - TAG
+        - TAG
 ```
 
 ```go
