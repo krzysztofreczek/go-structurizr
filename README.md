@@ -50,7 +50,7 @@ r, err := scraper.NewRule().
     WithNameRegexp("^(.*)Client$").
     WithApplyFunc(
         func() model.Info {
-            return model.ComponentInfo("foo client", "client of a foo service", "TAG")
+            return model.ComponentInfo("foo client", "gRPC", "TAG")
         }).
     Build()
 err = s.RegisterRule(r)
@@ -69,7 +69,7 @@ rules:
       - "github.com/krzysztofreczek/pkg/foo/.*"
     component:
       description: "foo client"
-      technology: "client of a foo service"
+      technology: "gRPC"
       tags:
       - TAG
 ```
