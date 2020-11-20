@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.15
+    working_directory: /go/src/github.com/krzysztofreczek/go-structurizr
+    steps:
+      - checkout
+      - run: go mod vendor
+      - run: go test -v ./...
+      - run: go build ./...
