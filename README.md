@@ -13,7 +13,7 @@ Scraper identifies components to scrape in one of the following cases:
 
 ### Component Info
 
-Structure `mode.Info` is a basic structure that defines a component included in the scraped structure of your code.
+Structure `model.Info` is a basic structure that defines a component included in the scraped structure of your code.
 ```go
 type Info struct {
 	Kind        string      // kind of scraped component
