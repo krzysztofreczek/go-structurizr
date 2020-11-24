@@ -15,13 +15,8 @@ const (
 	testPKG = "github.com/krzysztofreczek/go-structurizr/pkg/internal/test"
 )
 
-// todo: different code structures
 // todo: components matching rule
-// todo: component that implements interface
-
 // todo: scraped info from matching rule
-// todo: scraped info from implements interface
-
 // todo: package matching
 
 func TestScraper_Scrap(t *testing.T) {
@@ -167,20 +162,277 @@ func TestScraper_Scrap(t *testing.T) {
 			expectedRelations:    map[string][]string{},
 		},
 		{
-			// this is limitation of golang reflection capabilities
-			name:                 "root with private value of public component that implements HasInfo interface",
-			structure:            test.NewRootWithPrivatePublicComponentHasInfoValue(),
-			expectedComponentIDs: map[string]struct{}{},
-			expectedRelations:    map[string][]string{},
+			name:      "root with private value of public component that implements HasInfo interface",
+			structure: test.NewRootWithPrivatePublicComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
 		},
 		{
-			// this is limitation of golang reflection capabilities
-			name:                 "root with private value of private component that implements HasInfo interface",
-			structure:            test.NewRootWithPrivatePrivateComponentHasInfoValue(),
-			expectedComponentIDs: map[string]struct{}{},
-			expectedRelations:    map[string][]string{},
+			name:      "root with private value of private component that implements HasInfo interface",
+			structure: test.NewRootWithPrivatePrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
 		},
-
+		{
+			name:      "root with public map of pointers to public components",
+			structure: test.NewRootWithPublicMapOfPointersToPublicComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public map of pointers to private components",
+			structure: test.NewRootWithPublicMapOfPointersToPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public map of public components",
+			structure: test.NewRootWithPublicMapOfPublicComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public map of private components",
+			structure: test.NewRootWithPublicMapOfPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private map of pointers to public components",
+			structure: test.NewRootWithPrivateMapOfPointersToPublicComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private map of pointers to private components",
+			structure: test.NewRootWithPrivateMapOfPointersToPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private map of public components",
+			structure: test.NewRootWithPrivateMapOfPublicComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private map of private components",
+			structure: test.NewRootWithPrivateMapOfPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public slice of pointers to public components",
+			structure: test.NewRootWithPublicSliceOfPointersToPublicComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public slice of pointers to private components",
+			structure: test.NewRootWithPublicSliceOfPointersToPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public slice of public components",
+			structure: test.NewRootWithPublicSliceOfPublicComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public slice of private components",
+			structure: test.NewRootWithPublicSliceOfPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private slice of pointers to public components",
+			structure: test.NewRootWithPrivateSliceOfPointersToPublicComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private slice of pointers to private components",
+			structure: test.NewRootWithPrivateSliceOfPointersToPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private slice of public components",
+			structure: test.NewRootWithPrivateSliceOfPublicComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private slice of private components",
+			structure: test.NewRootWithPrivateSliceOfPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public array of pointers to public components",
+			structure: test.NewRootWithPublicArrayOfPointersToPublicComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public array of pointers to private components",
+			structure: test.NewRootWithPublicArrayOfPointersToPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public array of public components",
+			structure: test.NewRootWithPublicArrayOfPublicComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public array of private components",
+			structure: test.NewRootWithPublicArrayOfPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private array of pointers to public components",
+			structure: test.NewRootWithPrivateArrayOfPointersToPublicComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private array of pointers to private components",
+			structure: test.NewRootWithPrivateArrayOfPointersToPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private array of public components",
+			structure: test.NewRootWithPrivateArrayOfPublicComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private array of private components",
+			structure: test.NewRootWithPrivateArrayOfPrivateComponentHasInfoValue(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public public interface implemented with public component",
+			structure: test.NewRootWithPublicPublicInterfaceImplementedWithPublicComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public public interface implemented with private component",
+			structure: test.NewRootWithPublicPublicInterfaceImplementedWithPrivateComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public private interface implemented with public component",
+			structure: test.NewRootWithPublicPrivateInterfaceImplementedWithPublicComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public private interface implemented with private component",
+			structure: test.NewRootWithPublicPrivateInterfaceImplementedWithPrivateComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private public interface implemented with public component",
+			structure: test.NewRootWithPrivatePublicInterfaceImplementedWithPublicComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private public interface implemented with private component",
+			structure: test.NewRootWithPrivatePublicInterfaceImplementedWithPrivateComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private private interface implemented with public component",
+			structure: test.NewRootWithPrivatePrivateInterfaceImplementedWithPublicComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private private interface implemented with private component",
+			structure: test.NewRootWithPrivatePrivateInterfaceImplementedWithPrivateComponent(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
 		{
 			name:      "root that implements HasInfo interface with value component that implements HasInfo interface",
 			structure: test.NewRootHasInfoWithComponentHasInfoValue(),
@@ -206,6 +458,54 @@ func TestScraper_Scrap(t *testing.T) {
 					componentID("PublicComponentHasInfo"),
 				},
 			},
+		},
+		{
+			name:      "root that implements HasInfo interface with nested components that implement HasInfo interface",
+			structure: test.NewRootHasInfoWithNestedComponents(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootHasInfoWithNestedComponents"):        {},
+				componentID("RootHasInfoWithComponentHasInfoPointer"): {},
+				componentID("PublicComponentHasInfo"):                 {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootHasInfoWithNestedComponents"): {
+					componentID("RootHasInfoWithComponentHasInfoPointer"),
+				},
+				componentID("RootHasInfoWithComponentHasInfoPointer"): {
+					componentID("PublicComponentHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "root that implements HasInfo interface with nested private components that implement HasInfo interface",
+			structure: test.NewRootHasInfoWithNestedPrivateComponents(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootHasInfoWithNestedPrivateComponents"): {},
+				componentID("PublicComponentHasInfo"):                 {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootHasInfoWithNestedPrivateComponents"): {
+					componentID("PublicComponentHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "root with public map of HasInfo interfaces",
+			structure: test.NewRootWithPublicMapOfHasInfoInterfaces(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private map of HasInfo interfaces",
+			structure: test.NewRootWithPrivateMapOfHasInfoInterfaces(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
 		},
 	}
 	for _, tt := range tests {

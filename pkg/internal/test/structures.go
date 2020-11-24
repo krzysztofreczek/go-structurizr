@@ -240,96 +240,256 @@ type RootWithPublicMapOfPointersToPublicComponentHasInfo struct {
 	Pointers map[string]*PublicComponentHasInfo
 }
 
+func NewRootWithPublicMapOfPointersToPublicComponentHasInfo() RootWithPublicMapOfPointersToPublicComponentHasInfo {
+	return RootWithPublicMapOfPointersToPublicComponentHasInfo{
+		Pointers: map[string]*PublicComponentHasInfo{
+			"ID": {},
+		},
+	}
+}
+
 type RootWithPublicMapOfPointersToPrivateComponentHasInfoValue struct {
 	Pointers map[string]*privateComponentHasInfo
+}
+
+func NewRootWithPublicMapOfPointersToPrivateComponentHasInfoValue() RootWithPublicMapOfPointersToPrivateComponentHasInfoValue {
+	return RootWithPublicMapOfPointersToPrivateComponentHasInfoValue{
+		Pointers: map[string]*privateComponentHasInfo{
+			"ID": {},
+		},
+	}
 }
 
 type RootWithPublicMapOfPublicComponentHasInfoValue struct {
 	Values map[string]PublicComponentHasInfo
 }
 
+func NewRootWithPublicMapOfPublicComponentHasInfoValue() RootWithPublicMapOfPublicComponentHasInfoValue {
+	return RootWithPublicMapOfPublicComponentHasInfoValue{
+		Values: map[string]PublicComponentHasInfo{
+			"ID": {},
+		},
+	}
+}
+
 type RootWithPublicMapOfPrivateComponentHasInfoValue struct {
 	Values map[string]privateComponentHasInfo
+}
+
+func NewRootWithPublicMapOfPrivateComponentHasInfoValue() RootWithPublicMapOfPrivateComponentHasInfoValue {
+	return RootWithPublicMapOfPrivateComponentHasInfoValue{
+		Values: map[string]privateComponentHasInfo{
+			"ID": {},
+		},
+	}
 }
 
 type RootWithPrivateMapOfPointersToPublicComponentHasInfo struct {
 	pointers map[string]*PublicComponentHasInfo
 }
 
+func NewRootWithPrivateMapOfPointersToPublicComponentHasInfo() RootWithPrivateMapOfPointersToPublicComponentHasInfo {
+	return RootWithPrivateMapOfPointersToPublicComponentHasInfo{
+		pointers: map[string]*PublicComponentHasInfo{
+			"ID": {},
+		},
+	}
+}
+
 type RootWithPrivateMapOfPointersToPrivateComponentHasInfoValue struct {
 	pointers map[string]*privateComponentHasInfo
+}
+
+func NewRootWithPrivateMapOfPointersToPrivateComponentHasInfoValue() RootWithPrivateMapOfPointersToPrivateComponentHasInfoValue {
+	return RootWithPrivateMapOfPointersToPrivateComponentHasInfoValue{
+		pointers: map[string]*privateComponentHasInfo{
+			"ID": {},
+		},
+	}
 }
 
 type RootWithPrivateMapOfPublicComponentHasInfoValue struct {
 	values map[string]PublicComponentHasInfo
 }
 
+func NewRootWithPrivateMapOfPublicComponentHasInfoValue() RootWithPrivateMapOfPublicComponentHasInfoValue {
+	return RootWithPrivateMapOfPublicComponentHasInfoValue{
+		values: map[string]PublicComponentHasInfo{
+			"ID": {},
+		},
+	}
+}
+
 type RootWithPrivateMapOfPrivateComponentHasInfoValue struct {
 	values map[string]privateComponentHasInfo
+}
+
+func NewRootWithPrivateMapOfPrivateComponentHasInfoValue() RootWithPrivateMapOfPrivateComponentHasInfoValue {
+	return RootWithPrivateMapOfPrivateComponentHasInfoValue{
+		values: map[string]privateComponentHasInfo{
+			"ID": {},
+		},
+	}
 }
 
 type RootWithPublicSliceOfPointersToPublicComponentHasInfo struct {
 	Pointers []*PublicComponentHasInfo
 }
 
+func NewRootWithPublicSliceOfPointersToPublicComponentHasInfo() RootWithPublicSliceOfPointersToPublicComponentHasInfo {
+	return RootWithPublicSliceOfPointersToPublicComponentHasInfo{
+		Pointers: []*PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPublicSliceOfPointersToPrivateComponentHasInfoValue struct {
 	Pointers []*privateComponentHasInfo
+}
+
+func NewRootWithPublicSliceOfPointersToPrivateComponentHasInfoValue() RootWithPublicSliceOfPointersToPrivateComponentHasInfoValue {
+	return RootWithPublicSliceOfPointersToPrivateComponentHasInfoValue{
+		Pointers: []*privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPublicSliceOfPublicComponentHasInfoValue struct {
 	Values []PublicComponentHasInfo
 }
 
+func NewRootWithPublicSliceOfPublicComponentHasInfoValue() RootWithPublicSliceOfPublicComponentHasInfoValue {
+	return RootWithPublicSliceOfPublicComponentHasInfoValue{
+		Values: []PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPublicSliceOfPrivateComponentHasInfoValue struct {
 	Values []privateComponentHasInfo
+}
+
+func NewRootWithPublicSliceOfPrivateComponentHasInfoValue() RootWithPublicSliceOfPrivateComponentHasInfoValue {
+	return RootWithPublicSliceOfPrivateComponentHasInfoValue{
+		Values: []privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPrivateSliceOfPointersToPublicComponentHasInfo struct {
 	pointers []*PublicComponentHasInfo
 }
 
+func NewRootWithPrivateSliceOfPointersToPublicComponentHasInfo() RootWithPrivateSliceOfPointersToPublicComponentHasInfo {
+	return RootWithPrivateSliceOfPointersToPublicComponentHasInfo{
+		pointers: []*PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPrivateSliceOfPointersToPrivateComponentHasInfoValue struct {
 	pointers []*privateComponentHasInfo
+}
+
+func NewRootWithPrivateSliceOfPointersToPrivateComponentHasInfoValue() RootWithPrivateSliceOfPointersToPrivateComponentHasInfoValue {
+	return RootWithPrivateSliceOfPointersToPrivateComponentHasInfoValue{
+		pointers: []*privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPrivateSliceOfPublicComponentHasInfoValue struct {
 	values []PublicComponentHasInfo
 }
 
+func NewRootWithPrivateSliceOfPublicComponentHasInfoValue() RootWithPrivateSliceOfPublicComponentHasInfoValue {
+	return RootWithPrivateSliceOfPublicComponentHasInfoValue{
+		values: []PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPrivateSliceOfPrivateComponentHasInfoValue struct {
 	values []privateComponentHasInfo
+}
+
+func NewRootWithPrivateSliceOfPrivateComponentHasInfoValue() RootWithPrivateSliceOfPrivateComponentHasInfoValue {
+	return RootWithPrivateSliceOfPrivateComponentHasInfoValue{
+		values: []privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPublicArrayOfPointersToPublicComponentHasInfo struct {
 	Pointers [1]*PublicComponentHasInfo
 }
 
+func NewRootWithPublicArrayOfPointersToPublicComponentHasInfo() RootWithPublicArrayOfPointersToPublicComponentHasInfo {
+	return RootWithPublicArrayOfPointersToPublicComponentHasInfo{
+		Pointers: [1]*PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPublicArrayOfPointersToPrivateComponentHasInfoValue struct {
 	Pointers [1]*privateComponentHasInfo
+}
+
+func NewRootWithPublicArrayOfPointersToPrivateComponentHasInfoValue() RootWithPublicArrayOfPointersToPrivateComponentHasInfoValue {
+	return RootWithPublicArrayOfPointersToPrivateComponentHasInfoValue{
+		Pointers: [1]*privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPublicArrayOfPublicComponentHasInfoValue struct {
 	Values [1]PublicComponentHasInfo
 }
 
+func NewRootWithPublicArrayOfPublicComponentHasInfoValue() RootWithPublicArrayOfPublicComponentHasInfoValue {
+	return RootWithPublicArrayOfPublicComponentHasInfoValue{
+		Values: [1]PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPublicArrayOfPrivateComponentHasInfoValue struct {
 	Values [1]privateComponentHasInfo
+}
+
+func NewRootWithPublicArrayOfPrivateComponentHasInfoValue() RootWithPublicArrayOfPrivateComponentHasInfoValue {
+	return RootWithPublicArrayOfPrivateComponentHasInfoValue{
+		Values: [1]privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPrivateArrayOfPointersToPublicComponentHasInfo struct {
 	pointers [1]*PublicComponentHasInfo
 }
 
+func NewRootWithPrivateArrayOfPointersToPublicComponentHasInfo() RootWithPrivateArrayOfPointersToPublicComponentHasInfo {
+	return RootWithPrivateArrayOfPointersToPublicComponentHasInfo{
+		pointers: [1]*PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPrivateArrayOfPointersToPrivateComponentHasInfoValue struct {
 	pointers [1]*privateComponentHasInfo
+}
+
+func NewRootWithPrivateArrayOfPointersToPrivateComponentHasInfoValue() RootWithPrivateArrayOfPointersToPrivateComponentHasInfoValue {
+	return RootWithPrivateArrayOfPointersToPrivateComponentHasInfoValue{
+		pointers: [1]*privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPrivateArrayOfPublicComponentHasInfoValue struct {
 	values [1]PublicComponentHasInfo
 }
 
+func NewRootWithPrivateArrayOfPublicComponentHasInfoValue() RootWithPrivateArrayOfPublicComponentHasInfoValue {
+	return RootWithPrivateArrayOfPublicComponentHasInfoValue{
+		values: [1]PublicComponentHasInfo{{}},
+	}
+}
+
 type RootWithPrivateArrayOfPrivateComponentHasInfoValue struct {
 	values [1]privateComponentHasInfo
+}
+
+func NewRootWithPrivateArrayOfPrivateComponentHasInfoValue() RootWithPrivateArrayOfPrivateComponentHasInfoValue {
+	return RootWithPrivateArrayOfPrivateComponentHasInfoValue{
+		values: [1]privateComponentHasInfo{{}},
+	}
 }
 
 type RootWithPublicPublicInterface struct {
@@ -422,4 +582,58 @@ func NewRootHasInfoWithComponentHasInfoPointer() RootHasInfoWithComponentHasInfo
 
 func (r RootHasInfoWithComponentHasInfoPointer) Info() model.Info {
 	return model.ComponentInfo("root has info")
+}
+
+type RootHasInfoWithNestedComponents struct {
+	SubRoot RootHasInfoWithComponentHasInfoPointer
+}
+
+func NewRootHasInfoWithNestedComponents() RootHasInfoWithNestedComponents {
+	return RootHasInfoWithNestedComponents{
+		SubRoot: NewRootHasInfoWithComponentHasInfoPointer(),
+	}
+}
+
+func (r RootHasInfoWithNestedComponents) Info() model.Info {
+	return model.ComponentInfo("root with nested public components")
+}
+
+type RootHasInfoWithNestedPrivateComponents struct {
+	SubRoot RootWithPrivatePublicComponentHasInfoValue
+}
+
+func NewRootHasInfoWithNestedPrivateComponents() RootHasInfoWithNestedPrivateComponents {
+	return RootHasInfoWithNestedPrivateComponents{
+		SubRoot: NewRootWithPrivatePublicComponentHasInfoValue(),
+	}
+}
+
+func (r RootHasInfoWithNestedPrivateComponents) Info() model.Info {
+	return model.ComponentInfo("root with nested private components")
+}
+
+type RootWithPublicMapOfHasInfoInterfaces struct {
+	Infos map[string]model.HasInfo
+}
+
+func NewRootWithPublicMapOfHasInfoInterfaces() RootWithPublicMapOfHasInfoInterfaces {
+	return RootWithPublicMapOfHasInfoInterfaces{
+		Infos: map[string]model.HasInfo{
+			"PUBLIC":  PublicComponentHasInfo{},
+			"private": privateComponentHasInfo{},
+		},
+	}
+}
+
+type RootWithPrivateMapOfHasInfoInterfaces struct {
+	infos map[string]model.HasInfo
+}
+
+func NewRootWithPrivateMapOfHasInfoInterfaces() RootWithPrivateMapOfHasInfoInterfaces {
+	return RootWithPrivateMapOfHasInfoInterfaces{
+		infos: map[string]model.HasInfo{
+			"PUBLIC":  PublicComponentHasInfo{},
+			"private": privateComponentHasInfo{},
+		},
+	}
 }

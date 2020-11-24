@@ -89,6 +89,7 @@ func (s *Scraper) scrap(
 		for i := 0; i < v.Len(); i++ {
 			s.scrap(v.Index(i), parentID, level)
 		}
+		return
 	}
 
 	v = normalize(v)
@@ -162,8 +163,9 @@ func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
 	} else if v.CanInterface() {
 		info, ok = v.Interface().(model.HasInfo)
 	} else {
-		// we cannot handle such case
-		info, ok = nil, false
+		// it allows accessing new instance by the interface
+		v = reflect.New(v.Type())
+		info, ok = v.Interface().(model.HasInfo)
 	}
 
 	if !ok || info == nil {
