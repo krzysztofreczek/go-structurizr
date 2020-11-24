@@ -2,11 +2,11 @@ package scraper
 
 import (
 	"fmt"
-	"hash/fnv"
 	"reflect"
 	"strings"
 	"unsafe"
 
+	"github.com/krzysztofreczek/go-structurizr/pkg/internal"
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
 	"github.com/pkg/errors"
@@ -89,6 +89,7 @@ func (s *Scraper) scrap(
 		for i := 0; i < v.Len(); i++ {
 			s.scrap(v.Index(i), parentID, level)
 		}
+		return
 	}
 
 	v = normalize(v)
@@ -153,13 +154,21 @@ func (s *Scraper) isScrappable(v reflect.Value) bool {
 }
 
 func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
-	if !v.CanAddr() {
-		return model.Info{}, false
+	var info model.HasInfo
+	var ok bool
+
+	if v.CanAddr() {
+		// v.Addr() instead of v supports both value and pointer receiver
+		info, ok = v.Addr().Interface().(model.HasInfo)
+	} else if v.CanInterface() {
+		info, ok = v.Interface().(model.HasInfo)
+	} else {
+		// it allows accessing new instance by the interface
+		v = reflect.New(v.Type())
+		info, ok = v.Interface().(model.HasInfo)
 	}
 
-	// v.Addr() instead of v supports both value and pointer receiver
-	info, ok := v.Addr().Interface().(model.HasInfo)
-	if !ok {
+	if !ok || info == nil {
 		return model.Info{}, false
 	}
 
@@ -194,11 +203,8 @@ func normalize(v reflect.Value) reflect.Value {
 }
 
 func componentID(v reflect.Value) string {
-	id := fmt.Sprintf("%s/%s", valuePackage(v), v.Type().Name())
-	h := fnv.New32a()
-	// TODO: handle
-	_, _ = h.Write([]byte(id))
-	return fmt.Sprintf("%d", h.Sum32())
+	id := fmt.Sprintf("%s.%s", valuePackage(v), v.Type().Name())
+	return internal.Hash(id)
 }
 
 func componentName(v reflect.Value) string {
