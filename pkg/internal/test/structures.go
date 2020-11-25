@@ -59,7 +59,12 @@ func NewRootEmptyHasInfoPtr() *RootEmptyHasInfo {
 }
 
 func (r RootEmptyHasInfo) Info() model.Info {
-	return model.ComponentInfo("root")
+	return model.ComponentInfo(
+		"root description",
+		"root technology",
+		"root tag 1",
+		"root tag 2",
+	)
 }
 
 type RootEmptyPtrHasInfo struct{}
@@ -73,7 +78,12 @@ func NewRootEmptyPtrHasInfoPtr() *RootEmptyPtrHasInfo {
 }
 
 func (r *RootEmptyPtrHasInfo) Info() model.Info {
-	return model.ComponentInfo("root")
+	return model.ComponentInfo(
+		"root description",
+		"root technology",
+		"root tag 1",
+		"root tag 2",
+	)
 }
 
 type RootWithPublicPointerToPublicComponent struct {

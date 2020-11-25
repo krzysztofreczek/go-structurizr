@@ -92,8 +92,6 @@ func (s *Scraper) scrap(
 		return
 	}
 
-	v = normalize(v)
-
 	if !s.isScrappable(v) {
 		return
 	}
@@ -158,6 +156,8 @@ func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
 	var ok bool
 
 	if v.CanAddr() {
+		// it allows accessing new pointer by the interface
+		v = reflect.NewAt(v.Type(), unsafe.Pointer(v.UnsafeAddr())).Elem()
 		// v.Addr() instead of v supports both value and pointer receiver
 		info, ok = v.Addr().Interface().(model.HasInfo)
 	} else if v.CanInterface() {
@@ -187,19 +187,6 @@ func (s *Scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 	}
 
 	return model.Info{}, false
-}
-
-func normalize(v reflect.Value) reflect.Value {
-	if !v.CanAddr() {
-		return v
-	}
-
-	// supports unexported fields
-	if !v.CanInterface() {
-		v = reflect.NewAt(v.Type(), unsafe.Pointer(v.UnsafeAddr())).Elem()
-	}
-
-	return v
 }
 
 func componentID(v reflect.Value) string {
