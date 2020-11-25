@@ -16,6 +16,7 @@ const (
 )
 
 // todo: components matching rule
+// todo: scraped info from interface
 // todo: scraped info from matching rule
 // todo: package matching
 
