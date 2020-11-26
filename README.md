@@ -94,6 +94,7 @@ View consists of:
 * title
 * component styles - styles are applied to the components by matching first of component tags with style ids
 * additional styling (i.e. line color)
+* tags - if specified, view will contain only components tagged with one of the view tags. When no tag is defined, all components will be included in the rendered view.
 
 In order to instantiate default view, use the view builder:
 ```go
@@ -110,6 +111,7 @@ v := view.NewView().
             WithFontColor(color.Black).
             Build(),
     ).
+    WithTag("TAG").
     Build()
 ```
 
@@ -124,6 +126,8 @@ view:
       background_color: ffffffff
       font_color: 000000ff
       border_color: 000000ff
+  tags:
+    - TAG
 ```
 
 ```go

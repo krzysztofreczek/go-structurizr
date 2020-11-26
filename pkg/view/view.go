@@ -9,17 +9,20 @@ import (
 
 type View struct {
 	title           string
+	tags            []string
 	componentStyles map[string]ComponentStyle
 	lineColor       color.Color
 }
 
 func newView(
 	title string,
+	tags []string,
 	componentStyles map[string]ComponentStyle,
 	lineColor color.Color,
 ) View {
 	return View{
 		title:           title,
+		tags:            tags,
 		componentStyles: componentStyles,
 		lineColor:       lineColor,
 	}
@@ -33,6 +36,7 @@ func NewView() *Builder {
 	return &Builder{
 		View: View{
 			title:           "",
+			tags:            make([]string, 0),
 			componentStyles: make(map[string]ComponentStyle),
 			lineColor:       color.Black,
 		},
@@ -60,6 +64,11 @@ func (b *Builder) WithTitle(t string) *Builder {
 	return b
 }
 
+func (b *Builder) WithTag(t string) *Builder {
+	b.tags = append(b.tags, t)
+	return b
+}
+
 func (b *Builder) WithComponentStyle(s ComponentStyle) *Builder {
 	b.componentStyles[s.id] = s
 	return b
@@ -75,6 +84,7 @@ func (b *Builder) WithLineColor(c color.Color) *Builder {
 func (b Builder) Build() View {
 	return newView(
 		b.title,
+		b.tags,
 		b.componentStyles,
 		b.lineColor,
 	)

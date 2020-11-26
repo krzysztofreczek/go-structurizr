@@ -49,6 +49,10 @@ func toView(c yaml.Config) (View, error) {
 		v.WithComponentStyle(style.Build())
 	}
 
+	for _, t := range c.View.Tags {
+		v.WithTag(t)
+	}
+
 	return v.Build(), nil
 }
 
