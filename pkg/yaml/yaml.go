@@ -32,6 +32,7 @@ type ConfigView struct {
 	Title     string            `yaml:"title"`
 	LineColor string            `yaml:"line_color"`
 	Styles    []ConfigViewStyle `yaml:"styles"`
+	Tags      []string          `yaml:"tags"`
 }
 
 type ConfigViewStyle struct {
