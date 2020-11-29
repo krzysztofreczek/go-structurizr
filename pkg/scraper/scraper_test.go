@@ -619,8 +619,9 @@ func TestScraper_Scrap_rules(t *testing.T) {
 	)
 
 	ruleDefaultMatchAll, err := scraper.NewRule().
-		WithApplyFunc(func() model.Info {
+		WithApplyFunc(func(name string, groups ...string) model.Info {
 			return model.ComponentInfo(
+				name,
 				"match-all description",
 				"match-all technology",
 				"match-all tag 1",
@@ -631,9 +632,10 @@ func TestScraper_Scrap_rules(t *testing.T) {
 	require.NoError(t, err)
 
 	ruleMatchPublicComponent, err := scraper.NewRule().
-		WithNameRegexp("^PublicComponent$").
-		WithApplyFunc(func() model.Info {
+		WithNameRegexp("^test.PublicComponent$").
+		WithApplyFunc(func(name string, groups ...string) model.Info {
 			return model.ComponentInfo(
+				name,
 				"match-pc description",
 				"match-pc technology",
 				"match-pc tag 1",
@@ -645,9 +647,27 @@ func TestScraper_Scrap_rules(t *testing.T) {
 
 	ruleMatchPublicComponentInAnotherPackage, err := scraper.NewRule().
 		WithPkgRegexps("^github.com/krzysztofreczek/go-structurizr/pkg/foo$").
-		WithNameRegexp("^PublicComponent$").
-		WithApplyFunc(func() model.Info {
+		WithNameRegexp("^test.PublicComponent$").
+		WithApplyFunc(func(name string, groups ...string) model.Info {
 			return model.ComponentInfo()
+		}).
+		Build()
+	require.NoError(t, err)
+
+	ruleMatchPublicComponentWithNameAlias, err := scraper.NewRule().
+		WithNameRegexp("^test.PublicComponent$").
+		WithApplyFunc(func(name string, groups ...string) model.Info {
+			n := fmt.Sprintf("%sAlias", name)
+			return model.ComponentInfo(n)
+		}).
+		Build()
+	require.NoError(t, err)
+
+	ruleMatchComponentWithNameGroups, err := scraper.NewRule().
+		WithNameRegexp(`test\.(\w*)With(\w*)To(\w*)`).
+		WithApplyFunc(func(name string, groups ...string) model.Info {
+			n := fmt.Sprintf("test.%sWith%sTo%s", groups[0], groups[1], groups[2])
+			return model.ComponentInfo(n)
 		}).
 		Build()
 	require.NoError(t, err)
@@ -707,6 +727,32 @@ func TestScraper_Scrap_rules(t *testing.T) {
 			structure:          test.NewRootWithPublicPointerToPublicComponent(),
 			rules:              []scraper.Rule{ruleMatchPublicComponentInAnotherPackage},
 			expectedComponents: map[string]model.Component{},
+		},
+		{
+			name:      "name with alias rule",
+			structure: test.NewRootWithPublicPointerToPublicComponent(),
+			rules:     []scraper.Rule{ruleMatchPublicComponentWithNameAlias},
+			expectedComponents: map[string]model.Component{
+				componentID("PublicComponent"): {
+					ID:   componentID("PublicComponent"),
+					Kind: "component",
+					Name: "test.PublicComponentAlias",
+					Tags: []string{},
+				},
+			},
+		},
+		{
+			name:      "name recreated from groups rule",
+			structure: test.NewRootWithPublicPointerToPublicComponent(),
+			rules:     []scraper.Rule{ruleMatchComponentWithNameGroups},
+			expectedComponents: map[string]model.Component{
+				componentID("RootWithPublicPointerToPublicComponent"): {
+					ID:   componentID("RootWithPublicPointerToPublicComponent"),
+					Kind: "component",
+					Name: "test.RootWithPublicPointerToPublicComponent",
+					Tags: []string{},
+				},
+			},
 		},
 	}
 	for _, tt := range tests {

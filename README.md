@@ -17,6 +17,7 @@ Structure `model.Info` is a basic structure that defines a component included in
 ```go
 type Info struct {
 	Kind        string      // kind of scraped component
+    Name        string      // component name
 	Description string      // component description
 	Technology  string      // technology used within the component
 	Tags        []string    // tags are used to match view styles to component
@@ -42,15 +43,34 @@ Having a scraper instantiated, you can register a set of rules that will allow t
 Each rule consists of:
 * Set of package regexp's - only types in a package matching at least one of the package regexp's will be processed
 * Name regexp - only type of name matching regexp will be processed
-* Apply function - function that produces `model.Info` describing the component included in the scraped structure
+* Apply function - function that produces `model.Info` describing the component included in the scraped structure.
 
 ```go
 r, err := scraper.NewRule().
     WithPkgRegexps("github.com/krzysztofreczek/pkg/foo/.*").
     WithNameRegexp("^(.*)Client$").
     WithApplyFunc(
-        func() model.Info {
-            return model.ComponentInfo("foo client", "gRPC", "TAG")
+        func(name string, _ ...string) model.Info {
+            return model.ComponentInfo(name, "foo client", "gRPC", "TAG")
+        }).
+    Build()
+err = s.RegisterRule(r)
+```
+
+The apply function has two arguments: name and groups matched from the name regular expression. 
+
+Please note, groups' numbers start from index `1`. Group of index `0` contains the original type name in a format: `package.TypeName`.
+
+See the example:
+```go
+r, err := scraper.NewRule().
+    WithPkgRegexps("github.com/krzysztofreczek/pkg/foo/.*").
+    WithNameRegexp(`^(\w*)\.(\w*)Client$`).
+    WithApplyFunc(
+        func(_ string, groups ...string) model.Info {
+            // Do some groups sanity checks first, then:
+            n := fmt.Sprintf("Client of external %s service", groups[2])
+            return model.ComponentInfo(n, "foo client", "gRPC", "TAG")
         }).
     Build()
 err = s.RegisterRule(r)
@@ -68,6 +88,21 @@ rules:
     pkg_regexps:
       - "github.com/krzysztofreczek/pkg/foo/.*"
     component:
+      name: "FooClient"
+      description: "foo client"
+      technology: "gRPC"
+      tags:
+        - TAG
+```
+
+Regex groups may also be used within yaml rule definition. Here you can find an example:
+```yaml
+rules:
+  - name_regexp: "(\\w*)\\.(\\w*)Client$"
+    pkg_regexps:
+      - "github.com/krzysztofreczek/pkg/foo/.*"
+    component:
+      name: "Client of external {2} service"
       description: "foo client"
       technology: "gRPC"
       tags:

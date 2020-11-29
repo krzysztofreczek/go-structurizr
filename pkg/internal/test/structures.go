@@ -15,7 +15,10 @@ type PublicComponent struct{}
 type PublicComponentHasInfo struct{}
 
 func (r PublicComponentHasInfo) Info() model.Info {
-	return model.ComponentInfo("public")
+	return model.ComponentInfo(
+		"test.PublicComponentHasInfo",
+		"public",
+	)
 }
 
 func (r PublicComponentHasInfo) DoSomethingPublic() {
@@ -31,7 +34,10 @@ type privateComponent struct{}
 type privateComponentHasInfo struct{}
 
 func (r privateComponentHasInfo) Info() model.Info {
-	return model.ComponentInfo("private")
+	return model.ComponentInfo(
+		"test.privateComponentHasInfo",
+		"private",
+	)
 }
 
 func (r privateComponentHasInfo) DoSomethingPublic() {
@@ -60,6 +66,7 @@ func NewRootEmptyHasInfoPtr() *RootEmptyHasInfo {
 
 func (r RootEmptyHasInfo) Info() model.Info {
 	return model.ComponentInfo(
+		"test.RootEmptyHasInfo",
 		"root description",
 		"root technology",
 		"root tag 1",
@@ -79,6 +86,7 @@ func NewRootEmptyPtrHasInfoPtr() *RootEmptyPtrHasInfo {
 
 func (r *RootEmptyPtrHasInfo) Info() model.Info {
 	return model.ComponentInfo(
+		"test.RootEmptyPtrHasInfo",
 		"root description",
 		"root technology",
 		"root tag 1",
@@ -577,7 +585,10 @@ func NewRootHasInfoWithComponentHasInfoValue() RootHasInfoWithComponentHasInfoVa
 }
 
 func (r RootHasInfoWithComponentHasInfoValue) Info() model.Info {
-	return model.ComponentInfo("root has info")
+	return model.ComponentInfo(
+		"test.RootHasInfoWithComponentHasInfoValue",
+		"root has info",
+	)
 }
 
 type RootHasInfoWithComponentHasInfoPointer struct {
@@ -591,7 +602,10 @@ func NewRootHasInfoWithComponentHasInfoPointer() RootHasInfoWithComponentHasInfo
 }
 
 func (r RootHasInfoWithComponentHasInfoPointer) Info() model.Info {
-	return model.ComponentInfo("root has info")
+	return model.ComponentInfo(
+		"test.RootHasInfoWithComponentHasInfoPointer",
+		"root has info",
+	)
 }
 
 type RootHasInfoWithNestedComponents struct {
@@ -605,7 +619,10 @@ func NewRootHasInfoWithNestedComponents() RootHasInfoWithNestedComponents {
 }
 
 func (r RootHasInfoWithNestedComponents) Info() model.Info {
-	return model.ComponentInfo("root with nested public components")
+	return model.ComponentInfo(
+		"test.RootHasInfoWithNestedComponents",
+		"root with nested public components",
+	)
 }
 
 type RootHasInfoWithNestedPrivateComponents struct {
@@ -619,7 +636,10 @@ func NewRootHasInfoWithNestedPrivateComponents() RootHasInfoWithNestedPrivateCom
 }
 
 func (r RootHasInfoWithNestedPrivateComponents) Info() model.Info {
-	return model.ComponentInfo("root with nested private components")
+	return model.ComponentInfo(
+		"test.RootHasInfoWithNestedPrivateComponents",
+		"root with nested private components",
+	)
 }
 
 type RootWithPublicMapOfHasInfoInterfaces struct {

@@ -132,7 +132,7 @@ func (s *Scraper) addComponent(
 	c := model.Component{
 		ID:          componentID(v),
 		Kind:        info.Kind,
-		Name:        componentName(v),
+		Name:        info.Name,
 		Description: info.Description,
 		Technology:  info.Technology,
 		Tags:        info.Tags,
@@ -177,13 +177,12 @@ func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
 
 func (s *Scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 	vPkg := valuePackage(v)
-	vType := v.Type().Name()
+	name := componentName(v)
 	for _, r := range s.rules {
-		if !r.Applies(vPkg, vType) {
+		if !r.Applies(vPkg, name) {
 			continue
 		}
-
-		return r.Apply(), true
+		return r.Apply(name), true
 	}
 
 	return model.Info{}, false
