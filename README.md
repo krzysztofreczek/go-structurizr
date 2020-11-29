@@ -98,7 +98,7 @@ rules:
 Regex groups may also be used within yaml rule definition. Here you can find an example:
 ```yaml
 rules:
-  - name_regexp: "(\w*)\.(\w*)Client$"
+  - name_regexp: "(\\w*)\\.(\\w*)Client$"
     pkg_regexps:
       - "github.com/krzysztofreczek/pkg/foo/.*"
     component:
