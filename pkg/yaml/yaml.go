@@ -23,6 +23,7 @@ type ConfigRule struct {
 }
 
 type ConfigRuleComponent struct {
+	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
 	Technology  string   `yaml:"technology"`
 	Tags        []string `yaml:"tags"`

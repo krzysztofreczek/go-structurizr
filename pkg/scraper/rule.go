@@ -11,11 +11,19 @@ var (
 	matchAllRegexp = regexp.MustCompile("^.*$")
 )
 
-type RuleApplyFunc func() model.Info
+type RuleApplyFunc func(
+	name string,
+	groups ...string,
+) model.Info
 
 type Rule interface {
-	Applies(pkg string, name string) bool
-	Apply() model.Info
+	Applies(
+		pkg string,
+		name string,
+	) bool
+	Apply(
+		name string,
+	) model.Info
 }
 
 type rule struct {
@@ -62,12 +70,24 @@ func newRule(
 	}, nil
 }
 
-func (r rule) Applies(pkg string, name string) bool {
+func (r rule) Applies(
+	pkg string,
+	name string,
+) bool {
 	return r.nameApplies(name) && r.pkgApplies(pkg)
 }
 
-func (r rule) Apply() model.Info {
-	return r.applyFunc()
+func (r rule) Apply(
+	name string,
+) model.Info {
+	regex := r.nameRegex
+
+	groups := regex.FindAllStringSubmatch(name, -1)
+	if len(groups) != 0 && len(groups[0]) > 1 {
+		return r.applyFunc(groups[0][0], groups[0][1:]...)
+	}
+
+	return r.applyFunc(name)
 }
 
 func (r rule) pkgApplies(pkg string) bool {
