@@ -17,7 +17,7 @@ Structure `model.Info` is a basic structure that defines a component included in
 ```go
 type Info struct {
 	Kind        string      // kind of scraped component
-    Name        string      // component name
+	Name        string      // component name
 	Description string      // component description
 	Technology  string      // technology used within the component
 	Tags        []string    // tags are used to match view styles to component
