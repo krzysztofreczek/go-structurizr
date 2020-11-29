@@ -88,7 +88,6 @@ rules:
     pkg_regexps:
       - "github.com/krzysztofreczek/pkg/foo/.*"
     component:
-      name: "FooClient"
       description: "foo client"
       technology: "gRPC"
       tags:
