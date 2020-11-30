@@ -59,8 +59,6 @@ err = s.RegisterRule(r)
 
 The apply function has two arguments: name and groups matched from the name regular expression. 
 
-Please note, groups' numbers start from index `1`. Group of index `0` contains the original type name in a format: `package.TypeName`.
-
 See the example:
 ```go
 r, err := scraper.NewRule().
@@ -69,7 +67,7 @@ r, err := scraper.NewRule().
     WithApplyFunc(
         func(_ string, groups ...string) model.Info {
             // Do some groups sanity checks first, then:
-            n := fmt.Sprintf("Client of external %s service", groups[2])
+            n := fmt.Sprintf("Client of external %s service", groups[1])
             return model.ComponentInfo(n, "foo client", "gRPC", "TAG")
         }).
     Build()
@@ -101,7 +99,7 @@ rules:
     pkg_regexps:
       - "github.com/krzysztofreczek/pkg/foo/.*"
     component:
-      name: "Client of external {2} service"
+      name: "Client of external {1} service"
       description: "foo client"
       technology: "gRPC"
       tags:
