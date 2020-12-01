@@ -1,6 +1,7 @@
 package yaml
 
 import (
+	"io"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -52,9 +53,16 @@ func LoadFromFile(fileName string) (Config, error) {
 		_ = f.Close()
 	}()
 
+	return LoadFrom(f)
+}
+
+func LoadFrom(source io.Reader) (Config, error) {
 	var cfg Config
-	decoder := yaml.NewDecoder(f)
-	err = decoder.Decode(&cfg)
+	decoder := yaml.NewDecoder(source)
+	err := decoder.Decode(&cfg)
+	if err != nil && err == io.EOF {
+		return Config{}, nil
+	}
 	if err != nil {
 		return Config{}, err
 	}
