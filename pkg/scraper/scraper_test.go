@@ -16,7 +16,6 @@ const (
 )
 
 func TestScraper_Scrap_package_matching(t *testing.T) {
-
 	var tests = []struct {
 		name                       string
 		structure                  interface{}

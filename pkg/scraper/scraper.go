@@ -37,7 +37,7 @@ func NewScraperFromConfigFile(fileName string) (*Scraper, error) {
 	rules, err := toScraperRules(configuration)
 	if err != nil {
 		return nil, errors.Wrapf(err,
-			"could not load scraper rules from from configuration file `%s`", fileName)
+			"could not load scraper rules from file `%s`", fileName)
 	}
 
 	return &Scraper{
