@@ -2,9 +2,10 @@ package scraper
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
-	"strings"
 )
 
 func toScraperConfig(c yaml.Config) Configuration {

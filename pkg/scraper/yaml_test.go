@@ -17,7 +17,7 @@ func Test_toScraperConfig(t *testing.T) {
 	}
 
 	c := toScraperConfig(yamlConfiguration)
-	require.Equal(t, yamlConfiguration.Configuration.Packages, c.packages)
+	require.Equal(t, yamlConfiguration.Configuration.Packages, c.Packages)
 }
 
 func Test_toScraperRules(t *testing.T) {

@@ -60,7 +60,7 @@ func TestScraper_Scrap_package_matching(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			c := scraper.NewConfiguration(tt.packages...)
 			s := scraper.NewScraper(c)
-			result := s.Scrap(tt.structure)
+			result := s.Scrape(tt.structure)
 			require.Len(t, result.Components, tt.expectedNumberOfComponents)
 		})
 	}
@@ -558,7 +558,7 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := scraper.NewScraper(c)
-			result := s.Scrap(tt.structure)
+			result := s.Scrape(tt.structure)
 			requireEqualComponentIDs(t, tt.expectedComponentIDs, result.Components)
 			requireEqualRelations(t, tt.expectedRelations, result.Relations)
 		})
@@ -606,7 +606,7 @@ func TestScraper_Scrap_has_info_interface_component_info(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := scraper.NewScraper(c)
-			result := s.Scrap(tt.structure)
+			result := s.Scrape(tt.structure)
 			requireEqualComponents(t, tt.expectedComponents, result.Components)
 		})
 	}
@@ -762,7 +762,7 @@ func TestScraper_Scrap_rules(t *testing.T) {
 				require.NoError(t, err)
 			}
 
-			result := s.Scrap(tt.structure)
+			result := s.Scrape(tt.structure)
 			requireEqualComponents(t, tt.expectedComponents, result.Components)
 		})
 	}
