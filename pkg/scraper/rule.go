@@ -11,11 +11,19 @@ var (
 	matchAllRegexp = regexp.MustCompile("^.*$")
 )
 
+// RuleApplyFunc defines a signature of method returning a component information of type model.Info.
+//
+// name is a scraped name of the type in format `package.TypeName`
+// groups is a slice of sub-groups resolved from the rule name regular expression
 type RuleApplyFunc func(
 	name string,
 	groups ...string,
 ) model.Info
 
+// Rule defines an interface of any rule that maybe registered within scraper.
+//
+// Applies informs if rule should be applied to the given component considering its full package and name in format `package.TypeName`.
+// Apply returns a component information of type model.Info based on the type name in format `package.TypeName`.
 type Rule interface {
 	Applies(
 		pkg string,

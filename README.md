@@ -117,7 +117,7 @@ structure := s.Scrap(app)
 
 ### View
 
-Similarly to the scraper, view may be instantiated in one of two ways:
+Similarly, to the scraper, view may be instantiated in one of two ways:
 * from the code
 * from the YAML file
 

@@ -10,7 +10,7 @@ import (
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 )
 
-func (s *Scraper) scrap(
+func (s *scraper) scrap(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -25,7 +25,7 @@ type scrapingStrategy func(
 	level int,
 )
 
-func (s *Scraper) resolveScrapingStrategy(v reflect.Value) scrapingStrategy {
+func (s *scraper) resolveScrapingStrategy(v reflect.Value) scrapingStrategy {
 	switch v.Kind() {
 	case reflect.Interface:
 		return s.scrapeInterfaceStrategy
@@ -40,7 +40,7 @@ func (s *Scraper) resolveScrapingStrategy(v reflect.Value) scrapingStrategy {
 	return s.scrapeValue
 }
 
-func (s *Scraper) scrapeInterfaceStrategy(
+func (s *scraper) scrapeInterfaceStrategy(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -49,7 +49,7 @@ func (s *Scraper) scrapeInterfaceStrategy(
 	s.scrap(v, parentID, level)
 }
 
-func (s *Scraper) scrapePointerStrategy(
+func (s *scraper) scrapePointerStrategy(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -58,7 +58,7 @@ func (s *Scraper) scrapePointerStrategy(
 	s.scrap(v, parentID, level)
 }
 
-func (s *Scraper) scrapeMapStrategy(
+func (s *scraper) scrapeMapStrategy(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -72,7 +72,7 @@ func (s *Scraper) scrapeMapStrategy(
 	}
 }
 
-func (s *Scraper) scrapeIterableStrategy(
+func (s *scraper) scrapeIterableStrategy(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -82,7 +82,7 @@ func (s *Scraper) scrapeIterableStrategy(
 	}
 }
 
-func (s *Scraper) scrapeValue(
+func (s *scraper) scrapeValue(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -111,7 +111,7 @@ func (s *Scraper) scrapeValue(
 	return
 }
 
-func (s *Scraper) scrapeValueFields(
+func (s *scraper) scrapeValueFields(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -121,7 +121,7 @@ func (s *Scraper) scrapeValueFields(
 	}
 }
 
-func (s *Scraper) addComponent(
+func (s *scraper) addComponent(
 	v reflect.Value,
 	info model.Info,
 	parentID string,
@@ -138,9 +138,9 @@ func (s *Scraper) addComponent(
 	return c
 }
 
-func (s *Scraper) isScrappable(v reflect.Value) bool {
+func (s *scraper) isScrappable(v reflect.Value) bool {
 	vPkg := valuePackage(v)
-	for _, pkg := range s.config.packages {
+	for _, pkg := range s.config.Packages {
 		if strings.HasPrefix(vPkg, pkg) {
 			return true
 		}
@@ -148,7 +148,7 @@ func (s *Scraper) isScrappable(v reflect.Value) bool {
 	return false
 }
 
-func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
+func (s *scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
 	var info model.HasInfo
 	var ok bool
 
@@ -172,7 +172,7 @@ func (s *Scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
 	return info.Info(), true
 }
 
-func (s *Scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
+func (s *scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 	vPkg := valuePackage(v)
 	name := componentName(v)
 	for _, r := range s.rules {
