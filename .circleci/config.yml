@@ -20,8 +20,11 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
+            . ./scripts/next_version.sh
+            VERSION=$(next_version $(git describe --tags --abbrev=0) 2)
+
             go get github.com/tcnksm/ghr
-            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} v0.0.${CIRCLE_BUILD_NUM}
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${VERSION}
 
 workflows:
   version: 2
