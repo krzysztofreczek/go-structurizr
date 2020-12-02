@@ -2,8 +2,10 @@ package model
 
 // HasInfo wraps simple getter method returning component information.
 //
-// HasInfo interface informs that the type is able to provide component information on its own.
-// All the types that implement the interface are automatically detected by default implementation of the scraper.
+// HasInfo interface informs that the type is able to provide component
+// information on its own.
+// All the types that implement the interface are automatically detected
+// by default implementation of the scraper.
 type HasInfo interface {
 	Info() Info
 }
@@ -14,11 +16,12 @@ const (
 
 // Info struct contains all component information details.
 //
-// Name is a component name
-// Kind is a type that reflects component level in terms of C4 diagrams
-// Description explains the responsibility of the component
-// Technology describes technology that the component is based on
-// Tags is a set of generic string tags that may be used as reference to a group of components
+// Name is a component name.
+// Kind is a type that reflects component level in terms of C4 diagrams.
+// Description explains the responsibility of the component.
+// Technology describes technology that the component is based on.
+// Tags is a set of generic string tags that may be used as reference
+// to a group of components.
 type Info struct {
 	Name        string
 	Kind        string

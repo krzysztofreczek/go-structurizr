@@ -69,12 +69,12 @@ func Test_toView(t *testing.T) {
 	}
 
 	actualOutput := bytes.Buffer{}
-	err = actualView.RenderTo(s, &actualOutput)
+	err = actualView.RenderStructureTo(s, &actualOutput)
 	require.NoError(t, err)
 	require.NotEmpty(t, actualOutput)
 
 	expectedOutput := bytes.Buffer{}
-	err = expectedView.RenderTo(s, &expectedOutput)
+	err = expectedView.RenderStructureTo(s, &expectedOutput)
 	require.NoError(t, err)
 	require.NotEmpty(t, expectedOutput)
 

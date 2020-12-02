@@ -8,9 +8,17 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Scraper
+// Scraper represents default scraper responsibilities.
+//
+// Scrape reflects given structure in accordance with internal configuration
+// and registered rules.
+// Scrape returns an open model.Structure with recognised components
+// and relations between those.
+//
+// RegisterRule registers given rule in the scraper.
+// RegisterRule will return an error in case the given rule is nil.
 type Scraper interface {
-	Scrap(i interface{}) model.Structure
+	Scrape(i interface{}) model.Structure
 	RegisterRule(r Rule) error
 }
 
@@ -20,7 +28,8 @@ type scraper struct {
 	structure model.Structure
 }
 
-// NewScraper instantiates a default Scraper implementation with provided Configuration.
+// NewScraper instantiates a default Scraper implementation
+// with provided Configuration.
 func NewScraper(config Configuration) Scraper {
 	return &scraper{
 		config:    config,
@@ -29,7 +38,10 @@ func NewScraper(config Configuration) Scraper {
 	}
 }
 
-// NewScraperFromConfigFile
+// NewScraperFromConfigFile instantiates a default Scraper implementation
+// with Configuration loaded from provided YAML configuration file.
+// NewScraperFromConfigFile will return an error in case the YAML configuration
+// file does not exist or contains invalid content.
 func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 	configuration, err := yaml.LoadFromFile(fileName)
 	if err != nil {
@@ -51,6 +63,8 @@ func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 	}, nil
 }
 
+// RegisterRule registers given rule in the scraper.
+// RegisterRule will return an error in case the given rule is nil.
 func (s *scraper) RegisterRule(r Rule) error {
 	if r == nil {
 		return errors.New("rule must not be nil")
@@ -59,7 +73,11 @@ func (s *scraper) RegisterRule(r Rule) error {
 	return nil
 }
 
-func (s *scraper) Scrap(i interface{}) model.Structure {
+// Scrape reflects given structure in accordance with internal configuration
+// and registered rules.
+// Scrape returns an open model.Structure with recognised components
+// and relations between those.
+func (s *scraper) Scrape(i interface{}) model.Structure {
 	v := reflect.ValueOf(i)
 	s.scrap(v, "", 0)
 	return s.structure

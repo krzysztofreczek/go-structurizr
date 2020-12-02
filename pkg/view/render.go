@@ -7,7 +7,16 @@ import (
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 )
 
-func (v View) render(s model.Structure) string {
+// RenderStructureTo renders provided model.Structure into any io.Writer.
+// RenderStructureTo will return an error in case the writer
+// cannot be used.
+func (v view) RenderStructureTo(s model.Structure, w io.Writer) error {
+	out := v.render(s)
+	_, err := w.Write([]byte(out))
+	return err
+}
+
+func (v view) render(s model.Structure) string {
 	sb := strings.Builder{}
 
 	sb.WriteString(buildUMLHead())
@@ -52,13 +61,7 @@ func (v View) render(s model.Structure) string {
 	return sb.String()
 }
 
-func (v View) RenderTo(s model.Structure, w io.Writer) error {
-	out := v.render(s)
-	_, err := w.Write([]byte(out))
-	return err
-}
-
-func (v View) hasTag(tags ...string) bool {
+func (v view) hasTag(tags ...string) bool {
 	if len(v.tags) == 0 {
 		return true
 	}

@@ -33,7 +33,7 @@ Scraper may be instantiated in one of two ways:
 In order to instantiate the scraper you need to provide scraper configuration which contains a slice of prefixes of packages that you want to reflect. Types that do not match any of the given prefixes will not be traversed. 
 ```go
 config := scraper.NewConfiguration(
-    "github.com/krzysztofreczek/pkg",
+    "github.com/org/pkg",
 )
 s := scraper.NewScraper(config)
 ```
@@ -47,7 +47,7 @@ Each rule consists of:
 
 ```go
 r, err := scraper.NewRule().
-    WithPkgRegexps("github.com/krzysztofreczek/pkg/foo/.*").
+    WithPkgRegexps("github.com/org/pkg/foo/.*").
     WithNameRegexp("^(.*)Client$").
     WithApplyFunc(
         func(name string, _ ...string) model.Info {
@@ -62,7 +62,7 @@ The apply function has two arguments: name and groups matched from the name regu
 See the example:
 ```go
 r, err := scraper.NewRule().
-    WithPkgRegexps("github.com/krzysztofreczek/pkg/foo/.*").
+    WithPkgRegexps("github.com/org/pkg/foo/.*").
     WithNameRegexp(`^(\w*)\.(\w*)Client$`).
     WithApplyFunc(
         func(_ string, groups ...string) model.Info {
@@ -79,12 +79,12 @@ Alternatively, you can instantiate the scraper form YAML configuration file:
 // go-structurizr.yml
 configuration:
   pkgs:
-    - "github.com/krzysztofreczek/pkg"
+    - "github.com/org/pkg"
 
 rules:
   - name_regexp: "^(.*)Client$"
     pkg_regexps:
-      - "github.com/krzysztofreczek/pkg/foo/.*"
+      - "github.com/org/pkg/foo/.*"
     component:
       description: "foo client"
       technology: "gRPC"
@@ -97,7 +97,7 @@ Regex groups may also be used within yaml rule definition. Here you can find an 
 rules:
   - name_regexp: "(\\w*)\\.(\\w*)Client$"
     pkg_regexps:
-      - "github.com/krzysztofreczek/pkg/foo/.*"
+      - "github.com/org/pkg/foo/.*"
     component:
       name: "Client of external {1} service"
       description: "foo client"
@@ -112,7 +112,7 @@ s, err := scraper.NewScraperFromConfigFile("./go-structurizr.yml")
 
 Eventually, having the scraper instantiated and configured you can use it to scrape any structure you want. Scraper returns a struct `model.Structure`.
 ```go
-structure := s.Scrap(app)
+structure := s.Scrape(app)
 ```
 
 ### View
@@ -173,7 +173,7 @@ defer func() {
     _ = outFile.Close()
 }()
 
-err = v.RenderTo(structure, outFile)
+err = v.RenderStructureTo(structure, outFile)
 ```
 
 ## Good practices

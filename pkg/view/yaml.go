@@ -14,7 +14,7 @@ func toView(c yaml.Config) (View, error) {
 	if c.View.LineColor != "" {
 		col, err := decodeHexColor(c.View.LineColor)
 		if err != nil {
-			return View{}, err
+			return view{}, err
 		}
 		v.WithLineColor(col)
 	}
@@ -25,7 +25,7 @@ func toView(c yaml.Config) (View, error) {
 		if s.BackgroundColor != "" {
 			col, err := decodeHexColor(s.BackgroundColor)
 			if err != nil {
-				return View{}, err
+				return view{}, err
 			}
 			style.WithBackgroundColor(col)
 		}
@@ -33,7 +33,7 @@ func toView(c yaml.Config) (View, error) {
 		if s.FontColor != "" {
 			col, err := decodeHexColor(s.FontColor)
 			if err != nil {
-				return View{}, err
+				return view{}, err
 			}
 			style.WithFontColor(col)
 		}
@@ -41,7 +41,7 @@ func toView(c yaml.Config) (View, error) {
 		if s.BorderColor != "" {
 			col, err := decodeHexColor(s.BorderColor)
 			if err != nil {
-				return View{}, err
+				return view{}, err
 			}
 			style.WithBorderColor(col)
 		}

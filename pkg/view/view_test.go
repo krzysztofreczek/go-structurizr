@@ -2,11 +2,12 @@ package view_test
 
 import (
 	"bytes"
+	"image/color"
+	"testing"
+
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 	"github.com/krzysztofreczek/go-structurizr/pkg/view"
 	"github.com/stretchr/testify/require"
-	"image/color"
-	"testing"
 )
 
 func TestNewView_empty(t *testing.T) {
@@ -15,7 +16,7 @@ func TestNewView_empty(t *testing.T) {
 	out := bytes.Buffer{}
 
 	v := view.NewView().Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -47,7 +48,7 @@ func TestNewView_with_title(t *testing.T) {
 	v := view.NewView().
 		WithTitle("TITLE").
 		Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -70,7 +71,7 @@ func TestNewView_with_custom_style(t *testing.T) {
 	v := view.NewView().
 		WithComponentStyle(style).
 		Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -100,7 +101,7 @@ func TestNewView_with_component(t *testing.T) {
 	out := bytes.Buffer{}
 
 	v := view.NewView().Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -123,7 +124,7 @@ func TestNewView_with_relation(t *testing.T) {
 	out := bytes.Buffer{}
 
 	v := view.NewView().Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -152,7 +153,7 @@ func TestNewView_with_custom_line_color(t *testing.T) {
 	v := view.NewView().
 		WithLineColor(color.White).
 		Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -181,7 +182,7 @@ func TestNewView_with_component_of_view_tag(t *testing.T) {
 	v := view.NewView().
 		WithTag("tag 1").
 		Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -210,7 +211,7 @@ func TestNewView_with_component_with_no_view_tag(t *testing.T) {
 	v := view.NewView().
 		WithTag("tag 1").
 		Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -253,7 +254,7 @@ func TestNewView_with_two_joined_components_of_view_tag(t *testing.T) {
 		WithTag("tag 1").
 		WithTag("tag 2").
 		Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
@@ -306,7 +307,7 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_tag(t *testin
 		WithTag("tag 1").
 		WithTag("tag 2").
 		Build()
-	err := v.RenderTo(s, &out)
+	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := string(out.Bytes())
