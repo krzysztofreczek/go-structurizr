@@ -15,7 +15,7 @@ import (
 // Scrape returns an open model.Structure with recognised components
 // and relations between those.
 //
-// RegisterRule registers given rule in the scraper.
+// RegisterRule registers given Rule in the scraper.
 // RegisterRule will return an error in case the given rule is nil.
 type Scraper interface {
 	Scrape(i interface{}) model.Structure
@@ -63,7 +63,7 @@ func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 	}, nil
 }
 
-// RegisterRule registers given rule in the scraper.
+// RegisterRule registers given Rule in the scraper.
 // RegisterRule will return an error in case the given rule is nil.
 func (s *scraper) RegisterRule(r Rule) error {
 	if r == nil {
