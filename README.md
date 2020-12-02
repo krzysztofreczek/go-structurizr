@@ -180,3 +180,7 @@ err = v.RenderStructureTo(structure, outFile)
 The best results and experience in using the library will be ensured by enforcing the following practices:
 - Having a solid and well-organized application context following clean-architecture principles will make your diagrams simple and easy to read. Also, this will allow you to create a short list of component types and styles.
 - Following consistent naming conventions will help you in creating simple and straight-forward scraper rules.
+
+## Full code documentation
+https://pkg.go.dev/github.com/krzysztofreczek/go-structurizr
+
