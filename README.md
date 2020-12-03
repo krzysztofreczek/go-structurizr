@@ -141,6 +141,8 @@ v := view.NewView().
         view.NewComponentStyle("TAG").
             WithBackgroundColor(color.White).
             WithFontColor(color.Black).
+            WithBorderColor(color.Black).
+            WithShape("database").
             Build(),
     ).
     WithTag("TAG").
@@ -158,6 +160,7 @@ view:
       background_color: ffffffff
       font_color: 000000ff
       border_color: 000000ff
+      shape: database
   tags:
     - TAG
 ```
@@ -183,4 +186,3 @@ The best results and experience in using the library will be ensured by enforcin
 
 ## Full code documentation
 https://pkg.go.dev/github.com/krzysztofreczek/go-structurizr
-

@@ -24,7 +24,7 @@ func (v view) render(s model.Structure) string {
 	sb.WriteString(buildSkinParamDefault())
 
 	for _, s := range v.componentStyles {
-		sb.WriteString(buildSkinParamRectangle(s.id, s.backgroundColor, s.fontColor, s.borderColor))
+		sb.WriteString(buildSkinParamShape(s.id, s.backgroundColor, s.fontColor, s.borderColor, s.shape))
 	}
 
 	excludedComponentIds := map[string]struct{}{}
@@ -39,7 +39,16 @@ func (v view) render(s model.Structure) string {
 		if excluded {
 			continue
 		}
-		sb.WriteString(buildComponent(c))
+
+		shape := defaultShape
+		if len(c.Tags) > 0 {
+			s, exists := v.componentStyles[c.Tags[0]]
+			if exists {
+				shape = s.shape
+			}
+		}
+
+		sb.WriteString(buildComponent(c, shape))
 	}
 
 	for src, to := range s.Relations {
