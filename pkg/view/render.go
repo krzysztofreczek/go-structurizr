@@ -50,8 +50,10 @@ func (v view) render(s model.Structure) string {
 		componentsRendered[c.ID] = struct{}{}
 	}
 
+	relationsRendered := map[string]struct{}{}
+
 	for true {
-		numRendered := len(componentsRendered)
+		numRendered := len(relationsRendered)
 
 		for src, to := range s.Relations {
 			for trg := range to {
@@ -79,11 +81,17 @@ func (v view) render(s model.Structure) string {
 					componentsRendered[c.ID] = struct{}{}
 				}
 
+				relationID := src + trg
+				if _, rendered := relationsRendered[relationID]; rendered {
+					continue
+				}
+
 				sb.WriteString(buildComponentConnection(src, trg, v.lineColor))
+				relationsRendered[relationID] = struct{}{}
 			}
 		}
 
-		if numRendered == len(componentsRendered) {
+		if numRendered == len(relationsRendered) {
 			break
 		}
 	}
