@@ -51,6 +51,8 @@ func (v view) render(s model.Structure) string {
 	}
 
 	for true {
+		numRendered := len(componentsRendered)
+
 		for src, to := range s.Relations {
 			for trg := range to {
 				if _, srcExcluded := excludedComponentIds[src]; srcExcluded {
@@ -81,7 +83,7 @@ func (v view) render(s model.Structure) string {
 			}
 		}
 
-		if len(s.Components) >= len(excludedComponentIds)+len(componentsRendered) {
+		if numRendered == len(componentsRendered) {
 			break
 		}
 	}

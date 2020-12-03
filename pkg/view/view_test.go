@@ -235,9 +235,7 @@ func TestNewView_with_component_with_no_view_tag(t *testing.T) {
 
 	outString := string(out.Bytes())
 
-	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
-`
+	expectedContent := `ID_1`
 	require.NotContains(t, outString, expectedContent)
 }
 
@@ -336,14 +334,7 @@ rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescripti
 `
 	require.Contains(t, outString, expectedContent)
 
-	expectedContent = `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_2
-`
-	require.NotContains(t, outString, expectedContent)
-
-	expectedContent = `
-ID_1 .[#000000].> ID_2 : ""
-`
+	expectedContent = `ID_2`
 	require.NotContains(t, outString, expectedContent)
 }
 
@@ -478,18 +469,50 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_root_tag(t *t
 
 	outString := string(out.Bytes())
 
+	expectedContent := `ID_1`
+	require.NotContains(t, outString, expectedContent)
+
+	expectedContent = `ID_2`
+	require.NotContains(t, outString, expectedContent)
+}
+
+func TestNewView_with_component_with_no_connection_to_root(t *testing.T) {
+	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID:          "ID_1",
+			Kind:        "component",
+			Name:        "test.Component",
+			Description: "description",
+			Technology:  "technology",
+			Tags:        []string{"ROOT"},
+		},
+		"ID_2": {
+			ID:          "ID_2",
+			Kind:        "component",
+			Name:        "test.Component",
+			Description: "description",
+			Technology:  "technology",
+			Tags:        []string{},
+		},
+	}
+	s.Relations = map[string]map[string]struct{}{}
+
+	out := bytes.Buffer{}
+
+	v := view.NewView().
+		WithRootComponentTag("ROOT").
+		Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	outString := string(out.Bytes())
+
 	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_1
+rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
 `
-	require.NotContains(t, outString, expectedContent)
+	require.Contains(t, outString, expectedContent)
 
-	expectedContent = `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_2
-`
-	require.NotContains(t, outString, expectedContent)
-
-	expectedContent = `
-ID_1 .[#000000].> ID_2 : ""
-`
+	expectedContent = `ID_2`
 	require.NotContains(t, outString, expectedContent)
 }
