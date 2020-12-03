@@ -29,10 +29,12 @@ func (v view) render(s model.Structure) string {
 
 	excludedComponentIds := map[string]struct{}{}
 	for _, c := range s.Components {
-		if !v.hasTag(c.Tags...) {
+		if !v.hasComponentTag(c.Tags...) {
 			excludedComponentIds[c.ID] = struct{}{}
 		}
 	}
+
+	componentsRendered := map[string]struct{}{}
 
 	for _, c := range s.Components {
 		_, excluded := excludedComponentIds[c.ID]
@@ -40,28 +42,47 @@ func (v view) render(s model.Structure) string {
 			continue
 		}
 
-		shape := defaultShape
-		if len(c.Tags) > 0 {
-			s, exists := v.componentStyles[c.Tags[0]]
-			if exists {
-				shape = s.shape
+		if !v.isRoot(c.Tags...) {
+			continue
+		}
+
+		v.renderComponent(&sb, c)
+		componentsRendered[c.ID] = struct{}{}
+	}
+
+	for true {
+		for src, to := range s.Relations {
+			for trg := range to {
+				if _, srcExcluded := excludedComponentIds[src]; srcExcluded {
+					continue
+				}
+
+				if _, trgExcluded := excludedComponentIds[trg]; trgExcluded {
+					continue
+				}
+
+				_, srcRendered := componentsRendered[src]
+				if !srcRendered {
+					continue
+				}
+
+				_, trgRendered := componentsRendered[trg]
+				if !trgRendered {
+					c, exists := s.Components[trg]
+					if !exists {
+						continue
+					}
+
+					v.renderComponent(&sb, c)
+					componentsRendered[c.ID] = struct{}{}
+				}
+
+				sb.WriteString(buildComponentConnection(src, trg, v.lineColor))
 			}
 		}
 
-		sb.WriteString(buildComponent(c, shape))
-	}
-
-	for src, to := range s.Relations {
-		for trg, _ := range to {
-			_, srcExcluded := excludedComponentIds[src]
-			if srcExcluded {
-				continue
-			}
-			_, trgExcluded := excludedComponentIds[trg]
-			if trgExcluded {
-				continue
-			}
-			sb.WriteString(buildComponentConnection(src, trg, v.lineColor))
+		if len(s.Components) >= len(excludedComponentIds)+len(componentsRendered) {
+			break
 		}
 	}
 
@@ -70,12 +91,40 @@ func (v view) render(s model.Structure) string {
 	return sb.String()
 }
 
-func (v view) hasTag(tags ...string) bool {
-	if len(v.tags) == 0 {
+func (v view) renderComponent(sb *strings.Builder, c model.Component) {
+	shape := defaultShape
+	if len(c.Tags) > 0 {
+		s, exists := v.componentStyles[c.Tags[0]]
+		if exists {
+			shape = s.shape
+		}
+	}
+
+	sb.WriteString(buildComponent(c, shape))
+}
+
+func (v view) isRoot(tags ...string) bool {
+	if len(v.rootComponentTags) == 0 {
 		return true
 	}
 
-	for _, vt := range v.tags {
+	for _, vt := range v.rootComponentTags {
+		for _, t := range tags {
+			if t == vt {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func (v view) hasComponentTag(tags ...string) bool {
+	if len(v.componentTags) == 0 {
+		return true
+	}
+
+	for _, vt := range v.componentTags {
 		for _, t := range tags {
 			if t == vt {
 				return true

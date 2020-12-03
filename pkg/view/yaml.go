@@ -53,8 +53,12 @@ func toView(c yaml.Config) (View, error) {
 		v.WithComponentStyle(style.Build())
 	}
 
-	for _, t := range c.View.Tags {
-		v.WithTag(t)
+	for _, t := range c.View.ComponentTags {
+		v.WithComponentTag(t)
+	}
+
+	for _, t := range c.View.RootComponentTags {
+		v.WithRootComponentTag(t)
 	}
 
 	return v.Build(), nil

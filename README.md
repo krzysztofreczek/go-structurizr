@@ -126,7 +126,8 @@ View consists of:
 * title
 * component styles - styles are applied to the components by matching first of component tags with style ids
 * additional styling (i.e. line color)
-* tags - if specified, view will contain only components tagged with one of the view tags. When no tag is defined, all components will be included in the rendered view.
+* component tags - if specified, view will contain only components tagged with one of the view tags. When no tag is defined, all components will be included in the rendered view.
+* root component tags - if specified, view will contain only those components which have connection (direct or in-direct) to at least one of components with root tag.
 
 In order to instantiate default view, use the view builder:
 ```go
@@ -145,7 +146,8 @@ v := view.NewView().
             WithShape("database").
             Build(),
     ).
-    WithTag("TAG").
+    WithComponentTag("TAG").
+    WithRootComponentTag("ROOT").
     Build()
 ```
 
@@ -161,7 +163,9 @@ view:
       font_color: 000000ff
       border_color: 000000ff
       shape: database
-  tags:
+  root_component_tags:
+    - ROOT
+  component_tags:
     - TAG
 ```
 

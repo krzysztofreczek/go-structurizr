@@ -114,6 +114,17 @@ rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescripti
 
 func TestNewView_with_relation(t *testing.T) {
 	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID: "ID_1",
+		},
+		"ID_2": {
+			ID: "ID_2",
+		},
+		"ID_3": {
+			ID: "ID_2",
+		},
+	}
 	s.Relations = map[string]map[string]struct{}{
 		"ID_1": {
 			"ID_2": {},
@@ -142,6 +153,14 @@ ID_1 .[#000000].> ID_3 : ""
 
 func TestNewView_with_custom_line_color(t *testing.T) {
 	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID: "ID_1",
+		},
+		"ID_2": {
+			ID: "ID_2",
+		},
+	}
 	s.Relations = map[string]map[string]struct{}{
 		"ID_1": {
 			"ID_2": {},
@@ -180,7 +199,7 @@ func TestNewView_with_component_of_view_tag(t *testing.T) {
 	out := bytes.Buffer{}
 
 	v := view.NewView().
-		WithTag("tag 1").
+		WithComponentTag("tag 1").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
@@ -209,7 +228,7 @@ func TestNewView_with_component_with_no_view_tag(t *testing.T) {
 	out := bytes.Buffer{}
 
 	v := view.NewView().
-		WithTag("tag 1").
+		WithComponentTag("tag 1").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
@@ -251,8 +270,8 @@ func TestNewView_with_two_joined_components_of_view_tag(t *testing.T) {
 	out := bytes.Buffer{}
 
 	v := view.NewView().
-		WithTag("tag 1").
-		WithTag("tag 2").
+		WithComponentTag("tag 1").
+		WithComponentTag("tag 2").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
@@ -304,8 +323,8 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_tag(t *testin
 	out := bytes.Buffer{}
 
 	v := view.NewView().
-		WithTag("tag 1").
-		WithTag("tag 2").
+		WithComponentTag("tag 1").
+		WithComponentTag("tag 2").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
@@ -369,4 +388,108 @@ skinparam database<<DB>> {
 database "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DB>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
+}
+
+func TestNewView_with_two_joined_components_of_view_root_tag(t *testing.T) {
+	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID:          "ID_1",
+			Kind:        "component",
+			Name:        "test.Component",
+			Description: "description",
+			Technology:  "technology",
+			Tags:        []string{"ROOT"},
+		},
+		"ID_2": {
+			ID:          "ID_2",
+			Kind:        "component",
+			Name:        "test.Component",
+			Description: "description",
+			Technology:  "technology",
+			Tags:        []string{},
+		},
+	}
+	s.Relations = map[string]map[string]struct{}{
+		"ID_1": {
+			"ID_2": {},
+		},
+	}
+
+	out := bytes.Buffer{}
+
+	v := view.NewView().
+		WithRootComponentTag("ROOT").
+		Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	outString := string(out.Bytes())
+
+	expectedContent := `
+rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
+`
+	require.Contains(t, outString, expectedContent)
+
+	expectedContent = `
+rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_2
+`
+	require.Contains(t, outString, expectedContent)
+
+	expectedContent = `
+ID_1 .[#000000].> ID_2 : ""
+`
+	require.Contains(t, outString, expectedContent)
+}
+
+func TestNewView_with_two_joined_components_where_one_with_no_view_root_tag(t *testing.T) {
+	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID:          "ID_1",
+			Kind:        "component",
+			Name:        "test.Component",
+			Description: "description",
+			Technology:  "technology",
+			Tags:        []string{""},
+		},
+		"ID_2": {
+			ID:          "ID_2",
+			Kind:        "component",
+			Name:        "test.Component",
+			Description: "description",
+			Technology:  "technology",
+			Tags:        []string{},
+		},
+	}
+	s.Relations = map[string]map[string]struct{}{
+		"ID_1": {
+			"ID_2": {},
+		},
+	}
+
+	out := bytes.Buffer{}
+
+	v := view.NewView().
+		WithRootComponentTag("ROOT").
+		Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	outString := string(out.Bytes())
+
+	expectedContent := `
+rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_1
+`
+	require.NotContains(t, outString, expectedContent)
+
+	expectedContent = `
+rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_2
+`
+	require.NotContains(t, outString, expectedContent)
+
+	expectedContent = `
+ID_1 .[#000000].> ID_2 : ""
+`
+	require.NotContains(t, outString, expectedContent)
 }
