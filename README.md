@@ -48,7 +48,7 @@ Each rule consists of:
 ```go
 r, err := scraper.NewRule().
     WithPkgRegexps("github.com/org/pkg/foo/.*").
-    WithNameRegexp("^(.*)Client$").
+    WithNameRegexp("^.*Client$").
     WithApplyFunc(
         func(name string, _ ...string) model.Info {
             return model.ComponentInfo(name, "foo client", "gRPC", "TAG")
@@ -82,7 +82,7 @@ configuration:
     - "github.com/org/pkg"
 
 rules:
-  - name_regexp: "^(.*)Client$"
+  - name_regexp: "^.*Client$"
     pkg_regexps:
       - "github.com/org/pkg/foo/.*"
     component:
