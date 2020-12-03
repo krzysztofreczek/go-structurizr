@@ -53,6 +53,8 @@ skinparam {{shape}}<<{{rec_name}}>> {
 	paramBorderColor          = "{{border_color_hash}}"
 	paramLineColor            = "{{line_color_hash}}"
 	paramShape                = "{{shape}}"
+
+	defaultTag = "DEFAULT"
 )
 
 func buildUMLHead() string {
@@ -110,6 +112,8 @@ func buildComponent(
 
 	if len(c.Tags) > 0 {
 		s = strings.Replace(s, paramRectangleName, c.Tags[0], -1)
+	} else {
+		s = strings.Replace(s, paramRectangleName, defaultTag, -1)
 	}
 
 	return s

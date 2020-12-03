@@ -19,23 +19,26 @@ type View interface {
 }
 
 type view struct {
-	title           string
-	tags            []string
-	componentStyles map[string]ComponentStyle
-	lineColor       color.Color
+	title             string
+	rootComponentTags []string
+	componentTags     []string
+	componentStyles   map[string]ComponentStyle
+	lineColor         color.Color
 }
 
 func newView(
 	title string,
-	tags []string,
+	rootComponentTags []string,
+	componentTags []string,
 	componentStyles map[string]ComponentStyle,
 	lineColor color.Color,
 ) View {
 	return view{
-		title:           title,
-		tags:            tags,
-		componentStyles: componentStyles,
-		lineColor:       lineColor,
+		title:             title,
+		rootComponentTags: rootComponentTags,
+		componentTags:     componentTags,
+		componentStyles:   componentStyles,
+		lineColor:         lineColor,
 	}
 }
 
@@ -43,10 +46,11 @@ func newView(
 func NewView() Builder {
 	return &builder{
 		view: view{
-			title:           "",
-			tags:            make([]string, 0),
-			componentStyles: make(map[string]ComponentStyle),
-			lineColor:       color.Black,
+			title:             "",
+			rootComponentTags: make([]string, 0),
+			componentTags:     make([]string, 0),
+			componentStyles:   make(map[string]ComponentStyle),
+			lineColor:         color.Black,
 		},
 	}
 }
@@ -74,7 +78,10 @@ func NewViewFromConfigFile(fileName string) (View, error) {
 // Builder simplifies instantiation of default View implementation.
 //
 // WithTitle sets view title.
-// WithTag adds tag to the view.
+// WithRootComponentTag adds root tag to the view.
+// If at least one root tag is defines, view will contain only those components
+// which have connection (direct or in-direct) to at least one of components with root tag.
+// WithComponentTag adds tag to the view.
 // If at least one tag is defines, view will contain only those components
 // which are tagged with at least one of those tags.
 // WithComponentStyle adds custom component style to the view.
@@ -87,7 +94,8 @@ func NewViewFromConfigFile(fileName string) (View, error) {
 // If not specified all colors are defaulted to either black or white.
 type Builder interface {
 	WithTitle(t string) Builder
-	WithTag(t string) Builder
+	WithRootComponentTag(t string) Builder
+	WithComponentTag(t string) Builder
 	WithComponentStyle(s ComponentStyle) Builder
 	WithLineColor(c color.Color) Builder
 
@@ -104,11 +112,19 @@ func (b *builder) WithTitle(t string) Builder {
 	return b
 }
 
-// WithTag adds tag to the view.
+// WithRootComponentTag adds root tag to the view.
+// If at least one root tag is defines, view will contain only those components
+// which have connection (direct or in-direct) to at least one of components with root tag.
+func (b *builder) WithRootComponentTag(t string) Builder {
+	b.rootComponentTags = append(b.rootComponentTags, t)
+	return b
+}
+
+// WithComponentTag adds tag to the view.
 // If at least one tag is defines, view will contain only those components
 // which are tagged with at least one of those tags.
-func (b *builder) WithTag(t string) Builder {
-	b.tags = append(b.tags, t)
+func (b *builder) WithComponentTag(t string) Builder {
+	b.componentTags = append(b.componentTags, t)
 	return b
 }
 
@@ -134,7 +150,8 @@ func (b *builder) WithLineColor(c color.Color) Builder {
 func (b builder) Build() View {
 	return newView(
 		b.title,
-		b.tags,
+		b.rootComponentTags,
+		b.componentTags,
 		b.componentStyles,
 		b.lineColor,
 	)

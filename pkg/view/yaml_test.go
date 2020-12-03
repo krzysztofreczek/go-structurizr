@@ -23,7 +23,8 @@ func Test_toView(t *testing.T) {
 					BorderColor:     "000000ff",
 				},
 			},
-			Tags: []string{"TAG_1"},
+			ComponentTags:     []string{"TAG_1"},
+			RootComponentTags: []string{"TAG_2"},
 		},
 	}
 
@@ -40,7 +41,8 @@ func Test_toView(t *testing.T) {
 				WithBorderColor(color.Black).
 				Build(),
 		).
-		WithTag("TAG_1").
+		WithComponentTag("TAG_1").
+		WithRootComponentTag("TAG_2").
 		Build()
 
 	s := model.NewStructure()

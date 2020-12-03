@@ -36,10 +36,11 @@ type ConfigRuleComponent struct {
 
 // ConfigView is an open YAML configuration structure.
 type ConfigView struct {
-	Title     string            `yaml:"title"`
-	LineColor string            `yaml:"line_color"`
-	Styles    []ConfigViewStyle `yaml:"styles"`
-	Tags      []string          `yaml:"tags"`
+	Title             string            `yaml:"title"`
+	LineColor         string            `yaml:"line_color"`
+	Styles            []ConfigViewStyle `yaml:"styles"`
+	ComponentTags     []string          `yaml:"component_tags"`
+	RootComponentTags []string          `yaml:"root_component_tags"`
 }
 
 // ConfigViewStyle is an open YAML configuration structure.

@@ -42,7 +42,8 @@ view:
       background_color: ffffffff
       font_color: 000000ff
       border_color: 000000ff
-  tags: [TAG_1, TAG_2]
+  component_tags: [TAG_1, TAG_2]
+  root_component_tags: [TAG_3, TAG_4]
 `
 )
 
@@ -109,7 +110,8 @@ func TestLoadFrom(t *testing.T) {
 							BorderColor:     "000000ff",
 						},
 					},
-					Tags: []string{"TAG_1", "TAG_2"},
+					ComponentTags:     []string{"TAG_1", "TAG_2"},
+					RootComponentTags: []string{"TAG_3", "TAG_4"},
 				},
 			},
 		},
