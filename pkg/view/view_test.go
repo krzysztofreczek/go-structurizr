@@ -327,3 +327,46 @@ ID_1 .[#000000].> ID_2 : ""
 `
 	require.NotContains(t, outString, expectedContent)
 }
+
+func TestNewView_with_component_of_custom_style_shape(t *testing.T) {
+	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID:          "ID_1",
+			Kind:        "component",
+			Name:        "test.Component",
+			Description: "description",
+			Technology:  "technology",
+			Tags:        []string{"DB"},
+		},
+	}
+
+	out := bytes.Buffer{}
+
+	style := view.NewComponentStyle("DB").
+		WithBackgroundColor(color.White).
+		WithFontColor(color.Black).
+		WithBorderColor(color.White).
+		WithShape("database").
+		Build()
+	v := view.NewView().
+		WithComponentStyle(style).
+		Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	outString := string(out.Bytes())
+
+	expectedContent := `
+skinparam database<<DB>> {
+  BackgroundColor #ffffff
+  FontColor #000000
+  BorderColor #ffffff
+}`
+	require.Contains(t, outString, expectedContent)
+
+	expectedContent = `
+database "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DB>> as ID_1
+`
+	require.Contains(t, outString, expectedContent)
+}

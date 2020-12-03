@@ -48,6 +48,7 @@ type ConfigViewStyle struct {
 	BackgroundColor string `yaml:"background_color"`
 	FontColor       string `yaml:"font_color"`
 	BorderColor     string `yaml:"border_color"`
+	Shape           string `yaml:"shape"`
 }
 
 // LoadFromFile loads Config from YAML file.

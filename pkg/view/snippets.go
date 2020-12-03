@@ -27,15 +27,15 @@ skinparam {
 hide stereotype
 top to bottom direction
 `
-	snippetSkinParamRectangle = `
-skinparam rectangle<<{{rec_name}}>> {
+	snippetSkinParamShape = `
+skinparam {{shape}}<<{{rec_name}}>> {
   BackgroundColor {{background_color_hash}}
   FontColor {{font_color_hash}}
   BorderColor {{border_color_hash}}
 }
 `
 	snippetComponent = `
-rectangle "=={{component_name}}\n<size:10>[{{component_kind}}{{component_technology}}]</size>\n\n{{component_desc}}" <<{{rec_name}}>> as {{component_id}}`
+{{shape}} "=={{component_name}}\n<size:10>[{{component_kind}}{{component_technology}}]</size>\n\n{{component_desc}}" <<{{rec_name}}>> as {{component_id}}`
 	snippetComponentConnection = `
 {{component_id_from}} .[{{line_color_hash}}].> {{component_id_to}} : ""`
 
@@ -52,6 +52,7 @@ rectangle "=={{component_name}}\n<size:10>[{{component_kind}}{{component_technol
 	paramFontColor            = "{{font_color_hash}}"
 	paramBorderColor          = "{{border_color_hash}}"
 	paramLineColor            = "{{line_color_hash}}"
+	paramShape                = "{{shape}}"
 )
 
 func buildUMLHead() string {
@@ -74,24 +75,28 @@ func buildSkinParamDefault() string {
 	return snippetSkinParamDefault
 }
 
-func buildSkinParamRectangle(
+func buildSkinParamShape(
 	name string,
 	backgroundColor color.Color,
 	fontColor color.Color,
 	borderColor color.Color,
+	shape string,
 ) string {
-	s := snippetSkinParamRectangle
+	s := snippetSkinParamShape
 	s = strings.Replace(s, paramRectangleName, name, -1)
 	s = strings.Replace(s, paramBackgroundColor, toHex(backgroundColor), -1)
 	s = strings.Replace(s, paramFontColor, toHex(fontColor), -1)
 	s = strings.Replace(s, paramBorderColor, toHex(borderColor), -1)
+	s = strings.Replace(s, paramShape, shape, -1)
 	return s
 }
 
 func buildComponent(
 	c model.Component,
+	shape string,
 ) string {
 	s := snippetComponent
+	s = strings.Replace(s, paramShape, shape, -1)
 	s = strings.Replace(s, paramComponentID, c.ID, -1)
 	s = strings.Replace(s, paramComponentName, c.Name, -1)
 	s = strings.Replace(s, paramComponentKind, c.Kind, -1)

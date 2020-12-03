@@ -148,6 +148,7 @@ type ComponentStyle struct {
 	backgroundColor color.Color
 	fontColor       color.Color
 	borderColor     color.Color
+	shape           string
 }
 
 func newComponentStyle(
@@ -155,12 +156,28 @@ func newComponentStyle(
 	backgroundColor color.Color,
 	fontColor color.Color,
 	borderColor color.Color,
+	shape string,
 ) ComponentStyle {
 	return ComponentStyle{
 		id:              id,
 		backgroundColor: backgroundColor,
 		fontColor:       fontColor,
 		borderColor:     borderColor,
+		shape:           shape,
+	}
+}
+
+const defaultShape = "rectangle"
+
+func newDefaultComponentStyle(
+	id string,
+) ComponentStyle {
+	return ComponentStyle{
+		id:              id,
+		backgroundColor: color.White,
+		fontColor:       color.Black,
+		borderColor:     color.Black,
+		shape:           defaultShape,
 	}
 }
 
@@ -170,6 +187,9 @@ func newComponentStyle(
 // WithBackgroundColor sets background color.
 // WithFontColor sets font color.
 // WithBorderColor sets border color
+// WithShape sets component shape that corresponds to plantUML
+// shapes (rectangle, component, database, etc.).
+// If shape is not provided, it is defaulted to rectangle.
 //
 // Build returns default ComponentStyle implementation constructed from
 // the provided configuration.
@@ -177,6 +197,7 @@ type ComponentStyleBuilder interface {
 	WithBackgroundColor(c color.Color) ComponentStyleBuilder
 	WithFontColor(c color.Color) ComponentStyleBuilder
 	WithBorderColor(c color.Color) ComponentStyleBuilder
+	WithShape(s string) ComponentStyleBuilder
 
 	Build() ComponentStyle
 }
@@ -188,12 +209,7 @@ type componentStyleBuilder struct {
 // NewView returns ComponentStyleBuilder with provided id.
 func NewComponentStyle(id string) ComponentStyleBuilder {
 	return &componentStyleBuilder{
-		ComponentStyle: ComponentStyle{
-			id:              id,
-			backgroundColor: color.White,
-			fontColor:       color.Black,
-			borderColor:     color.Black,
-		},
+		ComponentStyle: newDefaultComponentStyle(id),
 	}
 }
 
@@ -221,6 +237,16 @@ func (b *componentStyleBuilder) WithBorderColor(c color.Color) ComponentStyleBui
 	return b
 }
 
+// WithShape sets component shape that corresponds to plantUML
+// shapes (rectangle, component, database, etc.).
+// If shape is not provided, it is defaulted to rectangle.
+func (b *componentStyleBuilder) WithShape(s string) ComponentStyleBuilder {
+	if s != "" {
+		b.shape = s
+	}
+	return b
+}
+
 // Build returns default ComponentStyle implementation constructed from
 // the provided configuration.
 func (b componentStyleBuilder) Build() ComponentStyle {
@@ -229,5 +255,6 @@ func (b componentStyleBuilder) Build() ComponentStyle {
 		b.backgroundColor,
 		b.fontColor,
 		b.borderColor,
+		b.shape,
 	)
 }

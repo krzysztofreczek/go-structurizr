@@ -46,6 +46,10 @@ func toView(c yaml.Config) (View, error) {
 			style.WithBorderColor(col)
 		}
 
+		if s.Shape != "" {
+			style.WithShape(s.Shape)
+		}
+
 		v.WithComponentStyle(style.Build())
 	}
 
