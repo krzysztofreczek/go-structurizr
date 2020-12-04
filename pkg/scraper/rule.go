@@ -133,7 +133,7 @@ func (r rule) nameApplies(name string) bool {
 	return r.nameRegex.MatchString(name)
 }
 
-// Builder simplifies instantiation of default Rule implementation.
+// RuleBuilder simplifies instantiation of default Rule implementation.
 //
 // WithPkgRegexps sets a list of package regular expressions.
 // WithNameRegexp sets name regular expression.
@@ -144,27 +144,27 @@ func (r rule) nameApplies(name string) bool {
 // Build will return an error if at least one of the provided expressions
 // is invalid and cannot be compiled.
 // Build will return an error if application function RuleApplyFunc is missing.
-type Builder interface {
-	WithPkgRegexps(rgx ...string) Builder
-	WithNameRegexp(rgx string) Builder
-	WithApplyFunc(f RuleApplyFunc) Builder
+type RuleBuilder interface {
+	WithPkgRegexps(rgx ...string) RuleBuilder
+	WithNameRegexp(rgx string) RuleBuilder
+	WithApplyFunc(f RuleApplyFunc) RuleBuilder
 
 	Build() (Rule, error)
 }
 
-type builder struct {
+type ruleBuilder struct {
 	pkgRegexes []string
 	nameRegex  string
 	applyFunc  RuleApplyFunc
 }
 
-// NewRule returns an empty Builder.
-func NewRule() Builder {
-	return &builder{}
+// NewRule returns an empty RuleBuilder.
+func NewRule() RuleBuilder {
+	return &ruleBuilder{}
 }
 
 // WithPkgRegexps sets a list of package regular expressions.
-func (b *builder) WithPkgRegexps(rgx ...string) Builder {
+func (b *ruleBuilder) WithPkgRegexps(rgx ...string) RuleBuilder {
 	for _, r := range rgx {
 		b.pkgRegexes = append(b.pkgRegexes, r)
 	}
@@ -172,13 +172,13 @@ func (b *builder) WithPkgRegexps(rgx ...string) Builder {
 }
 
 // WithNameRegexp sets name regular expression.
-func (b *builder) WithNameRegexp(rgx string) Builder {
+func (b *ruleBuilder) WithNameRegexp(rgx string) RuleBuilder {
 	b.nameRegex = rgx
 	return b
 }
 
 // WithApplyFunc sets rule application function RuleApplyFunc.
-func (b *builder) WithApplyFunc(f RuleApplyFunc) Builder {
+func (b *ruleBuilder) WithApplyFunc(f RuleApplyFunc) RuleBuilder {
 	b.applyFunc = f
 	return b
 }
@@ -192,7 +192,7 @@ func (b *builder) WithApplyFunc(f RuleApplyFunc) Builder {
 // Build will return an error if at least one of the provided expressions
 // is invalid and cannot be compiled.
 // Build will return an error if application function RuleApplyFunc is missing.
-func (b builder) Build() (Rule, error) {
+func (b ruleBuilder) Build() (Rule, error) {
 	pkgRegexes := make([]*regexp.Regexp, 0)
 	for _, rgx := range b.pkgRegexes {
 		r, err := regexp.Compile(rgx)
