@@ -21,8 +21,11 @@ func TestNewView_empty(t *testing.T) {
 
 	outString := string(out.Bytes())
 
-	expectedContent := `
+	expectedContent := `This diagram has been generated with go-structurizr 
+[https://github.com/krzysztofreczek/go-structurizr]
+
 @startuml
+
 title 
 
 skinparam {
@@ -35,7 +38,13 @@ skinparam {
 hide stereotype
 top to bottom direction
 
-@enduml`
+skinparam rectangle<<_GROUP>> {
+  FontColor #ffffff
+  BorderColor #ffffff
+}
+
+@enduml
+`
 
 	require.Equal(t, expectedContent, outString)
 }
@@ -107,7 +116,7 @@ func TestNewView_with_component(t *testing.T) {
 	outString := string(out.Bytes())
 
 	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
 }
@@ -122,7 +131,7 @@ func TestNewView_with_relation(t *testing.T) {
 			ID: "ID_2",
 		},
 		"ID_3": {
-			ID: "ID_2",
+			ID: "ID_3",
 		},
 	}
 	s.Relations = map[string]map[string]struct{}{
@@ -207,7 +216,7 @@ func TestNewView_with_component_of_view_tag(t *testing.T) {
 	outString := string(out.Bytes())
 
 	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
 }
@@ -277,12 +286,12 @@ func TestNewView_with_two_joined_components_of_view_tag(t *testing.T) {
 	outString := string(out.Bytes())
 
 	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
 
 	expectedContent = `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 2>> as ID_2
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 2>> as ID_2
 `
 	require.Contains(t, outString, expectedContent)
 
@@ -330,7 +339,7 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_tag(t *testin
 	outString := string(out.Bytes())
 
 	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
 
@@ -376,7 +385,7 @@ skinparam database<<DB>> {
 	require.Contains(t, outString, expectedContent)
 
 	expectedContent = `
-database "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DB>> as ID_1
+	database "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DB>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
 }
@@ -418,12 +427,12 @@ func TestNewView_with_two_joined_components_of_view_root_tag(t *testing.T) {
 	outString := string(out.Bytes())
 
 	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
 
 	expectedContent = `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_2
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_2
 `
 	require.Contains(t, outString, expectedContent)
 
@@ -509,10 +518,62 @@ func TestNewView_with_component_with_no_connection_to_root(t *testing.T) {
 	outString := string(out.Bytes())
 
 	expectedContent := `
-rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
+	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
 `
 	require.Contains(t, outString, expectedContent)
 
 	expectedContent = `ID_2`
 	require.NotContains(t, outString, expectedContent)
+}
+
+func TestNewView_creates_grouping(t *testing.T) {
+	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID:   "ID_1",
+			Tags: []string{"ROOT"},
+		},
+		"ID_2": {
+			ID:   "ID_2",
+			Tags: []string{"TAG_A"},
+		},
+		"ID_3": {
+			ID:   "ID_3",
+			Tags: []string{"TAG_B"},
+		},
+	}
+	s.Relations = map[string]map[string]struct{}{
+		"ID_1": {
+			"ID_2": {},
+			"ID_3": {},
+		},
+	}
+
+	out := bytes.Buffer{}
+
+	v := view.NewView().
+		WithRootComponentTag("ROOT").
+		Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	outString := string(out.Bytes())
+
+	expectedContent := `
+rectangle 0ROOT <<_GROUP>> {
+	rectangle "==\n<size:10>[]</size>\n\n" <<ROOT>> as ID_1
+}`
+	require.Contains(t, outString, expectedContent)
+
+	expectedContent = `
+rectangle ID_11TAG_A <<_GROUP>> {
+	rectangle "==\n<size:10>[]</size>\n\n" <<TAG_A>> as ID_2
+}`
+	require.Contains(t, outString, expectedContent)
+
+	expectedContent = `
+rectangle ID_11TAG_B <<_GROUP>> {
+	rectangle "==\n<size:10>[]</size>\n\n" <<TAG_B>> as ID_3
+}`
+	require.Contains(t, outString, expectedContent)
 }

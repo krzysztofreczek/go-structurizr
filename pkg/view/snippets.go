@@ -9,10 +9,14 @@ import (
 )
 
 const (
-	snippetUMLHead = `
-@startuml`
+	snippetUMLHead = `This diagram has been generated with go-structurizr 
+[https://github.com/krzysztofreczek/go-structurizr]
+
+@startuml
+`
 	snippetUMLTail = `
-@enduml`
+@enduml
+`
 	snippetUMLTitle = `
 title {{title}}
 `
@@ -27,15 +31,23 @@ skinparam {
 hide stereotype
 top to bottom direction
 `
+	snippetSkinParamGroup = `
+skinparam rectangle<<_GROUP>> {
+  FontColor #ffffff
+  BorderColor #ffffff
+}
+`
 	snippetSkinParamShape = `
-skinparam {{shape}}<<{{rec_name}}>> {
+skinparam {{shape}}<<{{shape_style}}>> {
   BackgroundColor {{background_color_hash}}
   FontColor {{font_color_hash}}
   BorderColor {{border_color_hash}}
 }
 `
 	snippetComponent = `
-{{shape}} "=={{component_name}}\n<size:10>[{{component_kind}}{{component_technology}}]</size>\n\n{{component_desc}}" <<{{rec_name}}>> as {{component_id}}`
+rectangle {{group_name}} <<_GROUP>> {
+	{{shape}} "=={{component_name}}\n<size:10>[{{component_kind}}{{component_technology}}]</size>\n\n{{component_desc}}" <<{{shape_style}}>> as {{component_id}}
+}`
 	snippetComponentConnection = `
 {{component_id_from}} .[{{line_color_hash}}].> {{component_id_to}} : ""`
 
@@ -47,14 +59,13 @@ skinparam {{shape}}<<{{rec_name}}>> {
 	paramComponentTechnology  = "{{component_technology}}"
 	paramComponentDescription = "{{component_desc}}"
 	paramTitle                = "{{title}}"
-	paramRectangleName        = "{{rec_name}}"
+	paramGroupName            = "{{group_name}}"
 	paramBackgroundColor      = "{{background_color_hash}}"
 	paramFontColor            = "{{font_color_hash}}"
 	paramBorderColor          = "{{border_color_hash}}"
 	paramLineColor            = "{{line_color_hash}}"
 	paramShape                = "{{shape}}"
-
-	defaultTag = "DEFAULT"
+	paramShapeStyle           = "{{shape_style}}"
 )
 
 func buildUMLHead() string {
@@ -77,6 +88,10 @@ func buildSkinParamDefault() string {
 	return snippetSkinParamDefault
 }
 
+func buildSkinParamGroup() string {
+	return snippetSkinParamGroup
+}
+
 func buildSkinParamShape(
 	name string,
 	backgroundColor color.Color,
@@ -85,7 +100,7 @@ func buildSkinParamShape(
 	shape string,
 ) string {
 	s := snippetSkinParamShape
-	s = strings.Replace(s, paramRectangleName, name, -1)
+	s = strings.Replace(s, paramShapeStyle, name, -1)
 	s = strings.Replace(s, paramBackgroundColor, toHex(backgroundColor), -1)
 	s = strings.Replace(s, paramFontColor, toHex(fontColor), -1)
 	s = strings.Replace(s, paramBorderColor, toHex(borderColor), -1)
@@ -96,25 +111,23 @@ func buildSkinParamShape(
 func buildComponent(
 	c model.Component,
 	shape string,
+	shapeStyle string,
+	group string,
 ) string {
 	s := snippetComponent
 	s = strings.Replace(s, paramShape, shape, -1)
+	s = strings.Replace(s, paramShapeStyle, shapeStyle, -1)
 	s = strings.Replace(s, paramComponentID, c.ID, -1)
 	s = strings.Replace(s, paramComponentName, c.Name, -1)
 	s = strings.Replace(s, paramComponentKind, c.Kind, -1)
 	s = strings.Replace(s, paramComponentDescription, c.Description, -1)
+	s = strings.Replace(s, paramGroupName, group, -1)
 
 	technology := c.Technology
 	if technology != "" {
 		technology = ":" + technology
 	}
 	s = strings.Replace(s, paramComponentTechnology, technology, -1)
-
-	if len(c.Tags) > 0 {
-		s = strings.Replace(s, paramRectangleName, c.Tags[0], -1)
-	} else {
-		s = strings.Replace(s, paramRectangleName, defaultTag, -1)
-	}
 
 	return s
 }
