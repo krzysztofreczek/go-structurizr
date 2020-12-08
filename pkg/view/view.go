@@ -184,8 +184,6 @@ func newComponentStyle(
 	}
 }
 
-const defaultShape = "rectangle"
-
 func newDefaultComponentStyle(
 	id string,
 ) ComponentStyle {
