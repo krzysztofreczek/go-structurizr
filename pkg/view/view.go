@@ -46,7 +46,7 @@ func newView(
 func NewView() Builder {
 	return &builder{
 		view: view{
-			title:             "",
+			title:             "TITLE UNDEFINED",
 			rootComponentTags: make([]string, 0),
 			componentTags:     make([]string, 0),
 			componentStyles:   make(map[string]ComponentStyle),

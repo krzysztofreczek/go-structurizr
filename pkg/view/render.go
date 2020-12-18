@@ -35,7 +35,6 @@ func (v view) render(s model.Structure) string {
 	}
 
 	sb.WriteString(v.renderBody(s))
-
 	sb.WriteString(buildUMLTail())
 
 	return sb.String()

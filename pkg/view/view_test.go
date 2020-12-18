@@ -26,7 +26,7 @@ func TestNewView_empty(t *testing.T) {
 
 @startuml
 
-title 
+title TITLE UNDEFINED
 
 skinparam {
   shadowing false
@@ -63,7 +63,6 @@ func TestNewView_with_title(t *testing.T) {
 	outString := string(out.Bytes())
 
 	expectedContent := `title TITLE`
-
 	require.Contains(t, outString, expectedContent)
 }
 
