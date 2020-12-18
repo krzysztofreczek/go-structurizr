@@ -10,11 +10,25 @@ import (
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 )
 
-func (s *scraper) scrap(
+func (s *scraper) scrape(
 	v reflect.Value,
 	parentID string,
 	level int,
 ) {
+	// TODO: test invalid type
+	if !v.IsValid() {
+		return
+	}
+
+	// TODO: test circular dependencies
+	if v.Type().String() == "model.HasInfo" {
+
+	} else if _, scraped := s.scrapedTypes[v.Type()]; !scraped {
+		s.scrapedTypes[v.Type()] = struct{}{}
+	} else {
+		return
+	}
+
 	strategy := s.resolveScrapingStrategy(v)
 	strategy(v, parentID, level)
 }
@@ -35,9 +49,14 @@ func (s *scraper) resolveScrapingStrategy(v reflect.Value) scrapingStrategy {
 		return s.scrapeMapStrategy
 	case reflect.Slice, reflect.Array:
 		return s.scrapeIterableStrategy
+	// TODO: test functions
+	case reflect.Func:
+		return s.scrapeFunc
+	case reflect.Struct:
+		return s.scrapeStruct
+	default:
+		return s.scrapeNoop
 	}
-
-	return s.scrapeValue
 }
 
 func (s *scraper) scrapeInterfaceStrategy(
@@ -46,7 +65,7 @@ func (s *scraper) scrapeInterfaceStrategy(
 	level int,
 ) {
 	v = v.Elem()
-	s.scrap(v, parentID, level)
+	s.scrape(v, parentID, level)
 }
 
 func (s *scraper) scrapePointerStrategy(
@@ -54,8 +73,13 @@ func (s *scraper) scrapePointerStrategy(
 	parentID string,
 	level int,
 ) {
-	v = v.Elem()
-	s.scrap(v, parentID, level)
+	// TODO: Test nil pointer
+	if v.Elem().IsValid() {
+		v = v.Elem()
+	} else {
+		v = reflect.New(v.Type().Elem()).Elem()
+	}
+	s.scrape(v, parentID, level)
 }
 
 func (s *scraper) scrapeMapStrategy(
@@ -68,7 +92,7 @@ func (s *scraper) scrapeMapStrategy(
 		if !iterator.Next() {
 			break
 		}
-		s.scrap(iterator.Value(), parentID, level)
+		s.scrape(iterator.Value(), parentID, level)
 	}
 }
 
@@ -78,11 +102,34 @@ func (s *scraper) scrapeIterableStrategy(
 	level int,
 ) {
 	for i := 0; i < v.Len(); i++ {
-		s.scrap(v.Index(i), parentID, level)
+		s.scrape(v.Index(i), parentID, level)
 	}
 }
 
-func (s *scraper) scrapeValue(
+func (s *scraper) scrapeFunc(
+	v reflect.Value,
+	parentID string,
+	level int,
+) {
+	if !v.CanAddr() {
+		return
+	}
+
+	t := v.Type()
+	for i := 0; i < t.NumOut(); i++ {
+		v = reflect.NewAt(t.Out(i), unsafe.Pointer(v.UnsafeAddr())).Elem()
+		s.scrape(v, parentID, level)
+	}
+}
+
+func (s *scraper) scrapeNoop(
+	_ reflect.Value,
+	_ string,
+	_ int,
+) {
+}
+
+func (s *scraper) scrapeStruct(
 	v reflect.Value,
 	parentID string,
 	level int,
@@ -117,7 +164,7 @@ func (s *scraper) scrapeValueFields(
 	level int,
 ) {
 	for i := 0; i < v.NumField(); i++ {
-		s.scrap(v.Field(i), parentID, level+1)
+		s.scrape(v.Field(i), parentID, level+1)
 	}
 }
 
