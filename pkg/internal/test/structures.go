@@ -54,6 +54,34 @@ func NewRootEmpty() RootEmpty {
 	return RootEmpty{}
 }
 
+type RootWithSimpleTypes struct {
+	i int
+	s string
+	f float32
+	b bool
+}
+
+func NewRootWithSimpleTypes() RootWithSimpleTypes {
+	return RootWithSimpleTypes{
+		i: 0,
+		s: "",
+		f: 0,
+		b: false,
+	}
+}
+
+type RootWithCircularDependencies struct {
+	nested []RootWithCircularDependencies
+}
+
+func NewRootWithCircularDependencies() RootWithCircularDependencies {
+	return RootWithCircularDependencies{
+		nested: []RootWithCircularDependencies{
+			{},
+		},
+	}
+}
+
 type RootEmptyHasInfo struct{}
 
 func NewRootEmptyHasInfo() RootEmptyHasInfo {
@@ -164,6 +192,10 @@ func NewRootWithPrivatePointerToPublicComponentHasInfo() RootWithPrivatePointerT
 	}
 }
 
+func NewRootWithNilPrivatePointerToPublicComponentHasInfo() RootWithPrivatePointerToPublicComponentHasInfo {
+	return RootWithPrivatePointerToPublicComponentHasInfo{}
+}
+
 type RootWithPrivatePointerToPrivateComponentHasInfo struct {
 	ptr *privateComponentHasInfo
 }
@@ -172,6 +204,10 @@ func NewRootWithPrivatePointerToPrivateComponentHasInfo() RootWithPrivatePointer
 	return RootWithPrivatePointerToPrivateComponentHasInfo{
 		ptr: &privateComponentHasInfo{},
 	}
+}
+
+func NewRootWithNilPrivatePointerToPrivateComponentHasInfo() RootWithPrivatePointerToPrivateComponentHasInfo {
+	return RootWithPrivatePointerToPrivateComponentHasInfo{}
 }
 
 type RootWithPublicPublicComponentValue struct {
@@ -542,6 +578,10 @@ func NewRootWithPublicPrivateInterfaceImplementedWithPrivateComponent() RootWith
 	}
 }
 
+func NewRootWithPublicPrivateInterfaceWithNil() RootWithPublicPrivateInterface {
+	return RootWithPublicPrivateInterface{}
+}
+
 type RootWithPrivatePublicInterface struct {
 	i PublicInterface
 }
@@ -556,6 +596,10 @@ func NewRootWithPrivatePublicInterfaceImplementedWithPrivateComponent() RootWith
 	return RootWithPrivatePublicInterface{
 		i: privateComponentHasInfo{},
 	}
+}
+
+func NewRootWithPrivatePublicInterfaceWithNil() RootWithPrivatePublicInterface {
+	return RootWithPrivatePublicInterface{}
 }
 
 type RootWithPrivatePrivateInterface struct {
@@ -664,6 +708,62 @@ func NewRootWithPrivateMapOfHasInfoInterfaces() RootWithPrivateMapOfHasInfoInter
 		infos: map[string]model.HasInfo{
 			"PUBLIC":  PublicComponentHasInfo{},
 			"private": privateComponentHasInfo{},
+		},
+	}
+}
+
+type RootWithPublicFunctionReturningComponentsImplementingOfHasInfoInterfaces struct {
+	F func() (PublicComponentHasInfo, privateComponentHasInfo)
+}
+
+func NewRootWithPublicFunctionReturningComponentsImplementingOfHasInfoInterfaces() RootWithPublicFunctionReturningComponentsImplementingOfHasInfoInterfaces {
+	return RootWithPublicFunctionReturningComponentsImplementingOfHasInfoInterfaces{
+		F: func() (PublicComponentHasInfo, privateComponentHasInfo) {
+			return PublicComponentHasInfo{}, privateComponentHasInfo{}
+		},
+	}
+}
+
+func NewRootWithPublicFunctionNil() RootWithPublicFunctionReturningComponentsImplementingOfHasInfoInterfaces {
+	return RootWithPublicFunctionReturningComponentsImplementingOfHasInfoInterfaces{}
+}
+
+type RootWithPrivateFunctionReturningComponentsImplementingOfHasInfoInterfaces struct {
+	f func() (PublicComponentHasInfo, privateComponentHasInfo)
+}
+
+func NewRootWithPrivateFunctionReturningComponentsImplementingOfHasInfoInterfaces() RootWithPrivateFunctionReturningComponentsImplementingOfHasInfoInterfaces {
+	return RootWithPrivateFunctionReturningComponentsImplementingOfHasInfoInterfaces{
+		f: func() (PublicComponentHasInfo, privateComponentHasInfo) {
+			return PublicComponentHasInfo{}, privateComponentHasInfo{}
+		},
+	}
+}
+
+func NewRootWithPrivateFunctionNil() RootWithPrivateFunctionReturningComponentsImplementingOfHasInfoInterfaces {
+	return RootWithPrivateFunctionReturningComponentsImplementingOfHasInfoInterfaces{}
+}
+
+type RootWithPublicFunctionReturningPointersToComponentsImplementingOfHasInfoInterfaces struct {
+	F func() (*PublicComponentHasInfo, *privateComponentHasInfo)
+}
+
+func NewRootWithPublicFunctionReturningPointersToComponentsImplementingOfHasInfoInterfaces() RootWithPublicFunctionReturningPointersToComponentsImplementingOfHasInfoInterfaces {
+	return RootWithPublicFunctionReturningPointersToComponentsImplementingOfHasInfoInterfaces{
+		F: func() (*PublicComponentHasInfo, *privateComponentHasInfo) {
+			return nil, nil
+		},
+	}
+}
+
+type RootWithPrivateFunctionReturningPointersComponentsImplementingOfHasInfoInterfaces struct {
+	f func() (*PublicComponentHasInfo, *privateComponentHasInfo)
+}
+
+func NewRootWithPrivateFunctionReturningPointersComponentsImplementingOfHasInfoInterfaces() *RootWithPrivateFunctionReturningPointersComponentsImplementingOfHasInfoInterfaces {
+	return &RootWithPrivateFunctionReturningPointersComponentsImplementingOfHasInfoInterfaces{
+		f: func() (*PublicComponentHasInfo, *privateComponentHasInfo) {
+			return nil, nil
 		},
 	}
 }
