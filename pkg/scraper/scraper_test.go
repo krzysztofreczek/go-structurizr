@@ -83,6 +83,18 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 			expectedRelations:    map[string][]string{},
 		},
 		{
+			name:                 "empty root with simple types",
+			structure:            test.NewRootWithSimpleTypes(),
+			expectedComponentIDs: map[string]struct{}{},
+			expectedRelations:    map[string][]string{},
+		},
+		{
+			name:                 "root with circular dependencies",
+			structure:            test.NewRootWithCircularDependencies(),
+			expectedComponentIDs: map[string]struct{}{},
+			expectedRelations:    map[string][]string{},
+		},
+		{
 			name:      "empty root that implements HasInfo interface",
 			structure: test.NewRootEmptyHasInfo(),
 			expectedComponentIDs: map[string]struct{}{
@@ -449,6 +461,12 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 			expectedRelations: map[string][]string{},
 		},
 		{
+			name:                 "root with public private interface with nil",
+			structure:            test.NewRootWithPublicPrivateInterfaceWithNil(),
+			expectedComponentIDs: map[string]struct{}{},
+			expectedRelations:    map[string][]string{},
+		},
+		{
 			name:      "root with private public interface implemented with public component",
 			structure: test.NewRootWithPrivatePublicInterfaceImplementedWithPublicComponent(),
 			expectedComponentIDs: map[string]struct{}{
@@ -463,6 +481,12 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 				componentID("privateComponentHasInfo"): {},
 			},
 			expectedRelations: map[string][]string{},
+		},
+		{
+			name:                 "root with private public interface with nil",
+			structure:            test.NewRootWithPrivatePublicInterfaceWithNil(),
+			expectedComponentIDs: map[string]struct{}{},
+			expectedRelations:    map[string][]string{},
 		},
 		{
 			name:      "root with private private interface implemented with public component",
@@ -548,6 +572,76 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 		{
 			name:      "root with private map of HasInfo interfaces",
 			structure: test.NewRootWithPrivateMapOfHasInfoInterfaces(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with nil private pointer to public component that implements HasInfo interface",
+			structure: test.NewRootWithNilPrivatePointerToPublicComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with nil private pointer to private component that implements HasInfo interface",
+			structure: test.NewRootWithNilPrivatePointerToPrivateComponentHasInfo(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public function returning components that implement HasInfo interface",
+			structure: test.NewRootWithPublicFunctionReturningComponentsImplementingOfHasInfoInterfaces(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private function returning components that implement HasInfo interface",
+			structure: test.NewRootWithPrivateFunctionReturningComponentsImplementingOfHasInfoInterfaces(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public function returning pointers to components that implement HasInfo interface",
+			structure: test.NewRootWithPublicFunctionReturningPointersToComponentsImplementingOfHasInfoInterfaces(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private function returning pointers to components that implement HasInfo interface",
+			structure: test.NewRootWithPrivateFunctionReturningPointersComponentsImplementingOfHasInfoInterfaces(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with public function nil",
+			structure: test.NewRootWithPublicFunctionNil(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicComponentHasInfo"):  {},
+				componentID("privateComponentHasInfo"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with private function nil",
+			structure: test.NewRootWithPrivateFunctionNil(),
 			expectedComponentIDs: map[string]struct{}{
 				componentID("PublicComponentHasInfo"):  {},
 				componentID("privateComponentHasInfo"): {},

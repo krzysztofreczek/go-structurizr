@@ -1,9 +1,8 @@
-docker-compose.override.yml
 overrides
 vendor
+bin
+
 .vscode
 .idea
-bin
-svc-billing
-.DS_Store
-.unipdf-license
+
+*.plantuml
