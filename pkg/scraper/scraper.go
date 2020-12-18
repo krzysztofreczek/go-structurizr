@@ -23,18 +23,20 @@ type Scraper interface {
 }
 
 type scraper struct {
-	config    Configuration
-	rules     []Rule
-	structure model.Structure
+	config       Configuration
+	rules        []Rule
+	structure    model.Structure
+	scrapedTypes map[reflect.Type]struct{}
 }
 
 // NewScraper instantiates a default Scraper implementation
 // with provided Configuration.
 func NewScraper(config Configuration) Scraper {
 	return &scraper{
-		config:    config,
-		rules:     make([]Rule, 0),
-		structure: model.NewStructure(),
+		config:       config,
+		rules:        make([]Rule, 0),
+		structure:    model.NewStructure(),
+		scrapedTypes: map[reflect.Type]struct{}{},
 	}
 }
 
@@ -79,6 +81,6 @@ func (s *scraper) RegisterRule(r Rule) error {
 // and relations between those.
 func (s *scraper) Scrape(i interface{}) model.Structure {
 	v := reflect.ValueOf(i)
-	s.scrap(v, "", 0)
+	s.scrape(v, "", 0)
 	return s.structure
 }
