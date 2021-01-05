@@ -48,7 +48,7 @@ func TestScraper_Scrap_package_matching(t *testing.T) {
 			expectedNumberOfComponents: 1,
 		},
 		{
-			name:      "structure within iven package prefix",
+			name:      "structure within given package prefix",
 			structure: test.NewRootEmptyHasInfo(),
 			packages: []string{
 				"github.com/krzysztofreczek/go-structurizr/pkg",
