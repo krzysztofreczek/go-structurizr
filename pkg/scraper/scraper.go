@@ -59,9 +59,10 @@ func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 	}
 
 	return &scraper{
-		config:    config,
-		rules:     rules,
-		structure: model.NewStructure(),
+		config:       config,
+		rules:        rules,
+		structure:    model.NewStructure(),
+		scrapedTypes: map[reflect.Type]struct{}{},
 	}, nil
 }
 
