@@ -21,6 +21,8 @@ func (s *scraper) scrape(
 
 	if v.Type().String() == "model.HasInfo" {
 
+	} else if v.Kind() != reflect.Struct {
+
 	} else if _, scraped := s.scrapedTypes[v.Type()]; !scraped {
 		s.scrapedTypes[v.Type()] = struct{}{}
 	} else {
