@@ -801,6 +801,29 @@ func TestScraper_Scrap_rules(t *testing.T) {
 			},
 		},
 		{
+			name:      "default match-all rule with nil interfaces",
+			structure: test.NewRootWithPrivatePublicInterfaceWithNil(),
+			rules:     []scraper.Rule{ruleDefaultMatchAll},
+			expectedComponents: map[string]model.Component{
+				componentID("RootWithPrivatePublicInterface"): {
+					ID:          componentID("RootWithPrivatePublicInterface"),
+					Kind:        "component",
+					Name:        "test.RootWithPrivatePublicInterface",
+					Description: "match-all description",
+					Technology:  "match-all technology",
+					Tags:        []string{"match-all tag 1", "match-all tag 2"},
+				},
+				componentID("PublicInterface"): {
+					ID:          componentID("PublicInterface"),
+					Kind:        "component",
+					Name:        "test.PublicInterface",
+					Description: "match-all description",
+					Technology:  "match-all technology",
+					Tags:        []string{"match-all tag 1", "match-all tag 2"},
+				},
+			},
+		},
+		{
 			name:      "match-public-component rule",
 			structure: test.NewRootWithPublicPointerToPublicComponent(),
 			rules:     []scraper.Rule{ruleMatchPublicComponent},
@@ -882,7 +905,7 @@ func requireEqualComponents(
 	require.Len(t, actualComponents, len(expectedComponents))
 	for id, expectedComponent := range expectedComponents {
 		actualComponent, contains := actualComponents[id]
-		require.True(t, contains, "actual components: %+v", actualComponents)
+		require.True(t, contains, "actual components: %+v'; expected components: %+v", actualComponents, expectedComponents)
 		require.Equal(t, expectedComponent, actualComponent)
 	}
 }

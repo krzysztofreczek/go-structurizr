@@ -2,8 +2,11 @@
 This library allows you to auto-generate C4 component diagrams out from the Golang code.
 
 ## How it works?
-The library provides a set of tools that allow you to scrape and render given Golang object/structure into a [C4 component](https://c4model.com/) diagram in [*.plantuml](https://plantuml.com/) format.
-Scraper component reflects given structure in accordance with structure interfaces, predefined rules and configuration. You may pass the scraped structure into a view definition which you can then render into a plantUML diagram code. 
+The library provides a set of tools (Scraper and View) that allow you to scrape and render given Golang structures into a [C4 component](https://c4model.com/) diagram in [*.plantuml](https://plantuml.com/) format.
+
+**Scraper** component reflects given structure in accordance with structure interfaces, predefined rules and configuration. 
+
+You may pass the scraped structure into a **View** definition which you can then render into a plantUML diagram code. 
 
 Scraper identifies components to scrape in one of the following cases:
 * type that is being examined implements an interface `model.HasInfo`.
@@ -182,6 +185,9 @@ defer func() {
 
 err = v.RenderStructureTo(structure, outFile)
 ```
+
+## Examples
+You may find a couple of examples implemented in the `cmd` directory. In order to run any of those examples, please run the shell script attached.
 
 ## Good practices
 The best results and experience in using the library will be ensured by enforcing the following practices:
