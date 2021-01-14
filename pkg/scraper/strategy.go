@@ -63,6 +63,15 @@ func (s *scraper) scrapeInterfaceStrategy(
 	parentID string,
 	level int,
 ) {
+	if !v.Elem().IsValid() {
+		info, ok := s.getInfoFromRules(v)
+		if ok {
+			c := s.addComponent(v, info, parentID)
+			parentID = c.ID
+		}
+		return
+	}
+
 	v = v.Elem()
 	s.scrape(v, parentID, level)
 }
