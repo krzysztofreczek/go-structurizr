@@ -26,7 +26,7 @@ type scraper struct {
 	config       Configuration
 	rules        []Rule
 	structure    model.Structure
-	scrapedTypes map[reflect.Type]struct{}
+	scrapedTypes map[string]struct{}
 }
 
 // NewScraper instantiates a default Scraper implementation
@@ -36,7 +36,7 @@ func NewScraper(config Configuration) Scraper {
 		config:       config,
 		rules:        make([]Rule, 0),
 		structure:    model.NewStructure(),
-		scrapedTypes: map[reflect.Type]struct{}{},
+		scrapedTypes: map[string]struct{}{},
 	}
 }
 
@@ -62,7 +62,7 @@ func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 		config:       config,
 		rules:        rules,
 		structure:    model.NewStructure(),
-		scrapedTypes: map[reflect.Type]struct{}{},
+		scrapedTypes: map[string]struct{}{},
 	}, nil
 }
 

@@ -582,6 +582,25 @@ func NewRootWithPublicPrivateInterfaceWithNil() RootWithPublicPrivateInterface {
 	return RootWithPublicPrivateInterface{}
 }
 
+type RootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels struct {
+	Value  PublicComponentHasInfo
+	Nested RootHasInfoWithComponentHasInfoValue
+}
+
+func NewRootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels() RootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels {
+	return RootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels{
+		Value:  PublicComponentHasInfo{},
+		Nested: NewRootHasInfoWithComponentHasInfoValue(),
+	}
+}
+
+func (r RootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootWithPublicPublicComponentHasInfoValueAtMultipleLevels",
+		"root has info",
+	)
+}
+
 type RootWithPrivatePublicInterface struct {
 	i PublicInterface
 }

@@ -19,12 +19,14 @@ func (s *scraper) scrape(
 		return
 	}
 
+	nodeID := nodeID(v, parentID)
+
 	if v.Type().String() == "model.HasInfo" {
 
 	} else if v.Kind() != reflect.Struct {
 
-	} else if _, scraped := s.scrapedTypes[v.Type()]; !scraped {
-		s.scrapedTypes[v.Type()] = struct{}{}
+	} else if _, scraped := s.scrapedTypes[nodeID]; !scraped {
+		s.scrapedTypes[nodeID] = struct{}{}
 	} else {
 		return
 	}
@@ -66,8 +68,7 @@ func (s *scraper) scrapeInterfaceStrategy(
 	if !v.Elem().IsValid() {
 		info, ok := s.getInfoFromRules(v)
 		if ok {
-			c := s.addComponent(v, info, parentID)
-			parentID = c.ID
+			_ = s.addComponent(v, info, parentID)
 		}
 		return
 	}
@@ -233,6 +234,11 @@ func (s *scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 	}
 
 	return model.Info{}, false
+}
+
+func nodeID(v reflect.Value, parentID string) string {
+	id := fmt.Sprintf("%s.%s.%s", parentID, valuePackage(v), v.Type().Name())
+	return internal.Hash(id)
 }
 
 func componentID(v reflect.Value) string {
