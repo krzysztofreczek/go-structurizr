@@ -467,6 +467,24 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 			expectedRelations:    map[string][]string{},
 		},
 		{
+			name:      "root with public value of public component that implements HasInfo interface at multiple levels",
+			structure: test.NewRootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels"): {},
+				componentID("RootHasInfoWithComponentHasInfoValue"):                             {},
+				componentID("PublicComponentHasInfo"):                                           {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootHasInfoWithPublicPublicComponentHasInfoValueAtMultipleLevels"): {
+					componentID("RootHasInfoWithComponentHasInfoValue"),
+					componentID("PublicComponentHasInfo"),
+				},
+				componentID("RootHasInfoWithComponentHasInfoValue"): {
+					componentID("PublicComponentHasInfo"),
+				},
+			},
+		},
+		{
 			name:      "root with private public interface implemented with public component",
 			structure: test.NewRootWithPrivatePublicInterfaceImplementedWithPublicComponent(),
 			expectedComponentIDs: map[string]struct{}{
