@@ -1,5 +1,14 @@
 package model
 
+import (
+	"fmt"
+	"sort"
+
+	"github.com/cnf/structhash"
+)
+
+const version = 1
+
 // Component is an open structure that represents details of scraped component.
 //
 // ID is a unique identifier of the component.
@@ -47,4 +56,38 @@ func (s Structure) AddComponent(c Component, parentID string) {
 		}
 		s.Relations[parentID][c.ID] = struct{}{}
 	}
+}
+
+// Checksum returns a hash of the Structure
+//
+// Checksum may be used for tracking changes between the structures.
+func (s Structure) Checksum() (string, error) {
+	cIDs := make([]string, 0)
+	for id := range s.Components {
+		cIDs = append(cIDs, id)
+	}
+
+	sort.Strings(cIDs)
+
+	accu := make([]string, 0)
+	for _, cID := range cIDs {
+		c := s.Components[cID]
+		sort.Strings(c.Tags)
+
+		cHash, err := structhash.Hash(c, version)
+		if err != nil {
+			return "", err
+		}
+		accu = append(accu, cHash)
+
+		r := s.Relations[cID]
+		for _, rID := range cIDs {
+			if _, exists := r[rID]; exists {
+				rel := fmt.Sprintf("%s-%s", cID, rID)
+				accu = append(accu, rel)
+			}
+		}
+	}
+
+	return structhash.Hash(accu, version)
 }
