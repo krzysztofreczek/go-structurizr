@@ -38,6 +38,8 @@ skinparam {
 hide stereotype
 top to bottom direction
 
+scale 4096 width
+
 skinparam rectangle<<_GROUP>> {
   FontColor #ffffff
   BorderColor #ffffff
