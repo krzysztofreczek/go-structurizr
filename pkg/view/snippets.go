@@ -30,6 +30,8 @@ skinparam {
 }
 hide stereotype
 top to bottom direction
+
+scale 4096 width
 `
 	snippetSkinParamGroup = `
 skinparam rectangle<<_GROUP>> {
