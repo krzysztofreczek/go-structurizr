@@ -13,12 +13,16 @@ jobs:
       - run: go mod vendor
       - run: go test -v ./...
       - run: go build ./...
+  build-examples:
+    <<: *defaults
+    steps:
+      - checkout
       - run:
           name: Run example
-          command: alias plantuml='' && cd cmd/example && sh example.sh
+          command: cd cmd/example && sh example.sh
       - run:
           name: Run example-yaml
-          command: alias plantuml='' && cd cmd/example-yaml && sh example.sh
+          command: cd cmd/example-yaml && sh example.sh
   release:
     <<: *defaults
     steps:
@@ -37,9 +41,11 @@ workflows:
   build-release:
     jobs:
       - build
+      - build-examples
       - release:
           requires:
             - build
+            - build-examples
           filters:
             branches:
               only: master
