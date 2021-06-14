@@ -7,10 +7,11 @@ defaults: &defaults
   
 orbs:
   plantuml: orbss/plantuml@0.4.100
-
 jobs:
   build:
     <<: *defaults
+    executor:
+      name: plantuml
     steps:
       - checkout
       - run: go mod vendor
