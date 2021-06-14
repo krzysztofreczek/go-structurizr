@@ -10,8 +10,7 @@ orbs:
 jobs:
   build:
     <<: *defaults
-    executor:
-      name: plantuml
+    executor: plantuml
     steps:
       - checkout
       - run: go mod vendor
