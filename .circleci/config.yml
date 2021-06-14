@@ -4,6 +4,9 @@ defaults: &defaults
   docker:
     - image: circleci/golang:1.15
   working_directory: /go/src/github.com/krzysztofreczek/go-structurizr
+  
+orbs:
+  plantuml: orbss/plantuml@0.4.100
 
 jobs:
   build:
