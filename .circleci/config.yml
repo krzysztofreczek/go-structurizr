@@ -5,12 +5,9 @@ defaults: &defaults
     - image: circleci/golang:1.15
   working_directory: /go/src/github.com/krzysztofreczek/go-structurizr
   
-orbs:
-  plantuml: orbss/plantuml@0.4.100
 jobs:
   build:
     <<: *defaults
-    executor: plantuml
     steps:
       - checkout
       - run: go mod vendor
@@ -18,10 +15,10 @@ jobs:
       - run: go build ./...
       - run:
           name: Run example
-          command: cd cmd/example && sh example.sh
+          command: alias plantuml='' && cd cmd/example && sh example.sh
       - run:
           name: Run example-yaml
-          command: cd cmd/example-yaml && sh example.sh
+          command: alias plantuml='' && cd cmd/example-yaml && sh example.sh
   release:
     <<: *defaults
     steps:
