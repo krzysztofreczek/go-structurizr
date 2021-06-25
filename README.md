@@ -2,7 +2,7 @@
 This library allows you to auto-generate C4 component diagrams out from the Golang code.
 
 ## Exemplary output:
-![Example](aux/example.png)
+![Example](images/example.png)
 
 ## How it works?
 The library provides a set of tools (Scraper and View) that allow you to scrape and render given Golang structures into a [C4 component](https://c4model.com/) diagram in [*.plantuml](https://plantuml.com/) format.
