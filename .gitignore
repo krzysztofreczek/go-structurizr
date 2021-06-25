@@ -5,5 +5,4 @@ bin
 .vscode
 .idea
 
-*.plantuml
-*.png
+cmd/*/.out/*
