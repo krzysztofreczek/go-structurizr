@@ -4,7 +4,7 @@ defaults: &defaults
   docker:
     - image: circleci/golang:1.15
   working_directory: /go/src/github.com/krzysztofreczek/go-structurizr
-
+  
 jobs:
   build:
     <<: *defaults
@@ -13,6 +13,16 @@ jobs:
       - run: go mod vendor
       - run: go test -v ./...
       - run: go build ./...
+  build-examples:
+    <<: *defaults
+    steps:
+      - checkout
+      - run:
+          name: Run example
+          command: cd cmd/example && sh example.sh --test
+      - run:
+          name: Run example-yaml
+          command: cd cmd/example-yaml && sh example.sh --test
   release:
     <<: *defaults
     steps:
@@ -31,9 +41,11 @@ workflows:
   build-release:
     jobs:
       - build
+      - build-examples
       - release:
           requires:
             - build
+            - build-examples
           filters:
             branches:
               only: master
