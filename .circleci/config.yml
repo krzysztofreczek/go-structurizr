@@ -18,14 +18,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Mock CLI tooling
-          command: alias which="echo" && alias plantuml="echo"
-      - run:
           name: Run example
-          command: cd cmd/example && sh example.sh
+          command: cd cmd/example && sh example.sh --test
       - run:
           name: Run example-yaml
-          command: cd cmd/example-yaml && sh example.sh
+          command: cd cmd/example-yaml && sh example.sh --test
   release:
     <<: *defaults
     steps:
