@@ -17,6 +17,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - run
+          name: Mock CLI tooling
+          command: alias which="echo" && alias plantuml="echo"
       - run:
           name: Run example
           command: cd cmd/example && sh example.sh
