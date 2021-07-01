@@ -11,6 +11,9 @@ import (
 const (
 	defaultShape      = "rectangle"
 	defaultShapeStyle = "DEFAULT"
+
+	interfaceShape      = "interface"
+	interfaceShapeSTYLE = "_INTERFACE"
 )
 
 // RenderStructureTo renders provided model.Structure into any io.Writer.
@@ -78,6 +81,10 @@ func (v view) newContext(s model.Structure) *context {
 func (v view) resolveExcludedComponentIDs(s model.Structure) map[string]struct{} {
 	ids := map[string]struct{}{}
 	for _, c := range s.Components {
+		if len(c.Tags) > 0 && c.Tags[0] == "_INTERFACE" {
+			continue
+		}
+
 		if !v.hasComponentTag(c.Tags...) {
 			ids[c.ID] = struct{}{}
 		}
@@ -119,13 +126,19 @@ func (v view) renderNextBodyLayer(ctx *context) int {
 }
 
 func (v view) renderComponent(ctx *context, c model.Component, parentID string) {
+	_, rendered := ctx.renderedIDs[c.ID]
+	if rendered {
+		return
+	}
+
 	_, excluded := ctx.excludedIDs[c.ID]
 	if excluded {
 		return
 	}
 
-	_, rendered := ctx.renderedIDs[c.ID]
-	if rendered {
+	if len(c.Tags) > 0 && c.Tags[0] == "_INTERFACE" {
+		ctx.sb.WriteString(buildComponent(c, interfaceShape, interfaceShapeSTYLE, groupID(parentID, interfaceShapeSTYLE, ctx.level)))
+		ctx.renderedIDs[c.ID] = struct{}{}
 		return
 	}
 
