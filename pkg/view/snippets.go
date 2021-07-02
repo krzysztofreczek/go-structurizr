@@ -38,6 +38,11 @@ skinparam rectangle<<_GROUP>> {
   FontColor #ffffff
   BorderColor #ffffff
 }
+
+skinparam interface<<_INTERFACE>> {
+  BackgroundColor #ffffff
+  BorderColor #000000
+}
 `
 	snippetSkinParamShape = `
 skinparam {{shape}}<<{{shape_style}}>> {

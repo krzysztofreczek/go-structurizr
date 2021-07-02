@@ -73,6 +73,9 @@ func (s *scraper) scrapeInterfaceStrategy(
 		return
 	}
 
+	c := s.addInterfaceComponent(v, parentID)
+	parentID = c.ID
+
 	v = v.Elem()
 	s.scrape(v, parentID, level)
 }
@@ -189,6 +192,20 @@ func (s *scraper) addComponent(
 	return c
 }
 
+func (s *scraper) addInterfaceComponent(
+	v reflect.Value,
+	parentID string,
+) model.Component {
+	c := model.Component{
+		ID:   interfaceID(v),
+		Kind: "interface",
+		Name: componentName(v),
+		Tags: []string{"_INTERFACE"},
+	}
+	s.structure.AddComponent(c, parentID)
+	return c
+}
+
 func (s *scraper) isScrappable(v reflect.Value) bool {
 	vPkg := valuePackage(v)
 	for _, pkg := range s.config.Packages {
@@ -243,6 +260,11 @@ func nodeID(v reflect.Value, parentID string) string {
 
 func componentID(v reflect.Value) string {
 	id := fmt.Sprintf("%s.%s", valuePackage(v), v.Type().Name())
+	return internal.Hash(id)
+}
+
+func interfaceID(v reflect.Value) string {
+	id := fmt.Sprintf("interface.%s.%s", valuePackage(v), v.Type().Name())
 	return internal.Hash(id)
 }
 
