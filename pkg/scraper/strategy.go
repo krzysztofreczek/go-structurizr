@@ -65,14 +65,20 @@ func (s *scraper) scrapeInterfaceStrategy(
 	parentID string,
 	level int,
 ) {
+	s.debug(v, "interface scraping strategy applied: if the interface is not nil, the value will be scraped, otherwise scraper will try to resolve info data from the interface type")
+
 	if !v.Elem().IsValid() {
+		s.debug(v, "scraping the interface type")
+
 		info, ok := s.getInfoFromRules(v)
 		if ok {
 			_ = s.addComponent(v, info, parentID)
 		}
+
 		return
 	}
 
+	s.debug(v, "scraping the value implementing the interface")
 	v = v.Elem()
 	s.scrape(v, parentID, level)
 }
@@ -82,6 +88,8 @@ func (s *scraper) scrapePointerStrategy(
 	parentID string,
 	level int,
 ) {
+	s.debug(v, "pointer scraping strategy applied: if the pointer is not nil, the value will be scraped")
+
 	if v.Elem().IsValid() {
 		v = v.Elem()
 	} else {
@@ -95,6 +103,8 @@ func (s *scraper) scrapeMapStrategy(
 	parentID string,
 	level int,
 ) {
+	s.debug(v, "map scraping strategy applied: each of map elements will be scraped")
+
 	iterator := v.MapRange()
 	for true {
 		if !iterator.Next() {
@@ -109,6 +119,8 @@ func (s *scraper) scrapeIterableStrategy(
 	parentID string,
 	level int,
 ) {
+	s.debug(v, "iterable scraping strategy applied: each of elements will be scraped")
+
 	for i := 0; i < v.Len(); i++ {
 		s.scrape(v.Index(i), parentID, level)
 	}
@@ -119,6 +131,8 @@ func (s *scraper) scrapeFunc(
 	parentID string,
 	level int,
 ) {
+	s.debug(v, "function scraping strategy applied: output types will be scraped")
+
 	t := v.Type()
 	for i := 0; i < t.NumOut(); i++ {
 		v = reflect.New(t.Out(i))
@@ -127,10 +141,11 @@ func (s *scraper) scrapeFunc(
 }
 
 func (s *scraper) scrapeNoop(
-	_ reflect.Value,
+	v reflect.Value,
 	_ string,
 	_ int,
 ) {
+	s.debug(v, "value will not be scraped")
 }
 
 func (s *scraper) scrapeStruct(
@@ -138,6 +153,8 @@ func (s *scraper) scrapeStruct(
 	parentID string,
 	level int,
 ) {
+	s.debug(v, "struct scraping strategy applied: value and each of its properties will be scraped")
+
 	if !s.isScrappable(v) {
 		return
 	}
@@ -193,9 +210,12 @@ func (s *scraper) isScrappable(v reflect.Value) bool {
 	vPkg := valuePackage(v)
 	for _, pkg := range s.config.Packages {
 		if strings.HasPrefix(vPkg, pkg) {
+			s.debug(v, "value package '%s' is applicable for scraping", vPkg)
 			return true
 		}
 	}
+
+	s.debug(v, "value package '%s' IS NOT applicable for scraping", vPkg)
 	return false
 }
 
@@ -220,7 +240,10 @@ func (s *scraper) getInfoFromInterface(v reflect.Value) (model.Info, bool) {
 		return model.Info{}, false
 	}
 
-	return info.Info(), true
+	i := info.Info()
+	s.debug(v, "resolved info data %+v from .Info() method", i)
+
+	return i, true
 }
 
 func (s *scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
@@ -230,9 +253,14 @@ func (s *scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 		if !r.Applies(vPkg, name) {
 			continue
 		}
-		return r.Apply(name), true
+
+		i := r.Apply(name)
+		s.debug(v, "resolved info data %+v from one of the rules", i)
+
+		return i, true
 	}
 
+	s.debug(v, "there was no rule applicable for this value")
 	return model.Info{}, false
 }
 

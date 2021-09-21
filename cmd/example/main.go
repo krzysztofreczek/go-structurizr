@@ -48,6 +48,7 @@ func buildScraper() scraper.Scraper {
 		"go.uber.org/zap",
 		"google.golang.org/grpc",
 	)
+	c.LogDebug = true
 
 	s := scraper.NewScraper(c)
 
