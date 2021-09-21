@@ -189,6 +189,9 @@ defer func() {
 err = v.RenderStructureTo(structure, outFile)
 ```
 
+## Debug mode
+In order to see detailed scraping logs, set `LOG_DEBUG` flag in the scraper configuration.
+
 ## Examples
 You may find a couple of examples implemented in the `cmd` directory. In order to run any of those examples, please run the shell script attached.
 

@@ -4,6 +4,7 @@ configuration:
     - "net/http"
     - "go.uber.org/zap"
     - "google.golang.org/grpc"
+  log_debug: true
 
 rules:
   - name_regexp: ".*Handler.*"

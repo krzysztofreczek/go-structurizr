@@ -7,8 +7,11 @@ package scraper
 // package prefixes is omitted and its internal structure is not scraped.
 // When no package prefix is provided, the scraper will stop
 // scraping given structure on a root level.
+//
+// LogDebug flag makes the scraper print details execution logs to the console.
 type Configuration struct {
 	Packages []string
+	LogDebug bool
 }
 
 // NewConfiguration instantiates Configuration with a set of package

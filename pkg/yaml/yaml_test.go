@@ -13,6 +13,7 @@ const (
 	testYAMLConfiguration = `
 configuration:
   pkgs: [PKG_1, PKG_2]
+  log_debug: true
 `
 
 	testYAMLRules = `
@@ -64,6 +65,7 @@ func TestLoadFrom(t *testing.T) {
 			expected: yaml.Config{
 				Configuration: yaml.ConfigConfiguration{
 					Packages: []string{"PKG_1", "PKG_2"},
+					LogDebug: true,
 				},
 			},
 		},
