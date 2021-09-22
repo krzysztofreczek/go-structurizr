@@ -3,11 +3,17 @@ package scraper
 import (
 	"fmt"
 	"log"
+	"os"
 	"reflect"
 )
 
+func (s *scraper) isDebugMode() bool {
+	level := os.Getenv("LOG_LEVEL")
+	return level == "DEBUG" || level == "debug" || s.config.LogDebug
+}
+
 func (s *scraper) debug(v reflect.Value, format string, a ...interface{}) {
-	if !s.config.LogDebug {
+	if !s.isDebugMode() {
 		return
 	}
 
