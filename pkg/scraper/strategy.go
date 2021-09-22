@@ -16,6 +16,7 @@ func (s *scraper) scrape(
 	level int,
 ) {
 	if !v.IsValid() {
+		s.debug(v, "value is not valid")
 		return
 	}
 
@@ -28,6 +29,7 @@ func (s *scraper) scrape(
 	} else if _, scraped := s.scrapedTypes[nodeID]; !scraped {
 		s.scrapedTypes[nodeID] = struct{}{}
 	} else {
+		s.debug(v, "value has already been processed")
 		return
 	}
 
