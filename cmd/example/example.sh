@@ -2,6 +2,9 @@
 
 set -e
 
+# Uncomment the line below to see detailed execution logs
+#export LOG_LEVEL=debug
+
 rm -rf .out && mkdir .out
 
 go run main.go
