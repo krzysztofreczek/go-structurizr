@@ -9,9 +9,7 @@ import (
 )
 
 func toScraperConfig(c yaml.Config) Configuration {
-	config := NewConfiguration(c.Configuration.Packages...)
-	config.LogDebug = c.Configuration.LogDebug
-	return config
+	return NewConfiguration(c.Configuration.Packages...)
 }
 
 func toScraperRules(c yaml.Config) ([]Rule, error) {

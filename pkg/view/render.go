@@ -79,6 +79,7 @@ func (v view) resolveExcludedComponentIDs(s model.Structure) map[string]struct{}
 	ids := map[string]struct{}{}
 	for _, c := range s.Components {
 		if !v.hasComponentTag(c.Tags...) {
+			v.debug(c, "component will be excluded from the view")
 			ids[c.ID] = struct{}{}
 		}
 	}
@@ -90,6 +91,7 @@ func (v view) renderRootComponents(ctx *context) {
 		if !v.isRoot(c.Tags...) {
 			continue
 		}
+		v.debug(c, "component has been recognised as root element")
 		v.renderComponent(ctx, c, "")
 	}
 }
@@ -141,6 +143,8 @@ func (v view) renderComponent(ctx *context, c model.Component, parentID string) 
 
 	group := groupID(parentID, shapeStyle, ctx.level)
 
+	v.debug(c, "rendering component with shape '%s', shape style '%s', and group '%s'", shape, shapeStyle, group)
+
 	ctx.sb.WriteString(buildComponent(c, shape, shapeStyle, group))
 	ctx.renderedIDs[c.ID] = struct{}{}
 }
@@ -155,6 +159,8 @@ func (v view) renderRelation(ctx *context, srcID string, trgID string) {
 	if _, rendered := ctx.renderedRelations[relationID]; rendered {
 		return
 	}
+
+	v.debug(ctx.s.Components[srcID], "rendering relation to component of id '%s'", trgID)
 
 	ctx.sb.WriteString(buildComponentConnection(srcID, trgID, v.lineColor))
 	ctx.renderedRelations[relationID] = struct{}{}

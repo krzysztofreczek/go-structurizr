@@ -190,7 +190,7 @@ err = v.RenderStructureTo(structure, outFile)
 ```
 
 ## Debug mode
-In order to see detailed scraping logs, set `logDebug` flag in the scraper configuration or set `LOG_LEVEL` env variable with `debug` of `DEBUG`.
+In order to see detailed scraping or view rendering logs, set `LOG_LEVEL` env variable with `debug` of `DEBUG`.
 
 ## Examples
 You may find a couple of examples implemented in the `cmd` directory. In order to run any of those examples, please run the shell script attached.

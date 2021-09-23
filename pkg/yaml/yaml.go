@@ -17,7 +17,6 @@ type Config struct {
 // ConfigConfiguration is an open YAML configuration structure.
 type ConfigConfiguration struct {
 	Packages []string `yaml:"pkgs"`
-	LogDebug bool     `yaml:"log_debug"`
 }
 
 // ConfigRule is an open YAML configuration structure.
