@@ -20,19 +20,6 @@ func (s *scraper) scrape(
 		return
 	}
 
-	nodeID := nodeID(v, parentID)
-
-	if v.Type().String() == "model.HasInfo" {
-
-	} else if v.Kind() != reflect.Struct {
-
-	} else if _, scraped := s.scrapedTypes[nodeID]; !scraped {
-		s.scrapedTypes[nodeID] = struct{}{}
-	} else {
-		s.debug(v, "value has already been processed")
-		return
-	}
-
 	strategy := s.resolveScrapingStrategy(v)
 	strategy(v, parentID, level)
 }
@@ -264,11 +251,6 @@ func (s *scraper) getInfoFromRules(v reflect.Value) (model.Info, bool) {
 
 	s.debug(v, "there was no rule applicable for this value")
 	return model.Info{}, false
-}
-
-func nodeID(v reflect.Value, parentID string) string {
-	id := fmt.Sprintf("%s.%s.%s", parentID, valuePackage(v), v.Type().Name())
-	return internal.Hash(id)
 }
 
 func componentID(v reflect.Value) string {

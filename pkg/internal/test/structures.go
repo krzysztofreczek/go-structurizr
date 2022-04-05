@@ -786,3 +786,40 @@ func NewRootWithPrivateFunctionReturningPointersComponentsImplementingOfHasInfoI
 		},
 	}
 }
+
+type PublicInterfaceImplA struct{}
+
+func (a PublicInterfaceImplA) Info() model.Info {
+	return model.ComponentInfo(
+		"test.PublicInterfaceImplA",
+		"public",
+	)
+}
+
+func (a PublicInterfaceImplA) DoSomethingPublic() {
+	panic("implement me")
+}
+
+type PublicInterfaceImplB struct{}
+
+func (b PublicInterfaceImplB) Info() model.Info {
+	return model.ComponentInfo(
+		"test.PublicInterfaceImplB",
+		"public",
+	)
+}
+
+func (b PublicInterfaceImplB) DoSomethingPublic() {
+	panic("implement me")
+}
+
+type RootWithPublicInterfaceProperty struct {
+	PI PublicInterface
+}
+
+func NewRootWithMultipleInterfaceImplementations() []RootWithPublicInterfaceProperty {
+	return []RootWithPublicInterfaceProperty{
+		{PI: PublicInterfaceImplA{}},
+		{PI: PublicInterfaceImplB{}},
+	}
+}
