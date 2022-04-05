@@ -15,7 +15,7 @@ const (
 	testPKG = "github.com/krzysztofreczek/go-structurizr/pkg/internal/test"
 )
 
-func TestScraper_Scrap_package_matching(t *testing.T) {
+func TestScraper_Scrape_package_matching(t *testing.T) {
 	var tests = []struct {
 		name                       string
 		structure                  interface{}
@@ -66,7 +66,7 @@ func TestScraper_Scrap_package_matching(t *testing.T) {
 	}
 }
 
-func TestScraper_Scrap_has_info_interface(t *testing.T) {
+func TestScraper_Scrape_has_info_interface(t *testing.T) {
 	c := scraper.NewConfiguration(
 		testPKG,
 	)
@@ -666,6 +666,15 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 			},
 			expectedRelations: map[string][]string{},
 		},
+		{
+			name:      "root with multiple interface implementation",
+			structure: test.NewRootWithMultipleInterfaceImplementations(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("PublicInterfaceImplA"): {},
+				componentID("PublicInterfaceImplB"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -677,7 +686,7 @@ func TestScraper_Scrap_has_info_interface(t *testing.T) {
 	}
 }
 
-func TestScraper_Scrap_has_info_interface_component_info(t *testing.T) {
+func TestScraper_Scrape_has_info_interface_component_info(t *testing.T) {
 	c := scraper.NewConfiguration(
 		testPKG,
 	)
@@ -724,7 +733,7 @@ func TestScraper_Scrap_has_info_interface_component_info(t *testing.T) {
 	}
 }
 
-func TestScraper_Scrap_rules(t *testing.T) {
+func TestScraper_Scrape_rules(t *testing.T) {
 	c := scraper.NewConfiguration(
 		testPKG,
 	)
