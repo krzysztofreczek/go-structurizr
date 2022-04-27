@@ -1,8 +1,12 @@
 # go-structurizr
 This library allows you to auto-generate C4 component diagrams out from the Golang code.
 
-## Exemplary output:
 ![Example](images/example.png)
+
+## Usage and examples
+If you want to get directly into usage of the library check my [blog post](https://threedots.tech/post/auto-generated-c4-architecture-diagrams-in-go/) with a step-by-step implementation guide.
+
+You may also find a couple of examples implemented in the `cmd` directory. In order to run any of those examples, please run the shell script attached.
 
 ## How it works?
 The library provides a set of tools (Scraper and View) that allow you to scrape and render given Golang structures into a [C4 component](https://c4model.com/) diagram in [*.plantuml](https://plantuml.com/) format.
@@ -191,9 +195,6 @@ err = v.RenderStructureTo(structure, outFile)
 
 ## Debug mode
 In order to see detailed scraping or view rendering logs, set `LOG_LEVEL` env variable with `debug` of `DEBUG`.
-
-## Examples
-You may find a couple of examples implemented in the `cmd` directory. In order to run any of those examples, please run the shell script attached.
 
 ## Good practices
 The best results and experience in using the library will be ensured by enforcing the following practices:
