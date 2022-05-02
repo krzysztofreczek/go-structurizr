@@ -95,6 +95,30 @@ func TestScraper_Scrape_has_info_interface(t *testing.T) {
 			expectedRelations:    map[string][]string{},
 		},
 		{
+			name:      "root has info with circular dependencies",
+			structure: test.NewRootHasInfoWithCircularDependencies(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootHasInfoWithCircularDependencies"): {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootHasInfoWithCircularDependencies"): {
+					componentID("RootHasInfoWithCircularDependencies"),
+				},
+			},
+		},
+		{
+			name:      "root has info with circular pointer dependencies",
+			structure: test.NewRootHasInfoWithCircularPointerDependencies(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootHasInfoWithCircularPointerDependencies"): {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootHasInfoWithCircularPointerDependencies"): {
+					componentID("RootHasInfoWithCircularPointerDependencies"),
+				},
+			},
+		},
+		{
 			name:      "empty root that implements HasInfo interface",
 			structure: test.NewRootEmptyHasInfo(),
 			expectedComponentIDs: map[string]struct{}{
