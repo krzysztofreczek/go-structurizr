@@ -1,38 +1,39 @@
 version: 2.1
 
-orbs:
-  taskfile: threecomma/taskfile@0.1.0
-
 defaults: &defaults
   docker:
     - image: cimg/go:1.18
+
+default-pre-commands: &default-pre-commands
+  - restore_cache:
+      keys:
+        - go-mod-v4-{{ checksum "go.sum" }}
+  - run:
+      name: "Install TaskFile"
+      command: go install github.com/go-task/task/v3/cmd/task@latest
+
+default-post-commands: &default-post-commands
+  - save_cache:
+      key: go-mod-v4-{{ checksum "go.sum" }}
+      paths:
+        - "/go/pkg/mod"
 
 jobs:
   build:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
-      - taskfile/run: task test
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
+      <<: *default-pre-commands
+      - run: task test
+      <<: *default-post-commands
 
   build-examples:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
-      - taskfile/run: task test_examples
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
+      <<: *default-pre-commands
+      - run: task test_examples
+      <<: *default-post-commands
 
   release:
     <<: *defaults
