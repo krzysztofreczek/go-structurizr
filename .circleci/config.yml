@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+
+orbs:
+  taskfile: threecomma/taskfile@0.1.0
 
 defaults: &defaults
   docker:
@@ -10,18 +13,13 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: go test -v ./...
-      - run: go build ./...
+      -
+      - run: task test
   build-examples:
     <<: *defaults
     steps:
       - checkout
-      - run:
-          name: Run example
-          command: cd cmd/example && sh example.sh --test
-      - run:
-          name: Run example-yaml
-          command: cd cmd/example-yaml && sh example.sh --test
+      - run: task test_examples
   release:
     <<: *defaults
     steps:
@@ -29,7 +27,7 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-            . ./scripts/next_version.sh
+            . ./.github/next_version.sh
             VERSION=$(next_version $(git describe --tags --abbrev=0) 2)
 
             go get github.com/tcnksm/ghr
@@ -48,4 +46,3 @@ workflows:
           filters:
             branches:
               only: master
-              

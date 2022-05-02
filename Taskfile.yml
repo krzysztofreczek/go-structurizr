@@ -1,0 +1,20 @@
+version: '3'
+
+tasks:
+  test:
+    cmds:
+      - go test -v ./...
+
+  test_examples:
+    cmds:
+      - cd cmd/example && sh example.sh --test
+      - cd cmd/example-yaml && sh example.sh --test
+
+  build:
+    cmds:
+      - go build ./...
+
+  build_examples:
+    cmds:
+      - cd cmd/example && sh example.sh
+      - cd cmd/example-yaml && sh example.sh
