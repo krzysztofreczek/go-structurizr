@@ -14,11 +14,13 @@ jobs:
     steps:
       - checkout
       - run: task test
+
   build-examples:
     <<: *defaults
     steps:
       - checkout
       - run: task test_examples
+
   release:
     <<: *defaults
     steps:
