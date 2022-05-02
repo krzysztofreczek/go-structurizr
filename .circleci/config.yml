@@ -15,7 +15,7 @@ jobs:
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
-      - run: task test
+      - taskfile/run: task test
       - save_cache:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
@@ -28,7 +28,7 @@ jobs:
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
-      - run: task test_examples
+      - taskfile/run: task test_examples
       - save_cache:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
