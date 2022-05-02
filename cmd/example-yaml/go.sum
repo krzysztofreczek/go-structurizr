@@ -112,7 +112,7 @@ github.com/go-logfmt/logfmt v0.4.0/go.mod h1:3RMwSq7FuexP4Kalkev3ejPJsZTpXXBr9+V
 github.com/go-logfmt/logfmt v0.5.0/go.mod h1:wCYkCAKZfumFQihp8CzCvQ3paCTfi41vtzG1KdI/P7A=
 github.com/go-logfmt/logfmt v0.5.1/go.mod h1:WYhtIu8zTZfxdn5+rREduYbwxfcBr/Vr6KEVveWlfTs=
 github.com/go-openapi/analysis v0.21.2/go.mod h1:HZwRk4RRisyG8vx2Oe6aqeSQcoxRp47Xkp3+K6q+LdY=
-github.com/go-openapi/analysis v0.21.3 h1:vR88pR69D/jGh02vPbT4qoxiG+p9e5uT75JJG3O1JIU=
+github.com/go-openapi/analysis v0.21.3 h1:CPEa+B2oYCkb+lIKB4xP6Ork8Gvh0GNg9dm/twI3+QA=
 github.com/go-openapi/analysis v0.21.3/go.mod h1:2rtHDVV21tLgvJd+eXu+ExiOhfMO4+dNb7496llyke0=
 github.com/go-openapi/errors v0.19.8/go.mod h1:cM//ZKUKyO06HSwqAelJ5NsEMMcpa6VpXe8DOa1Mi1M=
 github.com/go-openapi/errors v0.19.9/go.mod h1:cM//ZKUKyO06HSwqAelJ5NsEMMcpa6VpXe8DOa1Mi1M=
