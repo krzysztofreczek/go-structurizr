@@ -4,36 +4,27 @@ defaults: &defaults
   docker:
     - image: cimg/go:1.18
 
-default-pre-commands: &default-pre-commands
-  - restore_cache:
-      keys:
-        - go-mod-v4-{{ checksum "go.sum" }}
-  - run:
-      name: "Install TaskFile"
-      command: go install github.com/go-task/task/v3/cmd/task@latest
-
-default-post-commands: &default-post-commands
-  - save_cache:
-      key: go-mod-v4-{{ checksum "go.sum" }}
-      paths:
-        - "/go/pkg/mod"
-
 jobs:
   build:
     <<: *defaults
     steps:
       - checkout
-      <<: *default-pre-commands
-      - run: task test
-      <<: *default-post-commands
-
-  build-examples:
-    <<: *defaults
-    steps:
-      - checkout
-      <<: *default-pre-commands
-      - run: task test_examples
-      <<: *default-post-commands
+      - restore_cache:
+          keys:
+            - go-mod-v4-{{ checksum "go.sum" }}
+      - run:
+          name: "Install TaskFile"
+          command: go install github.com/go-task/task/v3/cmd/task@latest
+      - run:
+          name: "Test"
+          command: task test
+      - run:
+          name: "Test examples"
+          command: task test_examples
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
 
   release:
     <<: *defaults
@@ -53,11 +44,9 @@ workflows:
   build-release:
     jobs:
       - build
-      - build-examples
       - release:
           requires:
             - build
-            - build-examples
           filters:
             branches:
               only: master
