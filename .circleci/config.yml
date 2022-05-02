@@ -13,7 +13,6 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      -
       - run: task test
   build-examples:
     <<: *defaults
