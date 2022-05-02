@@ -1,3 +1,6 @@
+[![CircleCI](https://circleci.com/gh/krzysztofreczek/go-structurizr.svg?style=shield)](https://circleci.com/gh/krzysztofreczek/go-structurizr)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # go-structurizr
 This library allows you to auto-generate C4 component diagrams out from the Golang code.
 
