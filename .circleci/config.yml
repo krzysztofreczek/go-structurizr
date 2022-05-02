@@ -6,7 +6,6 @@ orbs:
 defaults: &defaults
   docker:
     - image: cimg/go:1.18
-  working_directory: /go/src/github.com/krzysztofreczek/go-structurizr
 
 jobs:
   build:
