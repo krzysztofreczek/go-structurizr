@@ -75,11 +75,41 @@ type RootWithCircularDependencies struct {
 }
 
 func NewRootWithCircularDependencies() RootWithCircularDependencies {
-	return RootWithCircularDependencies{
-		nested: []RootWithCircularDependencies{
-			{},
-		},
-	}
+	r := RootWithCircularDependencies{}
+	r.nested = []RootWithCircularDependencies{r}
+	return r
+}
+
+type RootHasInfoWithCircularDependencies struct {
+	nested []RootHasInfoWithCircularDependencies
+}
+
+func NewRootHasInfoWithCircularDependencies() RootHasInfoWithCircularDependencies {
+	r := RootHasInfoWithCircularDependencies{}
+	r.nested = []RootHasInfoWithCircularDependencies{r}
+	return r
+}
+
+func (r RootHasInfoWithCircularDependencies) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootHasInfoWithCircularDependencies",
+	)
+}
+
+type RootHasInfoWithCircularPointerDependencies struct {
+	nested []*RootHasInfoWithCircularPointerDependencies
+}
+
+func NewRootHasInfoWithCircularPointerDependencies() RootHasInfoWithCircularPointerDependencies {
+	r := RootHasInfoWithCircularPointerDependencies{}
+	r.nested = []*RootHasInfoWithCircularPointerDependencies{&r}
+	return r
+}
+
+func (r RootHasInfoWithCircularPointerDependencies) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootHasInfoWithCircularPointerDependencies",
+	)
 }
 
 type RootEmptyHasInfo struct{}

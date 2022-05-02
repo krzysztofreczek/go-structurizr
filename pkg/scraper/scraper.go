@@ -23,18 +23,20 @@ type Scraper interface {
 }
 
 type scraper struct {
-	config    Configuration
-	rules     []Rule
-	structure model.Structure
+	config       Configuration
+	rules        []Rule
+	structure    model.Structure
+	typeCounters map[string]int
 }
 
 // NewScraper instantiates a default Scraper implementation
 // with provided Configuration.
 func NewScraper(config Configuration) Scraper {
 	return &scraper{
-		config:    config,
-		rules:     make([]Rule, 0),
-		structure: model.NewStructure(),
+		config:       config,
+		rules:        make([]Rule, 0),
+		structure:    model.NewStructure(),
+		typeCounters: make(map[string]int),
 	}
 }
 
@@ -57,9 +59,10 @@ func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 	}
 
 	return &scraper{
-		config:    config,
-		rules:     rules,
-		structure: model.NewStructure(),
+		config:       config,
+		rules:        rules,
+		structure:    model.NewStructure(),
+		typeCounters: make(map[string]int),
 	}, nil
 }
 

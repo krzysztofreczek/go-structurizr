@@ -10,6 +10,10 @@ import (
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 )
 
+var (
+	maxRecursiveScrapes = 100
+)
+
 func (s *scraper) scrape(
 	v reflect.Value,
 	parentID string,
@@ -69,6 +73,7 @@ func (s *scraper) scrapeInterfaceStrategy(
 
 	s.debug(v, "scraping the value implementing the interface")
 	v = v.Elem()
+
 	s.scrape(v, parentID, level)
 }
 
@@ -84,6 +89,7 @@ func (s *scraper) scrapePointerStrategy(
 	} else {
 		v = reflect.New(v.Type().Elem()).Elem()
 	}
+
 	s.scrape(v, parentID, level)
 }
 
@@ -146,6 +152,14 @@ func (s *scraper) scrapeStruct(
 
 	if !s.isScrappable(v) {
 		return
+	}
+
+	vID := componentID(v)
+	if c, ok := s.typeCounters[vID]; ok && c > maxRecursiveScrapes {
+		s.debug(v, "struct is being used recursively, skipping")
+		return
+	} else {
+		s.typeCounters[vID]++
 	}
 
 	var c model.Component
