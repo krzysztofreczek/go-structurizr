@@ -16,11 +16,9 @@ jobs:
           keys:
             - go-mod-v4-checksum-{{ checksum "go.sum" }}
       - run:
+      -
           name: "Install TaskFile"
           command: go install github.com/go-task/task/v3/cmd/task@latest
-      - run:
-          name: "Download all dependencies"
-          command: task download_all_deps
       - run:
           name: "Test"
           command: task test
