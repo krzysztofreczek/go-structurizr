@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.9.4
+
 defaults: &defaults
   docker:
     - image: cimg/go:1.18
@@ -11,7 +14,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
+            - go-mod-v4-checksum-{{ checksum "go.sum" }}
       - run:
           name: "Install TaskFile"
           command: go install github.com/go-task/task/v3/cmd/task@latest
@@ -25,6 +28,13 @@ jobs:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+      - slack/notify:
+          event: fail
+          mentions: '@here'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
 
   release:
     <<: *defaults
@@ -39,6 +49,13 @@ jobs:
             go get github.com/tcnksm/ghr
             go install github.com/tcnksm/ghr
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${VERSION}
+      - slack/notify:
+          event: fail
+          mentions: '@here'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
 
 workflows:
   version: 2
