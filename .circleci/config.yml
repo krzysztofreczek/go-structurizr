@@ -30,11 +30,11 @@ jobs:
             - "/go/pkg/mod"
       - slack/notify:
           event: fail
-          mentions: '@EngineeringTeam'
+          mentions: '@here'
           template: basic_fail_1
       - slack/notify:
           event: pass
-          template: success_tagged_deploy_1
+          template: basic_success_1
 
   release:
     <<: *defaults
@@ -49,6 +49,13 @@ jobs:
             go get github.com/tcnksm/ghr
             go install github.com/tcnksm/ghr
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} ${VERSION}
+      - slack/notify:
+          event: fail
+          mentions: '@here'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
 
 workflows:
   version: 2
