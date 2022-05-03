@@ -1,6 +1,11 @@
 version: '3'
 
 tasks:
+  download_all_deps:
+    - go mod download
+    - cd cmd/example && go mod download
+    - cd cmd/example-yaml && go mod download
+
   test:
     cmds:
       - go test -v ./...
