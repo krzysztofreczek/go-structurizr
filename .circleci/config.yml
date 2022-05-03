@@ -1,5 +1,9 @@
 version: 2.1
 
+orbs:
+  taskfile: threecomma/taskfile@0.1.0
+  slack: circleci/slack@4.9.4
+
 defaults: &defaults
   docker:
     - image: cimg/go:1.18
@@ -12,9 +16,7 @@ jobs:
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
-      - run:
-          name: "Install TaskFile"
-          command: go install github.com/go-task/task/v3/cmd/task@latest
+      - taskfile/install:
       - run:
           name: "Test"
           command: task test
