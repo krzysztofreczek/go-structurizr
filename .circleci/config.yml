@@ -1,7 +1,6 @@
 version: 2.1
 
 orbs:
-  taskfile: threecomma/taskfile@0.1.0
   slack: circleci/slack@4.9.4
 
 defaults: &defaults
@@ -16,8 +15,9 @@ jobs:
       - restore_cache:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
-      - taskfile/install:
-          version: latest
+      - run:
+          name: "Install TaskFile"
+          command: go install github.com/go-task/task/v3/cmd/task@latest
       - run:
           name: "Test"
           command: task test
@@ -28,6 +28,13 @@ jobs:
           key: go-mod-v4-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+      - slack/notify:
+          event: fail
+          mentions: '@EngineeringTeam'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
 
   release:
     <<: *defaults
