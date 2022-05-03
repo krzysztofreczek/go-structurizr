@@ -17,6 +17,7 @@ jobs:
           keys:
             - go-mod-v4-{{ checksum "go.sum" }}
       - taskfile/install:
+          version: latest
       - run:
           name: "Test"
           command: task test
