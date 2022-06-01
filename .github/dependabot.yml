@@ -6,3 +6,15 @@ updates:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 10
+- package-ecosystem: gomod
+  directory: "/cmd/example"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+- package-ecosystem: gomod
+  directory: "/cmd/example-yaml"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
