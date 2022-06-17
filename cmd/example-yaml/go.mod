@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/jaegertracing/jaeger v1.35.1
+	github.com/jaegertracing/jaeger v1.35.2
 	github.com/krzysztofreczek/go-structurizr v0.1.8
 	google.golang.org/genproto v0.0.0-20220429170224-98d788798c3e // indirect
 )
