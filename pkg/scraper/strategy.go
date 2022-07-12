@@ -101,7 +101,7 @@ func (s *scraper) scrapeMapStrategy(
 	s.debug(v, "map scraping strategy applied: each of map elements will be scraped")
 
 	iterator := v.MapRange()
-	for true {
+	for {
 		if !iterator.Next() {
 			break
 		}
@@ -179,7 +179,6 @@ func (s *scraper) scrapeStruct(
 	}
 
 	s.scrapeValueFields(v, parentID, level)
-	return
 }
 
 func (s *scraper) scrapeValueFields(

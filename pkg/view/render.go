@@ -45,7 +45,7 @@ func (v view) renderBody(s model.Structure) string {
 
 	v.renderRootComponents(ctx)
 
-	for true {
+	for {
 		ctx.level++
 		rendered := v.renderNextBodyLayer(ctx)
 		if rendered == 0 {

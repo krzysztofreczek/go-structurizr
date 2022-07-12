@@ -165,9 +165,7 @@ func NewRule() RuleBuilder {
 
 // WithPkgRegexps sets a list of package regular expressions.
 func (b *ruleBuilder) WithPkgRegexps(rgx ...string) RuleBuilder {
-	for _, r := range rgx {
-		b.pkgRegexes = append(b.pkgRegexes, r)
-	}
+	b.pkgRegexes = append(b.pkgRegexes, rgx...)
 	return b
 }
 
