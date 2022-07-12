@@ -19,7 +19,7 @@ func TestNewView_empty(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `This diagram has been generated with go-structurizr 
 [https://github.com/krzysztofreczek/go-structurizr]
@@ -62,7 +62,7 @@ func TestNewView_with_title(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `title TITLE`
 	require.Contains(t, outString, expectedContent)
@@ -84,7 +84,7 @@ func TestNewView_with_custom_style(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 skinparam rectangle<<STYLE>> {
@@ -114,7 +114,7 @@ func TestNewView_with_component(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
@@ -148,7 +148,7 @@ func TestNewView_with_relation(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 ID_1 .[#000000].> ID_2 : ""
@@ -185,7 +185,7 @@ func TestNewView_with_custom_line_color(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 ID_1 .[#ffffff].> ID_2 : ""
@@ -214,7 +214,7 @@ func TestNewView_with_component_of_view_tag(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
@@ -243,7 +243,7 @@ func TestNewView_with_component_with_no_view_tag(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `ID_1`
 	require.NotContains(t, outString, expectedContent)
@@ -284,7 +284,7 @@ func TestNewView_with_two_joined_components_of_view_tag(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
@@ -337,7 +337,7 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_tag(t *testin
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
@@ -375,7 +375,7 @@ func TestNewView_with_component_of_custom_style_shape(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 skinparam database<<DB>> {
@@ -425,7 +425,7 @@ func TestNewView_with_two_joined_components_of_view_root_tag(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
@@ -477,7 +477,7 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_root_tag(t *t
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `ID_1`
 	require.NotContains(t, outString, expectedContent)
@@ -516,7 +516,7 @@ func TestNewView_with_component_with_no_connection_to_root(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
@@ -558,7 +558,7 @@ func TestNewView_creates_grouping(t *testing.T) {
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := string(out.Bytes())
+	outString := out.String()
 
 	expectedContent := `
 rectangle 0ROOT <<_GROUP>> {
