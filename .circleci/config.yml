@@ -3,13 +3,13 @@ version: 2.1
 orbs:
   slack: circleci/slack@4.9.4
 
-defaults: &defaults
-  docker:
-    - image: cimg/go:1.18
-
 jobs:
   build:
-    <<: *defaults
+    parameters:
+      docker-image:
+        type: image
+    docker:
+      - image: << parameters.docker-image >>
     steps:
       - checkout
       - restore_cache:
@@ -37,7 +37,8 @@ jobs:
           template: basic_success_1
 
   release:
-    <<: *defaults
+    docker:
+      - image: cimg/go:1.18
     steps:
       - checkout
       - run:
@@ -61,7 +62,10 @@ workflows:
   version: 2
   build-release:
     jobs:
-      - build
+      - build:
+          matrix:
+            parameters:
+              docker-image: [ cimg/go:1.16, cimg/go:1.17, cimg/go:1.18 ]
       - release:
           requires:
             - build
