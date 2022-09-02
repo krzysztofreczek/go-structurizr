@@ -853,3 +853,31 @@ func NewRootWithMultipleInterfaceImplementations() []RootWithPublicInterfaceProp
 		{PI: PublicInterfaceImplB{}},
 	}
 }
+
+type RootGenericHasInfo[T any] struct {
+	t T
+}
+
+func NewRootGenericHasInfo[T any](t T) RootGenericHasInfo[T] {
+	return RootGenericHasInfo[T]{t: t}
+}
+
+func (r RootGenericHasInfo[T]) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootGenericHasInfo",
+		"public",
+	)
+}
+
+type RootEmptyGenericHasInfo[T any] struct{}
+
+func NewRootEmptyGenericHasInfo[T any](_ T) RootEmptyGenericHasInfo[T] {
+	return RootEmptyGenericHasInfo[T]{}
+}
+
+func (r RootEmptyGenericHasInfo[T]) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootEmptyGenericHasInfo",
+		"public",
+	)
+}

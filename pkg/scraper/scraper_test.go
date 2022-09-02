@@ -699,9 +699,53 @@ func TestScraper_Scrape_has_info_interface(t *testing.T) {
 			},
 			expectedRelations: map[string][]string{},
 		},
+		{
+			name:      "root with generic property",
+			structure: test.NewRootGenericHasInfo(""),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootGenericHasInfo[string]"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with generic property that implement HasInfo interface",
+			structure: test.NewRootGenericHasInfo(test.NewRootEmptyHasInfo()),
+			expectedComponentIDs: map[string]struct{}{
+				componentIDf("RootGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {},
+				componentID("RootEmptyHasInfo"):                                  {},
+			},
+			expectedRelations: map[string][]string{
+				componentIDf("RootGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "empty generic root",
+			structure: test.NewRootEmptyGenericHasInfo(""),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootEmptyGenericHasInfo[string]"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "empty generic root with generic type that implement HasInfo interface",
+			structure: test.NewRootEmptyGenericHasInfo(test.NewRootEmptyHasInfo()),
+			expectedComponentIDs: map[string]struct{}{
+				componentIDf("RootEmptyGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {},
+				componentID("RootEmptyHasInfo"):                                       {},
+			},
+			expectedRelations: map[string][]string{
+				componentIDf("RootEmptyGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			s := scraper.NewScraper(c)
 			result := s.Scrape(tt.structure)
 			requireEqualComponentIDs(t, tt.expectedComponentIDs, result.Components)
@@ -749,7 +793,9 @@ func TestScraper_Scrape_has_info_interface_component_info(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			s := scraper.NewScraper(c)
 			result := s.Scrape(tt.structure)
 			requireEqualComponents(t, tt.expectedComponents, result.Components)
@@ -923,7 +969,9 @@ func TestScraper_Scrape_rules(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			s := scraper.NewScraper(c)
 			for _, r := range tt.rules {
 				err := s.RegisterRule(r)
@@ -944,7 +992,7 @@ func requireEqualComponentIDs(
 	require.Len(t, actualComponents, len(expectedComponentIDs))
 	for id := range expectedComponentIDs {
 		_, contains := actualComponents[id]
-		require.True(t, contains, "actual components: %+v", actualComponents)
+		require.True(t, contains, "actual components: %+v; expected components IDs: %+v", actualComponents, expectedComponentIDs)
 	}
 }
 
@@ -981,4 +1029,9 @@ func requireEqualRelations(
 func componentID(name string) string {
 	id := fmt.Sprintf("%s.%s", testPKG, name)
 	return internal.Hash(id)
+}
+
+func componentIDf(name string, args ...any) string {
+	name = fmt.Sprintf(name, args...)
+	return componentID(name)
 }
