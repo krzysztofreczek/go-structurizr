@@ -965,3 +965,28 @@ func (r RootWithPublicPtrMethodWithHasInfoReturnType) Info() model.Info {
 func (r *RootWithPublicPtrMethodWithHasInfoReturnType) M() RootEmptyHasInfo {
 	return RootEmptyHasInfo{}
 }
+
+type InterfaceWithPublicMethodWithHasInfoReturnType interface {
+	M() RootEmptyHasInfo
+}
+
+type RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty struct {
+	P InterfaceWithPublicMethodWithHasInfoReturnType
+}
+
+func NewRootWithInterfaceWithPublicMethodWithHasInfoReturnTypeNilProperty() RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty {
+	return RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty{}
+}
+
+func NewRootWithInterfaceWithPublicMethodWithHasInfoReturnTypeNonNilProperty() RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty {
+	return RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty{
+		P: RootWithPublicMethodWithHasInfoReturnType{},
+	}
+}
+
+func (r RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty",
+		"public",
+	)
+}

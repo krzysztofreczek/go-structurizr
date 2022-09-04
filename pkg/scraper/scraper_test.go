@@ -819,6 +819,31 @@ func TestScraper_Scrape_has_info_interface(t *testing.T) {
 				},
 			},
 		},
+		{
+			name:      "root with interface with public method with HasInfo return type nil property",
+			structure: test.NewRootWithInterfaceWithPublicMethodWithHasInfoReturnTypeNilProperty(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty"): {},
+			},
+			expectedRelations: map[string][]string{},
+		},
+		{
+			name:      "root with interface with privte method with HasInfo return type non-nil property",
+			structure: test.NewRootWithInterfaceWithPublicMethodWithHasInfoReturnTypeNonNilProperty(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty"): {},
+				componentID("RootWithPublicMethodWithHasInfoReturnType"):                      {},
+				componentID("RootEmptyHasInfo"):                                               {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty"): {
+					componentID("RootWithPublicMethodWithHasInfoReturnType"),
+				},
+				componentID("RootWithPublicMethodWithHasInfoReturnType"): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
 	}
 	for i := range tests {
 		tt := tests[i]
