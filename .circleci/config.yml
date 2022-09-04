@@ -4,12 +4,12 @@ orbs:
   slack: circleci/slack@4.9.4
 
 executors:
-  go117:
-    docker:
-      - image: cimg/go:1.17
   go118:
     docker:
       - image: cimg/go:1.18
+  go119:
+    docker:
+      - image: cimg/go:1.19
 
 jobs:
   build:
@@ -48,7 +48,7 @@ jobs:
 
   release:
     docker:
-      - image: cimg/go:1.18
+      - image: cimg/go:1.19
     steps:
       - checkout
       - run:
@@ -75,7 +75,7 @@ workflows:
       - build:
           matrix:
             parameters:
-              docker-image: [ go117, go118 ]
+              docker-image: [ go118, go119 ]
       - release:
           requires:
             - build

@@ -126,9 +126,15 @@ func (s *scraper) scrapeFunc(
 	parentID string,
 	level int,
 ) {
-	s.debug(v, "function scraping strategy applied: output types will be scraped")
+	s.debug(v, "function scraping strategy applied: input and output types will be scraped")
 
 	t := v.Type()
+
+	for i := 0; i < t.NumIn(); i++ {
+		v = reflect.New(t.In(i))
+		s.scrape(v, parentID, level)
+	}
+
 	for i := 0; i < t.NumOut(); i++ {
 		v = reflect.New(t.Out(i))
 		s.scrape(v, parentID, level)
@@ -148,7 +154,7 @@ func (s *scraper) scrapeStruct(
 	parentID string,
 	level int,
 ) {
-	s.debug(v, "struct scraping strategy applied: value and each of its properties will be scraped")
+	s.debug(v, "struct scraping strategy applied: value and each of its properties (both exported and private) and methods (only exported) will be scraped")
 
 	if !s.isScrappable(v) {
 		return
@@ -179,6 +185,8 @@ func (s *scraper) scrapeStruct(
 	}
 
 	s.scrapeValueFields(v, parentID, level)
+	s.scrapeValueMethods(v, parentID, level)
+	s.scrapeValueMethods(reflect.New(v.Type()), parentID, level)
 }
 
 func (s *scraper) scrapeValueFields(
@@ -188,6 +196,16 @@ func (s *scraper) scrapeValueFields(
 ) {
 	for i := 0; i < v.NumField(); i++ {
 		s.scrape(v.Field(i), parentID, level+1)
+	}
+}
+
+func (s *scraper) scrapeValueMethods(
+	v reflect.Value,
+	parentID string,
+	level int,
+) {
+	for i := 0; i < v.NumMethod(); i++ {
+		s.scrape(v.Method(i), parentID, level+1)
 	}
 }
 

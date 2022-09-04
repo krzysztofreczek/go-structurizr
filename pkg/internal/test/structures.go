@@ -853,3 +853,140 @@ func NewRootWithMultipleInterfaceImplementations() []RootWithPublicInterfaceProp
 		{PI: PublicInterfaceImplB{}},
 	}
 }
+
+type RootGenericHasInfoWithGenericProperty[T any] struct {
+	t T
+}
+
+func NewRootGenericHasInfoWithGenericProperty[T any](t T) RootGenericHasInfoWithGenericProperty[T] {
+	return RootGenericHasInfoWithGenericProperty[T]{t: t}
+}
+
+func (r RootGenericHasInfoWithGenericProperty[T]) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootGenericHasInfoWithGenericProperty",
+		"public",
+	)
+}
+
+type RootEmptyGenericHasInfoWithGenericMethod[T any] struct{}
+
+func NewRootEmptyGenericHasInfoWithGenericMethod[T any](_ T) RootEmptyGenericHasInfoWithGenericMethod[T] {
+	return RootEmptyGenericHasInfoWithGenericMethod[T]{}
+}
+
+func (r RootEmptyGenericHasInfoWithGenericMethod[T]) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootEmptyGenericHasInfoWithGenericMethod",
+		"public",
+	)
+}
+
+func (r RootEmptyGenericHasInfoWithGenericMethod[T]) M(t T) error {
+	return nil
+}
+
+type RootWithPublicMethodWithHasInfoArgument struct {
+}
+
+func NewRootWithPublicMethodWithHasInfoArgument() RootWithPublicMethodWithHasInfoArgument {
+	return RootWithPublicMethodWithHasInfoArgument{}
+}
+
+func (r RootWithPublicMethodWithHasInfoArgument) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootWithPublicMethodWithHasInfoArgument",
+		"public",
+	)
+}
+
+func (r RootWithPublicMethodWithHasInfoArgument) M(a RootEmptyHasInfo) error {
+	return nil
+}
+
+type RootWithPublicMethodWithHasInfoReturnType struct {
+}
+
+func NewRootWithPublicMethodWithHasInfoReturnType() RootWithPublicMethodWithHasInfoReturnType {
+	return RootWithPublicMethodWithHasInfoReturnType{}
+}
+
+func (r RootWithPublicMethodWithHasInfoReturnType) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootWithPublicMethodWithHasInfoReturnType",
+		"public",
+	)
+}
+
+func (r RootWithPublicMethodWithHasInfoReturnType) M() RootEmptyHasInfo {
+	return RootEmptyHasInfo{}
+}
+
+type RootWithPublicPtrMethodWithHasInfoArgument struct {
+}
+
+func NewRootWithPublicPtrMethodWithHasInfoArgument() RootWithPublicPtrMethodWithHasInfoArgument {
+	return RootWithPublicPtrMethodWithHasInfoArgument{}
+}
+
+func NewRootWithPublicPtrMethodWithHasInfoArgumentPtr() *RootWithPublicPtrMethodWithHasInfoArgument {
+	return &RootWithPublicPtrMethodWithHasInfoArgument{}
+}
+
+func (r RootWithPublicPtrMethodWithHasInfoArgument) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootWithPublicPtrMethodWithHasInfoArgument",
+		"public",
+	)
+}
+
+func (r *RootWithPublicPtrMethodWithHasInfoArgument) M(a RootEmptyHasInfo) error {
+	return nil
+}
+
+type RootWithPublicPtrMethodWithHasInfoReturnType struct {
+}
+
+func NewRootWithPublicPtrMethodWithHasInfoReturnType() RootWithPublicPtrMethodWithHasInfoReturnType {
+	return RootWithPublicPtrMethodWithHasInfoReturnType{}
+}
+
+func NewRootWithPublicPtrMethodWithHasInfoReturnTypePtr() *RootWithPublicPtrMethodWithHasInfoReturnType {
+	return &RootWithPublicPtrMethodWithHasInfoReturnType{}
+}
+
+func (r RootWithPublicPtrMethodWithHasInfoReturnType) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootWithPublicPtrMethodWithHasInfoReturnType",
+		"public",
+	)
+}
+
+func (r *RootWithPublicPtrMethodWithHasInfoReturnType) M() RootEmptyHasInfo {
+	return RootEmptyHasInfo{}
+}
+
+type InterfaceWithPublicMethodWithHasInfoReturnType interface {
+	M() RootEmptyHasInfo
+}
+
+type RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty struct {
+	P InterfaceWithPublicMethodWithHasInfoReturnType
+}
+
+func NewRootWithInterfaceWithPublicMethodWithHasInfoReturnTypeNilProperty() RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty {
+	return RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty{}
+}
+
+func NewRootWithInterfaceWithPublicMethodWithHasInfoReturnTypeNonNilProperty() RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty {
+	return RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty{
+		P: RootWithPublicMethodWithHasInfoReturnType{},
+	}
+}
+
+func (r RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty) Info() model.Info {
+	return model.ComponentInfo(
+		"test.RootWithInterfaceWithPublicMethodWithHasInfoReturnTypeProperty",
+		"public",
+	)
+}
