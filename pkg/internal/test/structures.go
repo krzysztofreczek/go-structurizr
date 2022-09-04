@@ -871,10 +871,6 @@ func (r RootGenericHasInfoWithGenericProperty[T]) Info() model.Info {
 
 type RootEmptyGenericHasInfoWithGenericMethod[T any] struct{}
 
-func (r RootEmptyGenericHasInfoWithGenericMethod[T]) M(t T) error {
-	return nil
-}
-
 func NewRootEmptyGenericHasInfoWithGenericMethod[T any](_ T) RootEmptyGenericHasInfoWithGenericMethod[T] {
 	return RootEmptyGenericHasInfoWithGenericMethod[T]{}
 }
@@ -884,6 +880,10 @@ func (r RootEmptyGenericHasInfoWithGenericMethod[T]) Info() model.Info {
 		"test.RootEmptyGenericHasInfoWithGenericMethod",
 		"public",
 	)
+}
+
+func (r RootEmptyGenericHasInfoWithGenericMethod[T]) M(t T) error {
+	return nil
 }
 
 type RootWithPublicMethodWithHasInfoArgument struct {
