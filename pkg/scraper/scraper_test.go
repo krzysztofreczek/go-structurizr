@@ -701,46 +701,122 @@ func TestScraper_Scrape_has_info_interface(t *testing.T) {
 		},
 		{
 			name:      "root with generic property",
-			structure: test.NewRootGenericHasInfo(""),
+			structure: test.NewRootGenericHasInfoWithGenericProperty(""),
 			expectedComponentIDs: map[string]struct{}{
-				componentID("RootGenericHasInfo[string]"): {},
+				componentID("RootGenericHasInfoWithGenericProperty[string]"): {},
 			},
 			expectedRelations: map[string][]string{},
 		},
 		{
 			name:      "root with generic property that implement HasInfo interface",
-			structure: test.NewRootGenericHasInfo(test.NewRootEmptyHasInfo()),
+			structure: test.NewRootGenericHasInfoWithGenericProperty(test.NewRootEmptyHasInfo()),
 			expectedComponentIDs: map[string]struct{}{
-				componentIDf("RootGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {},
-				componentID("RootEmptyHasInfo"):                                  {},
+				componentIDf("RootGenericHasInfoWithGenericProperty[%s.RootEmptyHasInfo]", testPKG): {},
+				componentID("RootEmptyHasInfo"): {},
 			},
 			expectedRelations: map[string][]string{
-				componentIDf("RootGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {
+				componentIDf("RootGenericHasInfoWithGenericProperty[%s.RootEmptyHasInfo]", testPKG): {
 					componentID("RootEmptyHasInfo"),
 				},
 			},
 		},
 		{
-			name:      "empty generic root",
-			structure: test.NewRootEmptyGenericHasInfo(""),
+			name:      "root with generic method",
+			structure: test.NewRootEmptyGenericHasInfoWithGenericMethod(""),
 			expectedComponentIDs: map[string]struct{}{
-				componentID("RootEmptyGenericHasInfo[string]"): {},
+				componentID("RootEmptyGenericHasInfoWithGenericMethod[string]"): {},
 			},
 			expectedRelations: map[string][]string{},
 		},
 		{
-			name:      "empty generic root with generic type that implement HasInfo interface",
-			structure: test.NewRootEmptyGenericHasInfo(test.NewRootEmptyHasInfo()),
+			name:      "root with generic method using type that implement HasInfo interface",
+			structure: test.NewRootEmptyGenericHasInfoWithGenericMethod(test.NewRootEmptyHasInfo()),
 			expectedComponentIDs: map[string]struct{}{
-				componentIDf("RootEmptyGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {},
-				// TODO: This scenatio is not supported yet
-				// componentID("RootEmptyHasInfo"): {},
+				componentIDf("RootEmptyGenericHasInfoWithGenericMethod[%s.RootEmptyHasInfo]", testPKG): {},
+				componentID("RootEmptyHasInfo"): {},
 			},
 			expectedRelations: map[string][]string{
-				// TODO: This scenatio is not supported yet
-				// componentIDf("RootEmptyGenericHasInfo[%s.RootEmptyHasInfo]", testPKG): {
-				// 	componentID("RootEmptyHasInfo"),
-				// },
+				componentIDf("RootEmptyGenericHasInfoWithGenericMethod[%s.RootEmptyHasInfo]", testPKG): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "root with public method with argument that implement HasInfo interface",
+			structure: test.NewRootWithPublicMethodWithHasInfoArgument(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithPublicMethodWithHasInfoArgument"): {},
+				componentID("RootEmptyHasInfo"):                        {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootWithPublicMethodWithHasInfoArgument"): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "root with public method with result type that implement HasInfo interface",
+			structure: test.NewRootWithPublicMethodWithHasInfoReturnType(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithPublicMethodWithHasInfoReturnType"): {},
+				componentID("RootEmptyHasInfo"):                          {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootWithPublicMethodWithHasInfoReturnType"): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "root with public pointer method with argument that implement HasInfo interface",
+			structure: test.NewRootWithPublicPtrMethodWithHasInfoArgument(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithPublicPtrMethodWithHasInfoArgument"): {},
+				componentID("RootEmptyHasInfo"):                           {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootWithPublicPtrMethodWithHasInfoArgument"): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "root with public pointer method with result type that implement HasInfo interface",
+			structure: test.NewRootWithPublicPtrMethodWithHasInfoReturnType(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithPublicPtrMethodWithHasInfoReturnType"): {},
+				componentID("RootEmptyHasInfo"):                             {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootWithPublicPtrMethodWithHasInfoReturnType"): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "pointer to root with public pointer method with argument that implement HasInfo interface",
+			structure: test.NewRootWithPublicPtrMethodWithHasInfoArgumentPtr(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithPublicPtrMethodWithHasInfoArgument"): {},
+				componentID("RootEmptyHasInfo"):                           {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootWithPublicPtrMethodWithHasInfoArgument"): {
+					componentID("RootEmptyHasInfo"),
+				},
+			},
+		},
+		{
+			name:      "pointer to root with public pointer method with result type that implement HasInfo interface",
+			structure: test.NewRootWithPublicPtrMethodWithHasInfoReturnTypePtr(),
+			expectedComponentIDs: map[string]struct{}{
+				componentID("RootWithPublicPtrMethodWithHasInfoReturnType"): {},
+				componentID("RootEmptyHasInfo"):                             {},
+			},
+			expectedRelations: map[string][]string{
+				componentID("RootWithPublicPtrMethodWithHasInfoReturnType"): {
+					componentID("RootEmptyHasInfo"),
+				},
 			},
 		},
 	}
