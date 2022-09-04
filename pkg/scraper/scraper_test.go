@@ -820,8 +820,8 @@ func TestScraper_Scrape_has_info_interface(t *testing.T) {
 			},
 		},
 	}
-	for _, tt := range tests {
-		tt := tt
+	for i := range tests {
+		tt := tests[i]
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			s := scraper.NewScraper(c)
@@ -870,8 +870,8 @@ func TestScraper_Scrape_has_info_interface_component_info(t *testing.T) {
 			},
 		},
 	}
-	for _, tt := range tests {
-		tt := tt
+	for i := range tests {
+		tt := tests[i]
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			s := scraper.NewScraper(c)
@@ -1046,8 +1046,8 @@ func TestScraper_Scrape_rules(t *testing.T) {
 			},
 		},
 	}
-	for _, tt := range tests {
-		tt := tt
+	for i := range tests {
+		tt := tests[i]
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			s := scraper.NewScraper(c)

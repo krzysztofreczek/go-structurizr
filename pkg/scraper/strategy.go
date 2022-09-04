@@ -186,6 +186,7 @@ func (s *scraper) scrapeStruct(
 
 	s.scrapeValueFields(v, parentID, level)
 	s.scrapeValueMethods(v, parentID, level)
+	s.scrapeValueMethods(reflect.New(v.Type()), parentID, level)
 }
 
 func (s *scraper) scrapeValueFields(
