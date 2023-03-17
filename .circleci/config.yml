@@ -10,6 +10,9 @@ executors:
   go119:
     docker:
       - image: cimg/go:1.19
+  go120:
+    docker:
+      - image: cimg/go:1.20
 
 jobs:
   build:
@@ -31,6 +34,30 @@ jobs:
       - run:
           name: "Test"
           command: task test
+      - save_cache:
+          key: go-mod-v4-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - slack/notify:
+          event: fail
+          mentions: '@here'
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: basic_success_1
+  build-examples:
+    parameters:
+      docker-image:
+        type: executor
+    executor: << parameters.docker-image >>
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v4-checksum-{{ checksum "go.sum" }}
+      - run:
+          name: "Install TaskFile"
+          command: go install github.com/go-task/task/v3/cmd/task@latest
       - run:
           name: "Test examples"
           command: task test_examples
@@ -48,7 +75,7 @@ jobs:
 
   release:
     docker:
-      - image: cimg/go:1.19
+      - image: cimg/go:1.20
     steps:
       - checkout
       - run:
@@ -75,7 +102,11 @@ workflows:
       - build:
           matrix:
             parameters:
-              docker-image: [ go118, go119 ]
+              docker-image: [ go118, go119, go120 ]
+      - build-examples:
+          matrix:
+            parameters:
+              docker-image: [ go120 ]
       - release:
           requires:
             - build
