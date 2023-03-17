@@ -1,6 +1,6 @@
 module github.com/krzysztofreczek/go-structurizr/example-yaml
 
-go 1.18
+go 1.20
 
 require (
 	github.com/gogo/protobuf v1.3.2 // indirect
