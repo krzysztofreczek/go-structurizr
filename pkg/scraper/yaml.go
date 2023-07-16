@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/model"
-	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
+	"github.com/marianoceneri/go-structurizr/pkg/model"
+	"github.com/marianoceneri/go-structurizr/pkg/yaml"
 )
 
 func toScraperConfig(c yaml.Config) Configuration {

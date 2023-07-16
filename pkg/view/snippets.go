@@ -5,11 +5,11 @@ import (
 	"image/color"
 	"strings"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/model"
+	"github.com/marianoceneri/go-structurizr/pkg/model"
 )
 
 const (
-	snippetUMLHead = `This diagram has been generated with go-structurizr 
+	snippetUMLHead = `This diagram has been generated with go-structurizr
 [https://github.com/krzysztofreczek/go-structurizr]
 
 @startuml

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/model"
+	"github.com/marianoceneri/go-structurizr/pkg/model"
 )
 
 const (

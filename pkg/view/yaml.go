@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"log"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
+	"github.com/marianoceneri/go-structurizr/pkg/yaml"
 )
 
 func toView(c yaml.Config) (View, error) {

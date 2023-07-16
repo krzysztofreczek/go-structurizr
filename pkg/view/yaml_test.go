@@ -5,8 +5,8 @@ import (
 	"image/color"
 	"testing"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/model"
-	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
+	"github.com/marianoceneri/go-structurizr/pkg/model"
+	"github.com/marianoceneri/go-structurizr/pkg/yaml"
 	"github.com/stretchr/testify/require"
 )
 

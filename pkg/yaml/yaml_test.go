@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
+	"github.com/marianoceneri/go-structurizr/pkg/yaml"
 	"github.com/stretchr/testify/require"
 )
 

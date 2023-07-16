@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/internal"
-	"github.com/krzysztofreczek/go-structurizr/pkg/internal/test"
-	"github.com/krzysztofreczek/go-structurizr/pkg/model"
-	"github.com/krzysztofreczek/go-structurizr/pkg/scraper"
+	"github.com/marianoceneri/go-structurizr/pkg/internal"
+	"github.com/marianoceneri/go-structurizr/pkg/internal/test"
+	"github.com/marianoceneri/go-structurizr/pkg/model"
+	"github.com/marianoceneri/go-structurizr/pkg/scraper"
 	"github.com/stretchr/testify/require"
 )
 
 const (
-	testPKG = "github.com/krzysztofreczek/go-structurizr/pkg/internal/test"
+	testPKG = "github.com/marianoceneri/go-structurizr/pkg/internal/test"
 )
 
 func TestScraper_Scrape_package_matching(t *testing.T) {
@@ -26,7 +26,7 @@ func TestScraper_Scrape_package_matching(t *testing.T) {
 			name:      "structure within given package",
 			structure: test.NewRootEmptyHasInfo(),
 			packages: []string{
-				"github.com/krzysztofreczek/go-structurizr/pkg/internal/test",
+				"github.com/marianoceneri/go-structurizr/pkg/internal/test",
 			},
 			expectedNumberOfComponents: 1,
 		},
@@ -34,7 +34,7 @@ func TestScraper_Scrape_package_matching(t *testing.T) {
 			name:      "structure out of given package",
 			structure: test.NewRootEmptyHasInfo(),
 			packages: []string{
-				"github.com/krzysztofreczek/go-structurizr/pkg/foo",
+				"github.com/marianoceneri/go-structurizr/pkg/foo",
 			},
 			expectedNumberOfComponents: 0,
 		},
@@ -42,8 +42,8 @@ func TestScraper_Scrape_package_matching(t *testing.T) {
 			name:      "structure within one of given packages",
 			structure: test.NewRootEmptyHasInfo(),
 			packages: []string{
-				"github.com/krzysztofreczek/go-structurizr/pkg/foo",
-				"github.com/krzysztofreczek/go-structurizr/pkg/internal/test",
+				"github.com/marianoceneri/go-structurizr/pkg/foo",
+				"github.com/marianoceneri/go-structurizr/pkg/internal/test",
 			},
 			expectedNumberOfComponents: 1,
 		},
@@ -51,7 +51,7 @@ func TestScraper_Scrape_package_matching(t *testing.T) {
 			name:      "structure within given package prefix",
 			structure: test.NewRootEmptyHasInfo(),
 			packages: []string{
-				"github.com/krzysztofreczek/go-structurizr/pkg",
+				"github.com/marianoceneri/go-structurizr/pkg",
 			},
 			expectedNumberOfComponents: 1,
 		},
@@ -939,7 +939,7 @@ func TestScraper_Scrape_rules(t *testing.T) {
 	require.NoError(t, err)
 
 	ruleMatchPublicComponentInAnotherPackage, err := scraper.NewRule().
-		WithPkgRegexps("^github.com/krzysztofreczek/go-structurizr/pkg/foo$").
+		WithPkgRegexps("^github.com/marianoceneri/go-structurizr/pkg/foo$").
 		WithNameRegexp("^test.PublicComponent$").
 		WithApplyFunc(func(name string, groups ...string) model.Info {
 			return model.ComponentInfo()

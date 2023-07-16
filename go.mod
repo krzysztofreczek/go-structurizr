@@ -1,4 +1,4 @@
-module github.com/krzysztofreczek/go-structurizr
+module github.com/marianoceneri/go-structurizr
 
 go 1.18
 

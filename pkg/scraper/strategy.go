@@ -6,8 +6,8 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/krzysztofreczek/go-structurizr/pkg/internal"
-	"github.com/krzysztofreczek/go-structurizr/pkg/model"
+	"github.com/marianoceneri/go-structurizr/pkg/internal"
+	"github.com/marianoceneri/go-structurizr/pkg/model"
 )
 
 var (
