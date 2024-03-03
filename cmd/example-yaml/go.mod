@@ -2,6 +2,8 @@ module github.com/krzysztofreczek/go-structurizr/example-yaml
 
 go 1.21
 
+toolchain go1.22.0
+
 require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/jaegertracing/jaeger v1.54.0
