@@ -22,3 +22,8 @@ tasks:
     cmds:
       - cd cmd/example && sh example.sh
       - cd cmd/example-yaml && sh example.sh
+
+  update_examples:
+    cmds:
+      - cd cmd/example && go get -u ./... && go mod tidy
+      - cd cmd/example-yaml && go get -u ./... && go mod tidy
