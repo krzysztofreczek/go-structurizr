@@ -161,11 +161,12 @@ func (s *scraper) scrapeStruct(
 	}
 
 	vID := componentID(v)
-	if c, ok := s.typeCounters[vID]; ok && c > maxRecursiveScrapes {
+	vUsageKey := fmt.Sprintf("%s-%s", parentID, vID)
+	if c, ok := s.typeCounters[vUsageKey]; ok && c > maxRecursiveScrapes {
 		s.debug(v, "struct is being used recursively, skipping")
 		return
 	} else {
-		s.typeCounters[vID]++
+		s.typeCounters[vUsageKey]++
 	}
 
 	var c model.Component
