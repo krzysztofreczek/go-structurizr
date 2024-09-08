@@ -8,15 +8,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Scraper represents default scraper responsibilities.
+// Scraper represents the default responsibilities of a scraper.
 //
-// Scrape reflects given structure in accordance with internal configuration
-// and registered rules.
-// Scrape returns an open model.Structure with recognised components
-// and relations between those.
+// Scrape processes the given structure according to the internal configuration
+// and registered rules. It returns an open `model.Structure` containing recognized
+// components and the relationships between them.
 //
-// RegisterRule registers given Rule in the scraper.
-// RegisterRule will return an error in case the given rule is nil.
+// RegisterRule registers a `Rule` with the scraper. It will return an error
+// if the provided rule is nil.
 type Scraper interface {
 	Scrape(i interface{}) model.Structure
 	RegisterRule(r Rule) error
@@ -29,8 +28,7 @@ type scraper struct {
 	typeCounters map[string]int
 }
 
-// NewScraper instantiates a default Scraper implementation
-// with provided Configuration.
+// NewScraper creates a new Scraper instance using the provided Configuration.
 func NewScraper(config Configuration) Scraper {
 	return &scraper{
 		config:       config,
@@ -40,10 +38,10 @@ func NewScraper(config Configuration) Scraper {
 	}
 }
 
-// NewScraperFromConfigFile instantiates a default Scraper implementation
-// with Configuration loaded from provided YAML configuration file.
-// NewScraperFromConfigFile will return an error in case the YAML configuration
-// file does not exist or contains invalid content.
+// NewScraperFromConfigFile creates a new Scraper instance using Configuration
+// loaded from the specified YAML configuration file.
+//
+// It returns an error if the YAML file does not exist or contains invalid content.
 func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 	configuration, err := yaml.LoadFromFile(fileName)
 	if err != nil {
@@ -66,8 +64,9 @@ func NewScraperFromConfigFile(fileName string) (Scraper, error) {
 	}, nil
 }
 
-// RegisterRule registers given Rule in the scraper.
-// RegisterRule will return an error in case the given rule is nil.
+// RegisterRule adds the specified Rule to the scraper.
+//
+// It returns an error if the provided rule is nil.
 func (s *scraper) RegisterRule(r Rule) error {
 	if r == nil {
 		return errors.New("rule must not be nil")
@@ -76,10 +75,11 @@ func (s *scraper) RegisterRule(r Rule) error {
 	return nil
 }
 
-// Scrape reflects given structure in accordance with internal configuration
+// Scrape processes the given structure according to the internal configuration
 // and registered rules.
-// Scrape returns an open model.Structure with recognised components
-// and relations between those.
+//
+// It returns an open `model.Structure` containing recognized components
+// and their relationships.
 func (s *scraper) Scrape(i interface{}) model.Structure {
 	v := reflect.ValueOf(i)
 	s.scrape(v, "", 0)

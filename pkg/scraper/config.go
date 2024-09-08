@@ -1,18 +1,18 @@
 package scraper
 
-// Configuration is an open structure that contains scraper configuration.
+// Configuration is an open structure that holds the scraper configuration.
 //
-// Packages contain prefixes of packages for scraper to scrape.
-// Each object of package that does not match any of predefined
-// package prefixes is omitted and its internal structure is not scraped.
-// When no package prefix is provided, the scraper will stop
-// scraping given structure on a root level.
+// Packages contain prefixes of packages for the scraper to process.
+// Any package object that does not match the provided prefixes will be omitted,
+// and its internal structure will not be scraped.
+// If no package prefixes are provided, the scraper will only process the root level of the structure.
 type Configuration struct {
 	Packages []string
 }
 
-// NewConfiguration instantiates Configuration with a set of package
-// prefixes provided with variadic argument.
+// NewConfiguration creates a Configuration with the specified package prefixes.
+//
+// It takes a variadic argument to accept multiple package prefixes.
 func NewConfiguration(packages ...string) Configuration {
 	return Configuration{
 		Packages: packages,

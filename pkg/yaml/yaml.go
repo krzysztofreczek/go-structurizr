@@ -7,26 +7,26 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Config is an open YAML configuration structure.
+// Config represents a YAML configuration structure.
 type Config struct {
 	Configuration ConfigConfiguration `yaml:"configuration"`
 	Rules         []ConfigRule        `yaml:"rules"`
 	View          ConfigView          `yaml:"view"`
 }
 
-// ConfigConfiguration is an open YAML configuration structure.
+// ConfigConfiguration represents a YAML configuration structure.
 type ConfigConfiguration struct {
 	Packages []string `yaml:"pkgs"`
 }
 
-// ConfigRule is an open YAML configuration structure.
+// ConfigRule represents a YAML configuration structure for rules.
 type ConfigRule struct {
 	PackageRegexps []string            `yaml:"pkg_regexps"`
 	NameRegexp     string              `yaml:"name_regexp"`
 	Component      ConfigRuleComponent `yaml:"component"`
 }
 
-// ConfigRuleComponent is an open YAML configuration structure.
+// ConfigRuleComponent represents a YAML configuration structure for rule components.
 type ConfigRuleComponent struct {
 	Name        string   `yaml:"name"`
 	Description string   `yaml:"description"`
@@ -34,7 +34,7 @@ type ConfigRuleComponent struct {
 	Tags        []string `yaml:"tags"`
 }
 
-// ConfigView is an open YAML configuration structure.
+// ConfigView represents a YAML configuration structure for views.
 type ConfigView struct {
 	Title             string            `yaml:"title"`
 	LineColor         string            `yaml:"line_color"`
@@ -43,7 +43,7 @@ type ConfigView struct {
 	RootComponentTags []string          `yaml:"root_component_tags"`
 }
 
-// ConfigViewStyle is an open YAML configuration structure.
+// ConfigViewStyle represents a YAML configuration structure for view styles.
 type ConfigViewStyle struct {
 	ID              string `yaml:"id"`
 	BackgroundColor string `yaml:"background_color"`
@@ -52,9 +52,9 @@ type ConfigViewStyle struct {
 	Shape           string `yaml:"shape"`
 }
 
-// LoadFromFile loads Config from YAML file.
-// LoadFromFile will return an error in case file does not exists
-// or cannot be decoded.
+// LoadFromFile loads a Config from a YAML file.
+//
+// It returns an error if the file does not exist or cannot be decoded.
 func LoadFromFile(fileName string) (Config, error) {
 	f, err := os.Open(fileName)
 	if err != nil {
@@ -67,8 +67,9 @@ func LoadFromFile(fileName string) (Config, error) {
 	return LoadFrom(f)
 }
 
-// LoadFrom loads Config from YAML content read from io.Reader.
-// LoadFrom will return an error in case io.Reader content cannot be decoded.
+// LoadFrom loads a Config from YAML content read from an io.Reader.
+//
+// It returns an error if the content from the io.Reader cannot be decoded.
 func LoadFrom(source io.Reader) (Config, error) {
 	var cfg Config
 	decoder := yaml.NewDecoder(source)

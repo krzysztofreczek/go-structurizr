@@ -1,49 +1,53 @@
-[![CircleCI](https://circleci.com/gh/krzysztofreczek/go-structurizr.svg?style=shield)](https://circleci.com/gh/krzysztofreczek/go-structurizr)
+[![CircleCI](https://circleci.com/gh/krzysztofreczek/go-structurizr.svg?style=shield)](https://circleci.com/gh/krzysztofreczek/go-structurizr)  
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # go-structurizr
-This library allows you to auto-generate C4 component diagrams out from the Golang code.
+
+This library allows you to auto-generate C4 component diagrams from Go code.
 
 ![Example](images/example.png)
 
-## Usage and examples
-If you want to get directly into usage of the library check my [blog post](https://threedots.tech/post/auto-generated-c4-architecture-diagrams-in-go/) with a step-by-step implementation guide.
+## Usage and Examples
 
-You may also find a couple of examples implemented in the `cmd` directory. In order to run any of those examples, please run the shell script attached.
+To quickly learn how to use the library, check out my [blog post](https://threedots.tech/post/auto-generated-c4-architecture-diagrams-in-go/) for a step-by-step implementation guide.
 
-## How it works?
-The library provides a set of tools (Scraper and View) that allow you to scrape and render given Golang structures into a [C4 component](https://c4model.com/) diagram in [*.plantuml](https://plantuml.com/) format.
+You can also find several examples in the `cmd` directory. To run any of these examples, use the provided shell script.
 
-**Scraper** component reflects given structure in accordance with structure interfaces, predefined rules and configuration. 
+## How It Works
 
-You may pass the scraped structure into a **View** definition which you can then render into a plantUML diagram code. 
+The library provides tools (Scraper and View) to scrape and render Go structures into a [C4 component](https://c4model.com/) diagram in [PlantUML](https://plantuml.com/) format.
 
-Scraper identifies components to scrape in one of the following cases:
-* type that is being examined implements an interface `model.HasInfo`.
-* type that is being examined applies to one of the rules registered in the scraper.
+- **Scraper** reflects a given structure according to interfaces, predefined rules, and configurations.
+- You can pass the scraped structure into a **View** definition, which can then be rendered into PlantUML diagram code.
+
+Scraper identifies components to scrape under the following conditions:
+- The type being examined implements the `model.HasInfo` interface.
+- The type being examined matches one of the rules registered with the scraper.
 
 ## Components
 
 ### Component Info
 
-Structure `model.Info` is a basic structure that defines a component included in the scraped structure of your code.
+The `model.Info` structure defines a component in the scraped structure of your code:
+
 ```go
 type Info struct {
 	Kind        string      // kind of scraped component
 	Name        string      // component name
 	Description string      // component description
 	Technology  string      // technology used within the component
-	Tags        []string    // tags are used to match view styles to component
+	Tags        []string    // tags used to match view styles to component
 }
 ```
 
 ### Scraper
 
-Scraper may be instantiated in one of two ways:
-* from the code
-* from the YAML file
+You can instantiate the scraper in one of two ways:
+- From the code
+- From a YAML file
 
-In order to instantiate the scraper you need to provide scraper configuration which contains a slice of prefixes of packages that you want to reflect. Types that do not match any of the given prefixes will not be traversed. 
+To instantiate the scraper, provide a configuration that includes the prefixes of packages you want to reflect. Types that do not match any of the specified prefixes will not be processed.
+
 ```go
 config := scraper.NewConfiguration(
     "github.com/org/pkg",
@@ -51,12 +55,12 @@ config := scraper.NewConfiguration(
 s := scraper.NewScraper(config)
 ```
 
-Having a scraper instantiated, you can register a set of rules that will allow the scraper to identify the components to include in the output structure.
+After creating a scraper instance, you can register rules that will allow it to identify components to include in the output structure.
 
 Each rule consists of:
-* Set of package regexp's - only types in a package matching at least one of the package regexp's will be processed
-* Name regexp - only type of name matching regexp will be processed
-* Apply function - function that produces `model.Info` describing the component included in the scraped structure.
+- A set of package regular expressions: Only types in a package matching at least one of the regular expressions will be processed.
+- A name regular expression: Only types whose names match the regular expression will be processed.
+- An apply function: A function that produces `model.Info` describing the component to include in the scraped structure.
 
 ```go
 r, err := scraper.NewRule().
@@ -70,16 +74,16 @@ r, err := scraper.NewRule().
 err = s.RegisterRule(r)
 ```
 
-The apply function has two arguments: name and groups matched from the name regular expression. 
+The apply function has two arguments: the name and groups matched from the name regular expression.
 
-See the example:
+Example:
 ```go
 r, err := scraper.NewRule().
     WithPkgRegexps("github.com/org/pkg/foo/.*").
     WithNameRegexp(`^(\w*)\.(\w*)Client$`).
     WithApplyFunc(
         func(_ string, groups ...string) model.Info {
-            // Do some groups sanity checks first, then:
+            // Perform checks on the groups, then:
             n := fmt.Sprintf("Client of external %s service", groups[1])
             return model.ComponentInfo(n, "foo client", "gRPC", "TAG")
         }).
@@ -87,9 +91,10 @@ r, err := scraper.NewRule().
 err = s.RegisterRule(r)
 ```
 
-Alternatively, you can instantiate the scraper form YAML configuration file:
+Alternatively, you can instantiate the scraper from a YAML configuration file:
+
 ```yaml
-// go-structurizr.yml
+# go-structurizr.yml
 configuration:
   pkgs:
     - "github.com/org/pkg"
@@ -105,7 +110,8 @@ rules:
         - TAG
 ```
 
-Regex groups may also be used within yaml rule definition. Here you can find an example:
+You can also use regular expression groups in YAML rule definitions:
+
 ```yaml
 rules:
   - name_regexp: "(\\w*)\\.(\\w*)Client$"
@@ -119,38 +125,42 @@ rules:
         - TAG
 ```
 
+To create a scraper from the configuration file:
+
 ```go
 s, err := scraper.NewScraperFromConfigFile("./go-structurizr.yml")
 ```
 
-Eventually, having the scraper instantiated and configured you can use it to scrape any structure you want. Scraper returns a struct `model.Structure`.
+Once the scraper is instantiated and configured, you can use it to scrape any structure. The scraper returns a `model.Structure`.
+
 ```go
 structure := s.Scrape(app)
 ```
 
 ### View
 
-Similarly, to the scraper, view may be instantiated in one of two ways:
-* from the code
-* from the YAML file
+Similarly to the scraper, a view can be instantiated in one of two ways:
+- From the code
+- From a YAML file
 
-In order to render scraped structure, you will need to instantiate and configure a view.
-View consists of:
-* title
-* component styles - styles are applied to the components by matching first of component tags with style ids
-* additional styling (i.e. line color)
-* component tags - if specified, view will contain only components tagged with one of the view tags. When no tag is defined, all components will be included in the rendered view.
-* root component tags - if specified, view will contain only those components which have connection (direct or in-direct) to at least one of components with root tag.
+To render a scraped structure, you need to instantiate and configure a view. A view consists of:
+- Title
+- Component styles: Styles are applied to components by matching the first component tag with style IDs.
+- Additional styling (e.g., line color)
+- Component tags: If specified, the view will only contain components tagged with one of the view tags. If no tags are defined, all components will be included.
+- Root component tags: If specified, the view will only include components that have a direct or indirect connection to at least one component with a root tag.
 
-In order to instantiate default view, use the view builder:
+To instantiate a default view, use the view builder:
+
 ```go
 v := view.NewView().Build()
 ```
 
-In case you need to customize it, use available builder methods:
+To customize it, use the available builder methods:
+
 ```go
 v := view.NewView().
-    WithTitle("Title")
+    WithTitle("Title").
     WithComponentStyle(
         view.NewComponentStyle("TAG").
             WithBackgroundColor(color.White).
@@ -164,9 +174,10 @@ v := view.NewView().
     Build()
 ```
 
-Alternatively, you can instantiate the view form YAML configuration file:
+Alternatively, you can instantiate the view from a YAML configuration file:
+
 ```yaml
-// go-structurizr.yml
+# go-structurizr.yml
 view:
   title: "Title"
   line_color: 000000ff
@@ -182,11 +193,14 @@ view:
     - TAG
 ```
 
+To create a view from the configuration file:
+
 ```go
 v, err := view.NewViewFromConfigFile("./go-structurizr.yml")
 ```
 
-As the view is initialized, you can now render the structure into planUML diagram.
+Once the view is initialized, you can render the structure into a PlantUML diagram:
+
 ```go
 outFile, _ := os.Create("c4.plantuml")
 defer func() {
@@ -196,13 +210,16 @@ defer func() {
 err = v.RenderStructureTo(structure, outFile)
 ```
 
-## Debug mode
-In order to see detailed scraping or view rendering logs, set `LOG_LEVEL` env variable with `debug` of `DEBUG`.
+## Debug Mode
 
-## Good practices
-The best results and experience in using the library will be ensured by enforcing the following practices:
-- Having a solid and well-organized application context following clean-architecture principles will make your diagrams simple and easy to read. Also, this will allow you to create a short list of component types and styles.
-- Following consistent naming conventions will help you in creating simple and straight-forward scraper rules.
+To enable detailed scraping or view rendering logs, set the `LOG_LEVEL` environment variable to `debug` or `DEBUG`.
 
-## Full code documentation
-https://pkg.go.dev/github.com/krzysztofreczek/go-structurizr
+## Best Practices
+
+For the best results and experience with the library, follow these practices:
+- Use a solid, well-organized application context following clean architecture principles. This makes your diagrams simpler and easier to read and allows for a shorter list of component types and styles.
+- Maintain consistent naming conventions to simplify and clarify scraper rules.
+
+## Full Code Documentation
+
+For full code documentation, visit [pkg.go.dev](https://pkg.go.dev/github.com/krzysztofreczek/go-structurizr).
