@@ -1,11 +1,10 @@
 package model
 
-// HasInfo wraps simple getter method returning component information.
+// HasInfo represents a simple getter method that returns component information.
 //
-// HasInfo interface informs that the type is able to provide component
-// information on its own.
-// All the types that implement the interface are automatically detected
-// by default implementation of the scraper.
+// The HasInfo interface indicates that a type can provide its own component
+// information. All types that implement this interface are automatically
+// detected by the default implementation of the scraper.
 type HasInfo interface {
 	Info() Info
 }
@@ -14,14 +13,13 @@ const (
 	infoKindComponent = "component"
 )
 
-// Info struct contains all component information details.
+// Info struct contains details about a component.
 //
-// Name is a component name.
-// Kind is a type that reflects component level in terms of C4 diagrams.
-// Description explains the responsibility of the component.
-// Technology describes technology that the component is based on.
-// Tags is a set of generic string tags that may be used as reference
-// to a group of components.
+// Name is the name of the component.
+// Kind represents the component's level or type in C4 diagrams.
+// Description provides an explanation of the component's responsibility.
+// Technology describes the technology the component is based on.
+// Tags is a set of generic strings used to group and reference components.
 type Info struct {
 	Name        string
 	Kind        string
@@ -30,8 +28,8 @@ type Info struct {
 	Tags        []string
 }
 
-// ComponentInfo instantiates a new component of predefined kind "component".
-// Variadic arguments are assigned to the rest of Info properties one-by-one.
+// ComponentInfo creates a new component with a predefined kind "component".
+// Variadic arguments are assigned sequentially to the remaining Info properties.
 func ComponentInfo(s ...string) Info {
 	return info(infoKindComponent, s...)
 }
@@ -63,8 +61,8 @@ func info(kind string, s ...string) Info {
 	return info
 }
 
-// IsZero informs if the component is empty.
-// If component has no kind specified it is considered as empty.
+// IsZero checks whether the component is empty.
+// A component is considered empty if it does not have a specified kind.
 func (i Info) IsZero() bool {
 	return i.Kind == ""
 }

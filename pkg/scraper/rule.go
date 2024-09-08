@@ -11,24 +11,23 @@ var (
 	matchAllRegexp = regexp.MustCompile("^.*$")
 )
 
-// RuleApplyFunc defines a signature of method returning
-// a component information of type model.Info.
+// RuleApplyFunc defines the signature for a function that returns
+// component information of type `model.Info`.
 //
 // Arguments:
-// - name is a scraped name of the type in format `package.TypeName`
-// - groups is a slice of sub-groups resolved from the rule name
-// regular expression
+// - name: The scraped name of the type in the format `package.TypeName`
+// - groups: A slice of sub-groups extracted from the rule's name regular expression
 type RuleApplyFunc func(
 	name string,
 	groups ...string,
 ) model.Info
 
-// Rule defines an interface of any rule that maybe registered within scraper.
+// Rule defines an interface for rules that can be registered with the scraper.
 //
-// Applies informs if rule should be applied to the given component
-// considering its full package name and type name in format `package.TypeName`.
-// Apply returns a component information of type model.Info based
-// on the type name in format `package.TypeName`.
+// Applies determines if the rule should be applied to a given component
+// based on its full package name and type name in the format `package.TypeName`.
+// Apply returns component information of type `model.Info` based on the type name
+// in the format `package.TypeName`.
 type Rule interface {
 	Applies(
 		pkg string,
@@ -83,13 +82,12 @@ func newRule(
 	}, nil
 }
 
-// Applies informs if rule should be applied to the given component
-// considering its full package name and type name in format `package.TypeName`.
+// Applies determines if the rule should be applied to a given component
+// based on its full package name and type name in the format `package.TypeName`.
 //
-// Component will be recognised as applicable when all of the following
-// conditions are met:
-// - package matches at least one of the rule package regular expressions
-// - name matches the rule name regular expression
+// A component is considered applicable if all of the following conditions are met:
+// - The package matches at least one of the rule's package regular expressions.
+// - The name matches the rule's name regular expression.
 func (r rule) Applies(
 	pkg string,
 	name string,
@@ -97,13 +95,12 @@ func (r rule) Applies(
 	return r.nameApplies(name) && r.pkgApplies(pkg)
 }
 
-// Apply returns a component information of type model.Info based
-// on the type name in format `package.TypeName`.
-// Apply will return result of registered RuleApplyFunc application function
-// passing the following arguments:
-// - name is a scraped name of the type in format `package.TypeName`
-// - groups is a slice of sub-groups resolved from the rule name
-// regular expression
+// Apply returns component information of type `model.Info` based on
+// the type name in the format `package.TypeName`.
+//
+// Apply invokes the registered `RuleApplyFunc`, passing the following arguments:
+// - name: The scraped name of the type in the format `package.TypeName`
+// - groups: A slice of sub-groups extracted from the rule's name regular expression
 func (r rule) Apply(
 	name string,
 ) model.Info {
@@ -133,17 +130,16 @@ func (r rule) nameApplies(name string) bool {
 	return r.nameRegex.MatchString(name)
 }
 
-// RuleBuilder simplifies instantiation of default Rule implementation.
+// RuleBuilder simplifies the creation of a default Rule implementation.
 //
-// WithPkgRegexps sets a list of package regular expressions.
-// WithNameRegexp sets name regular expression.
-// WithApplyFunc sets rule application function RuleApplyFunc.
+// WithPkgRegexps sets the list of package regular expressions.
+// WithNameRegexp sets the name regular expression.
+// WithApplyFunc sets the rule application function (`RuleApplyFunc`).
 //
-// Build returns Rule implementation constructed from the provided expressions
-// and application function.
-// Build will return an error if at least one of the provided expressions
-// is invalid and cannot be compiled.
-// Build will return an error if application function RuleApplyFunc is missing.
+// Build returns a `Rule` implementation constructed from the provided
+// regular expressions and application function. It will return an error
+// if any of the provided expressions are invalid and cannot be compiled,
+// or if the application function (`RuleApplyFunc`) is missing.
 type RuleBuilder interface {
 	WithPkgRegexps(rgx ...string) RuleBuilder
 	WithNameRegexp(rgx string) RuleBuilder
@@ -158,7 +154,7 @@ type ruleBuilder struct {
 	applyFunc  RuleApplyFunc
 }
 
-// NewRule returns an empty RuleBuilder.
+// NewRule returns a new, empty RuleBuilder.
 func NewRule() RuleBuilder {
 	return &ruleBuilder{}
 }

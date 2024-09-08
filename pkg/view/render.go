@@ -13,9 +13,9 @@ const (
 	defaultShapeStyle = "DEFAULT"
 )
 
-// RenderStructureTo renders provided model.Structure into any io.Writer.
-// RenderStructureTo will return an error in case the writer
-// cannot be used.
+// RenderStructureTo renders the provided `model.Structure` to any `io.Writer`.
+//
+// It returns an error if the writer cannot be used.
 func (v view) RenderStructureTo(s model.Structure, w io.Writer) error {
 	out := v.render(s)
 	_, err := w.Write([]byte(out))
