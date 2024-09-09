@@ -6,7 +6,7 @@ toolchain go1.22.3
 
 require (
 	github.com/jaegertracing/jaeger v1.60.0
-	github.com/krzysztofreczek/go-structurizr v0.1.32
+	github.com/krzysztofreczek/go-structurizr v0.1.35
 )
 
 require (
