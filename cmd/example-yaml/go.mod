@@ -6,7 +6,7 @@ toolchain go1.22.3
 
 require (
 	github.com/jaegertracing/jaeger v1.60.0
-	github.com/krzysztofreczek/go-structurizr v0.1.35
+	github.com/krzysztofreczek/go-structurizr v0.0.0
 )
 
 require (
@@ -101,3 +101,5 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/krzysztofreczek/go-structurizr => ../..

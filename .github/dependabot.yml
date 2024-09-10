@@ -8,12 +8,20 @@ updates:
   open-pull-requests-limit: 10
 - package-ecosystem: gomod
   directory: "/cmd/example"
+  ignored_updates:
+  - match:
+      dependency_name: github.com/krzysztofreczek/go-structurizr
+      version_requirement: "=0.0.0"
   schedule:
     interval: daily
     time: "04:00"
   open-pull-requests-limit: 10
 - package-ecosystem: gomod
   directory: "/cmd/example-yaml"
+  ignored_updates:
+    - match:
+        dependency_name: github.com/krzysztofreczek/go-structurizr
+        version_requirement: "=0.0.0"
   schedule:
     interval: daily
     time: "04:00"
