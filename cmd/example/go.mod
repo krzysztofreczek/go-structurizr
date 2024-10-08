@@ -1,7 +1,8 @@
 module github.com/krzysztofreczek/go-structurizr/example
 
-go 1.21.0
-toolchain go1.22.5
+go 1.22.0
+
+toolchain go1.23.1
 
 require (
 	github.com/jaegertracing/jaeger v1.62.0
