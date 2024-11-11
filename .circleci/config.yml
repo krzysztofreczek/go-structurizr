@@ -10,6 +10,9 @@ executors:
   go122:
     docker:
       - image: cimg/go:1.22
+  go123:
+    docker:
+      - image: cimg/go:1.23
 
 jobs:
   build:
@@ -71,8 +74,7 @@ jobs:
           template: basic_success_1
 
   release:
-    docker:
-      - image: cimg/go:1.22
+    executor: go123
     steps:
       - checkout
       - run:
@@ -99,11 +101,11 @@ workflows:
       - build:
           matrix:
             parameters:
-              docker-image: [ go121, go122 ]
+              docker-image: [ go121, go122, go123 ]
       - build-examples:
           matrix:
             parameters:
-              docker-image: [ go122 ]
+              docker-image: [ go123 ]
       - release:
           requires:
             - build
