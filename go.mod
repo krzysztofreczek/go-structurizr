@@ -3,7 +3,7 @@ module github.com/krzysztofreczek/go-structurizr
 go 1.18
 
 require (
-	github.com/cnf/structhash v0.0.0-20201127153200-e1b16c1ebc08
+	github.com/cnf/structhash v0.0.0-20250313080605-df4c6cc74a9a
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/pkg/errors v0.9.1
