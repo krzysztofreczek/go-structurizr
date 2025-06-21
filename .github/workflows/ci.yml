@@ -19,29 +19,18 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
+          cache-dependency-path: go.sum
 
-      - name: Restore Go modules cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-          key: go-mod-v4-${{ hashFiles('go.sum') }}
-
-      - name: Install TaskFile
-        run: go install github.com/go-task/task/v3/cmd/task@latest
+      - name: Install tooling
+        run:
+        - go install github.com/go-task/task/v3/cmd/task@latest
+        - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
       - name: Lint
         run: task lint
 
       - name: Test
         run: task test
-
-      - name: Save Go modules cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-          key: go-mod-v4-${{ hashFiles('go.sum') }}
 
       - name: Slack notification (fail)
         if: failure()
@@ -75,26 +64,15 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.23
+          cache-dependency-path: go.sum
 
-      - name: Restore Go modules cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-          key: go-mod-v4-${{ hashFiles('go.sum') }}
-
-      - name: Install TaskFile
-        run: go install github.com/go-task/task/v3/cmd/task@latest
+      - name: Install tooling
+        run:
+          - go install github.com/go-task/task/v3/cmd/task@latest
+          - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
       - name: Test examples
         run: task test_examples
-
-      - name: Save Go modules cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/go/pkg/mod
-          key: go-mod-v4-${{ hashFiles('go.sum') }}
 
       - name: Slack notification (fail)
         if: failure()
