@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/krzysztofreczek/go-structurizr.svg?style=shield)](https://circleci.com/gh/krzysztofreczek/go-structurizr)  
+[![CI](https://github.com/krzysztofreczek/go-structurizr/actions/workflows/ci.yml/badge.svg)](https://github.com/krzysztofreczek/go-structurizr/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # go-structurizr
