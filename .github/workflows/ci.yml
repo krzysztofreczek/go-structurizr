@@ -22,9 +22,9 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Install tooling
-        run:
-        - go install github.com/go-task/task/v3/cmd/task@latest
-        - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+        run: |
+          go install github.com/go-task/task/v3/cmd/task@latest
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
       - name: Lint
         run: task lint
@@ -67,9 +67,9 @@ jobs:
           cache-dependency-path: go.sum
 
       - name: Install tooling
-        run:
-          - go install github.com/go-task/task/v3/cmd/task@latest
-          - go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+        run: |
+          go install github.com/go-task/task/v3/cmd/task@latest
+          go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
       - name: Test examples
         run: task test_examples
