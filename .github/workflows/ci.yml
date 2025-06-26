@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [1.21, 1.22, 1.23, 1.24]
+        go-version: [ 1.21, 1.22, 1.23, 1.24 ]
     steps:
       - uses: actions/checkout@v4
 
@@ -74,6 +74,8 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Go
         uses: actions/setup-go@v5
@@ -83,12 +85,25 @@ jobs:
       - name: Publish Release on GitHub
         env:
           DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          GITHUB_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPO: ${{ github.event.repository.name }}
+          GITHUB_SHA: ${{ github.sha }}
         run: |
           . ./.github/next_version.sh
-          VERSION=$(next_version $(git describe --tags --abbrev=0) 2)
+          PREVIOUS_VERSION=$(git describe --tags --abbrev=0)
+          echo "Previous version: ${PREVIOUS_VERSION}"
+
+          NEXT_VERSION=$(next_version ${PREVIOUS_VERSION} 2)
+          if [ -z "${NEXT_VERSION}" ]; then
+            echo "Could not resolve next version successfully, exiting."
+            exit 1
+          fi
+          
+          echo "Next version: ${NEXT_VERSION}"
 
           go install github.com/tcnksm/ghr@latest
-          ghr -t ${DEPLOY_TOKEN} -u krzysztofreczek -r ${{ github.repository }} -c ${{ github.sha }} ${VERSION}
+          export PATH="$PATH:$(go env GOPATH)/bin"
+          ghr -t "${DEPLOY_TOKEN}" -u "${GITHUB_OWNER}" -r "${GITHUB_REPO}" -c "${GITHUB_SHA}" "${NEXT_VERSION}"
 
       - uses: act10ns/slack@v1
         with:
