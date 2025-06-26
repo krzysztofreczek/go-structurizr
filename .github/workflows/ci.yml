@@ -5,6 +5,9 @@ on:
     branches: [ master ]
   pull_request:
 
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
 jobs:
   build:
     name: Build (${{ matrix.go-version }})
@@ -32,30 +35,14 @@ jobs:
       - name: Test
         run: task test
 
-      - name: Slack notification (fail)
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
         if: failure()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "<!here> Build failed :x:"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Slack notification (pass)
-        if: success()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "Build succeeded :white_check_mark:"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build-examples:
-    name: Build Examples (Go 1.23)
+    name: Build Examples (Go 1.24)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -63,7 +50,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.23
+          go-version: 1.24
           cache-dependency-path: go.sum
 
       - name: Install tooling
@@ -74,27 +61,11 @@ jobs:
       - name: Test examples
         run: task test_examples
 
-      - name: Slack notification (fail)
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
         if: failure()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "<!here> Build examples failed :x:"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Slack notification (pass)
-        if: success()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "Build examples succeeded :white_check_mark:"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   release:
     name: Release
@@ -107,36 +78,19 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.23
+          go-version: 1.24
 
       - name: Publish Release on GitHub
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         run: |
           . ./.github/next_version.sh
           VERSION=$(next_version $(git describe --tags --abbrev=0) 2)
 
           go install github.com/tcnksm/ghr@latest
-          ghr -t ${GITHUB_TOKEN} -u ${GITHUB_REPOSITORY_OWNER} -r $(basename ${GITHUB_REPOSITORY}) -c ${GITHUB_SHA} ${VERSION}
+          ghr -t ${DEPLOY_TOKEN} -u krzysztofreczek -r ${{ github.repository }} -c ${{ github.sha }} ${VERSION}
 
-      - name: Slack notification (fail)
-        if: failure()
-        uses: slackapi/slack-github-action@v1.25.0
+      - uses: act10ns/slack@v1
         with:
-          payload: |
-            {
-              "text": "<!here> Release failed :x:"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Slack notification (pass)
-        if: success()
-        uses: slackapi/slack-github-action@v1.25.0
-        with:
-          payload: |
-            {
-              "text": "Release succeeded :rocket:"
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
