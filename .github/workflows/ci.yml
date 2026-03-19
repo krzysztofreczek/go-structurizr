@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [ 1.21, 1.22, 1.23, 1.24, 1.25 ]
+        go-version: [ 1.21, 1.22, 1.23, 1.24, 1.25, 1.26 ]
     steps:
       - uses: actions/checkout@v4
 
@@ -42,7 +42,7 @@ jobs:
         if: failure()
 
   build-examples:
-    name: Build Examples (Go 1.25)
+    name: Build Examples (Go 1.26)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -50,7 +50,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.25
+          go-version: 1.26
           cache-dependency-path: go.sum
 
       - name: Install tooling
@@ -80,7 +80,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.25
+          go-version: 1.26
 
       - name: Publish Release on GitHub
         env:
