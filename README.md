@@ -5,7 +5,7 @@
 
 This library allows you to auto-generate C4 component diagrams from Go code.
 
-![Example](images/example.png)
+![Example plantuml](images/example-plantuml.png)
 
 ## Usage and Examples
 
