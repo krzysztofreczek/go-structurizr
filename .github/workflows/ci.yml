@@ -51,7 +51,11 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 1.26
-          cache-dependency-path: go.sum
+          cache-dependency-path: |
+            go.sum
+            cmd/example/go.sum
+            cmd/example-yaml/go.sum
+            cmd/example-mermaid/go.sum
 
       - name: Install tooling
         run: |

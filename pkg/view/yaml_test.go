@@ -13,8 +13,9 @@ import (
 func Test_toView(t *testing.T) {
 	yamlConfiguration := yaml.Config{
 		View: yaml.ConfigView{
-			Title:     "TITLE_1",
-			LineColor: "000000ff",
+			Title:       "TITLE_1",
+			DiagramType: "plantuml",
+			LineColor:   "000000ff",
 			Styles: []yaml.ConfigViewStyle{
 				{
 					ID:              "STYLE_1",
@@ -33,6 +34,7 @@ func Test_toView(t *testing.T) {
 
 	expectedView := NewView().
 		WithTitle("TITLE_1").
+		WithDiagramType(DiagramPlantUML).
 		WithLineColor(color.Black).
 		WithComponentStyle(
 			NewComponentStyle("STYLE_1").
@@ -81,4 +83,34 @@ func Test_toView(t *testing.T) {
 	require.NotEmpty(t, expectedOutput)
 
 	require.Equal(t, expectedOutput, actualOutput)
+}
+
+func Test_toView_mermaid(t *testing.T) {
+	yamlConfiguration := yaml.Config{
+		View: yaml.ConfigView{
+			Title:       "TITLE_1",
+			DiagramType: "Mermaid",
+		},
+	}
+
+	actualView, err := toView(yamlConfiguration)
+	require.NoError(t, err)
+
+	s := model.NewStructure()
+	actualOutput := bytes.Buffer{}
+	err = actualView.RenderStructureTo(s, &actualOutput)
+	require.NoError(t, err)
+	require.Contains(t, actualOutput.String(), "flowchart TB")
+}
+
+func Test_toView_unsupported_diagram_type(t *testing.T) {
+	yamlConfiguration := yaml.Config{
+		View: yaml.ConfigView{
+			DiagramType: "dot",
+		},
+	}
+
+	_, err := toView(yamlConfiguration)
+	require.Error(t, err)
+	require.Contains(t, err.Error(), "unsupported diagram type `dot`")
 }

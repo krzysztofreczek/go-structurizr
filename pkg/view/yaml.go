@@ -4,12 +4,24 @@ import (
 	"encoding/hex"
 	"image/color"
 	"log"
+	"strings"
 
 	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
+	"github.com/pkg/errors"
 )
 
 func toView(c yaml.Config) (View, error) {
 	v := NewView().WithTitle(c.View.Title)
+
+	if c.View.DiagramType != "" {
+		dt := DiagramType(strings.ToLower(c.View.DiagramType))
+		switch dt {
+		case DiagramPlantUML, DiagramMermaid:
+			v.WithDiagramType(dt)
+		default:
+			return view{}, errors.Errorf("unsupported diagram type `%s`", c.View.DiagramType)
+		}
+	}
 
 	if c.View.LineColor != "" {
 		col, err := decodeHexColor(c.View.LineColor)

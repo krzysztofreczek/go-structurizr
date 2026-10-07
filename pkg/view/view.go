@@ -3,23 +3,36 @@ package view
 import (
 	"image/color"
 	"io"
+	"strings"
 
 	"github.com/krzysztofreczek/go-structurizr/pkg/model"
 	"github.com/krzysztofreczek/go-structurizr/pkg/yaml"
 	"github.com/pkg/errors"
 )
 
+// DiagramType represents the output format used by a View.
+type DiagramType string
+
+const (
+	// DiagramPlantUML renders the view as PlantUML. This is the default.
+	DiagramPlantUML DiagramType = "plantuml"
+	// DiagramMermaid renders the view as a Mermaid flowchart.
+	DiagramMermaid DiagramType = "mermaid"
+)
+
 // View defines a generic view for rendering structures.
 //
-// RenderStructureTo renders the provided `model.Structure` to any `io.Writer`.
+// RenderStructureTo renders the provided `model.Structure` to any `io.Writer`
+// using the configured diagram type. The default type is PlantUML.
 //
-// It returns an error if the writer cannot be used.
+// It returns an error if the writer cannot be used or the diagram type is unsupported.
 type View interface {
 	RenderStructureTo(s model.Structure, w io.Writer) error
 }
 
 type view struct {
 	title             string
+	diagramType       DiagramType
 	rootComponentTags []string
 	componentTags     []string
 	componentStyles   map[string]ComponentStyle
@@ -28,6 +41,7 @@ type view struct {
 
 func newView(
 	title string,
+	diagramType DiagramType,
 	rootComponentTags []string,
 	componentTags []string,
 	componentStyles map[string]ComponentStyle,
@@ -35,6 +49,7 @@ func newView(
 ) View {
 	return view{
 		title:             title,
+		diagramType:       diagramType,
 		rootComponentTags: rootComponentTags,
 		componentTags:     componentTags,
 		componentStyles:   componentStyles,
@@ -47,6 +62,7 @@ func NewView() Builder {
 	return &builder{
 		view: view{
 			title:             "TITLE UNDEFINED",
+			diagramType:       DiagramPlantUML,
 			rootComponentTags: make([]string, 0),
 			componentTags:     make([]string, 0),
 			componentStyles:   make(map[string]ComponentStyle),
@@ -78,6 +94,7 @@ func NewViewFromConfigFile(fileName string) (View, error) {
 // Builder simplifies the creation of a default View implementation.
 //
 // WithTitle sets the view's title.
+// WithDiagramType sets the output format. If not specified, it defaults to PlantUML.
 // WithRootComponentTag adds a root tag to the view. If at least one root tag is defined,
 // the view will include only those components directly or indirectly connected
 // to a component with a root tag.
@@ -91,6 +108,7 @@ func NewViewFromConfigFile(fileName string) (View, error) {
 // Colors default to black or white if not specified.
 type Builder interface {
 	WithTitle(t string) Builder
+	WithDiagramType(t DiagramType) Builder
 	WithRootComponentTag(t string) Builder
 	WithComponentTag(t string) Builder
 	WithComponentStyle(s ComponentStyle) Builder
@@ -106,6 +124,16 @@ type builder struct {
 // WithTitle sets the title of the view.
 func (b *builder) WithTitle(t string) Builder {
 	b.title = t
+	return b
+}
+
+// WithDiagramType sets the output format of the view.
+//
+// If not specified, the view renders as PlantUML.
+func (b *builder) WithDiagramType(t DiagramType) Builder {
+	if t != "" {
+		b.diagramType = DiagramType(strings.ToLower(string(t)))
+	}
 	return b
 }
 
@@ -150,6 +178,7 @@ func (b *builder) WithLineColor(c color.Color) Builder {
 func (b builder) Build() View {
 	return newView(
 		b.title,
+		b.diagramType,
 		b.rootComponentTags,
 		b.componentTags,
 		b.componentStyles,
