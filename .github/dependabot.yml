@@ -26,3 +26,13 @@ updates:
   ignore:
   - dependency-name: github.com/krzysztofreczek/go-structurizr
     versions: "=0.0.0"
+
+- package-ecosystem: gomod
+  directory: "/cmd/example-mermaid"
+  schedule:
+    interval: daily
+    time: "04:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: github.com/krzysztofreczek/go-structurizr
+    versions: "=0.0.0"

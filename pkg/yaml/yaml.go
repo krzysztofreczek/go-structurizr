@@ -37,6 +37,7 @@ type ConfigRuleComponent struct {
 // ConfigView represents a YAML configuration structure for views.
 type ConfigView struct {
 	Title             string            `yaml:"title"`
+	DiagramType       string            `yaml:"diagram_type"`
 	LineColor         string            `yaml:"line_color"`
 	Styles            []ConfigViewStyle `yaml:"styles"`
 	ComponentTags     []string          `yaml:"component_tags"`

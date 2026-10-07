@@ -15,10 +15,10 @@ You can also find several examples in the `cmd` directory. To run any of these e
 
 ## How It Works
 
-The library provides tools (Scraper and View) to scrape and render Go structures into a [C4 component](https://c4model.com/) diagram in [PlantUML](https://plantuml.com/) format.
+The library provides tools (Scraper and View) to scrape and render Go structures into a [C4 component](https://c4model.com/) diagram in [PlantUML](https://plantuml.com/) or [Mermaid](https://mermaid.js.org/) flowchart format.
 
 - **Scraper** reflects a given structure according to interfaces, predefined rules, and configurations.
-- You can pass the scraped structure into a **View** definition, which can then be rendered into PlantUML diagram code.
+- You can pass the scraped structure into a **View** definition, which can then be rendered into PlantUML or Mermaid flowchart diagram code.
 
 Scraper identifies components to scrape under the following conditions:
 - The type being examined implements the `model.HasInfo` interface.
@@ -145,6 +145,7 @@ Similarly to the scraper, a view can be instantiated in one of two ways:
 
 To render a scraped structure, you need to instantiate and configure a view. A view consists of:
 - Title
+- Diagram type: Output format (`plantuml` or `mermaid`). Defaults to PlantUML.
 - Component styles: Styles are applied to components by matching the first component tag with style IDs.
 - Additional styling (e.g., line color)
 - Component tags: If specified, the view will only contain components tagged with one of the view tags. If no tags are defined, all components will be included.
@@ -161,6 +162,7 @@ To customize it, use the available builder methods:
 ```go
 v := view.NewView().
     WithTitle("Title").
+    WithDiagramType(view.DiagramMermaid).
     WithComponentStyle(
         view.NewComponentStyle("TAG").
             WithBackgroundColor(color.White).
@@ -180,6 +182,7 @@ Alternatively, you can instantiate the view from a YAML configuration file:
 # go-structurizr.yml
 view:
   title: "Title"
+  diagram_type: mermaid
   line_color: 000000ff
   styles:
     - id: TAG
@@ -199,7 +202,7 @@ To create a view from the configuration file:
 v, err := view.NewViewFromConfigFile("./go-structurizr.yml")
 ```
 
-Once the view is initialized, you can render the structure into a PlantUML diagram:
+Once the view is initialized, you can render the structure. The default diagram type is PlantUML; set `diagram_type` / `WithDiagramType` to `mermaid` for a Mermaid flowchart:
 
 ```go
 outFile, _ := os.Create("c4.plantuml")

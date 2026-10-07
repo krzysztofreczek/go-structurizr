@@ -10,77 +10,49 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewView_empty(t *testing.T) {
+func newMermaidView() view.Builder {
+	return view.NewView().WithDiagramType(view.DiagramMermaid)
+}
+
+func TestNewView_mermaid_empty(t *testing.T) {
 	s := model.NewStructure()
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().Build()
+	v := newMermaidView().Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := out.String()
-
-	expectedContent := `This diagram has been generated with go-structurizr 
-[https://github.com/krzysztofreczek/go-structurizr]
-
-@startuml
-
-title TITLE UNDEFINED
-
-skinparam {
-  shadowing false
-  arrowFontSize 10
-  defaultTextAlignment center
-  wrapWidth 200
-  maxMessageSize 100
-}
-hide stereotype
-top to bottom direction
-
-scale 4096 width
-
-skinparam rectangle<<_GROUP>> {
-  FontColor #ffffff
-  BorderColor #ffffff
-}
-
-@enduml
+	expectedContent := `---
+title: "TITLE UNDEFINED"
+---
+%% This diagram has been generated with go-structurizr
+%% https://github.com/krzysztofreczek/go-structurizr
+%% title: TITLE UNDEFINED
+flowchart TB
+  linkStyle default stroke:#000000
 `
 
-	require.Equal(t, expectedContent, outString)
+	require.Equal(t, expectedContent, out.String())
 }
 
-func TestNewView_with_unsupported_diagram_type(t *testing.T) {
-	s := model.NewStructure()
-	out := bytes.Buffer{}
-
-	v := view.NewView().
-		WithDiagramType("dot").
-		Build()
-	err := v.RenderStructureTo(s, &out)
-	require.Error(t, err)
-	require.Contains(t, err.Error(), "unsupported diagram type `dot`")
-}
-
-func TestNewView_with_title(t *testing.T) {
+func TestNewView_mermaid_with_title(t *testing.T) {
 	s := model.NewStructure()
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithTitle("TITLE").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `title TITLE`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, outString, `title: "TITLE"`)
+	require.Contains(t, outString, `%% title: TITLE`)
 }
 
-func TestNewView_with_custom_style(t *testing.T) {
+func TestNewView_mermaid_with_custom_style(t *testing.T) {
 	s := model.NewStructure()
 
 	out := bytes.Buffer{}
@@ -90,24 +62,16 @@ func TestNewView_with_custom_style(t *testing.T) {
 		WithFontColor(color.Black).
 		WithBorderColor(color.White).
 		Build()
-	v := view.NewView().
+	v := newMermaidView().
 		WithComponentStyle(style).
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := out.String()
-
-	expectedContent := `
-skinparam rectangle<<STYLE>> {
-  BackgroundColor #ffffff
-  FontColor #000000
-  BorderColor #ffffff
-}`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, out.String(), "  classDef STYLE fill:#ffffff,color:#000000,stroke:#ffffff\n")
 }
 
-func TestNewView_with_component(t *testing.T) {
+func TestNewView_mermaid_with_component(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -122,30 +86,21 @@ func TestNewView_with_component(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().Build()
+	v := newMermaidView().Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
-`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, outString, `  ID_1["test.Component<br/>[component:technology]<br/><br/>description"]`)
+	require.Contains(t, outString, "  class ID_1 tag_1\n")
 }
 
-func TestNewView_with_relation(t *testing.T) {
+func TestNewView_mermaid_with_relation(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
-		"ID_1": {
-			ID: "ID_1",
-		},
-		"ID_2": {
-			ID: "ID_2",
-		},
-		"ID_3": {
-			ID: "ID_3",
-		},
+		"ID_1": {ID: "ID_1"},
+		"ID_2": {ID: "ID_2"},
+		"ID_3": {ID: "ID_3"},
 	}
 	s.Relations = map[string]map[string]struct{}{
 		"ID_1": {
@@ -156,32 +111,20 @@ func TestNewView_with_relation(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().Build()
+	v := newMermaidView().Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `
-ID_1 .[#000000].> ID_2 : ""
-`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `
-ID_1 .[#000000].> ID_3 : ""
-`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, outString, "  ID_1 -.-> ID_2\n")
+	require.Contains(t, outString, "  ID_1 -.-> ID_3\n")
 }
 
-func TestNewView_with_custom_line_color(t *testing.T) {
+func TestNewView_mermaid_with_custom_line_color(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
-		"ID_1": {
-			ID: "ID_1",
-		},
-		"ID_2": {
-			ID: "ID_2",
-		},
+		"ID_1": {ID: "ID_1"},
+		"ID_2": {ID: "ID_2"},
 	}
 	s.Relations = map[string]map[string]struct{}{
 		"ID_1": {
@@ -191,21 +134,16 @@ func TestNewView_with_custom_line_color(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithLineColor(color.White).
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := out.String()
-
-	expectedContent := `
-ID_1 .[#ffffff].> ID_2 : ""
-`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, out.String(), "  linkStyle default stroke:#ffffff\n")
 }
 
-func TestNewView_with_component_of_view_tag(t *testing.T) {
+func TestNewView_mermaid_with_component_of_view_tag(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -220,21 +158,16 @@ func TestNewView_with_component_of_view_tag(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithComponentTag("tag 1").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := out.String()
-
-	expectedContent := `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
-`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, out.String(), `  ID_1["test.Component<br/>[component:technology]<br/><br/>description"]`)
 }
 
-func TestNewView_with_component_with_no_view_tag(t *testing.T) {
+func TestNewView_mermaid_with_component_with_no_view_tag(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -249,19 +182,16 @@ func TestNewView_with_component_with_no_view_tag(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithComponentTag("tag 1").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
-	outString := out.String()
-
-	expectedContent := `ID_1`
-	require.NotContains(t, outString, expectedContent)
+	require.NotContains(t, out.String(), "ID_1")
 }
 
-func TestNewView_with_two_joined_components_of_view_tag(t *testing.T) {
+func TestNewView_mermaid_with_two_joined_components_of_view_tag(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -289,7 +219,7 @@ func TestNewView_with_two_joined_components_of_view_tag(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithComponentTag("tag 1").
 		WithComponentTag("tag 2").
 		Build()
@@ -297,24 +227,12 @@ func TestNewView_with_two_joined_components_of_view_tag(t *testing.T) {
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
-`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 2>> as ID_2
-`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `
-ID_1 .[#000000].> ID_2 : ""
-`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, outString, "  class ID_1 tag_1\n")
+	require.Contains(t, outString, "  class ID_2 tag_2\n")
+	require.Contains(t, outString, "  ID_1 -.-> ID_2\n")
 }
 
-func TestNewView_with_two_joined_components_where_one_with_no_view_tag(t *testing.T) {
+func TestNewView_mermaid_with_two_joined_components_where_one_with_no_view_tag(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -342,25 +260,18 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_tag(t *testin
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithComponentTag("tag 1").
-		WithComponentTag("tag 2").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<tag 1>> as ID_1
-`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `ID_2`
-	require.NotContains(t, outString, expectedContent)
+	require.Contains(t, outString, "ID_1")
+	require.NotContains(t, outString, "ID_2")
 }
 
-func TestNewView_with_component_of_custom_style_shape(t *testing.T) {
+func TestNewView_mermaid_with_component_of_custom_style_shape(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -381,29 +292,42 @@ func TestNewView_with_component_of_custom_style_shape(t *testing.T) {
 		WithBorderColor(color.White).
 		WithShape("database").
 		Build()
-	v := view.NewView().
+	v := newMermaidView().
 		WithComponentStyle(style).
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `
-skinparam database<<DB>> {
-  BackgroundColor #ffffff
-  FontColor #000000
-  BorderColor #ffffff
-}`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `
-	database "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DB>> as ID_1
-`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, outString, "  classDef DB fill:#ffffff,color:#000000,stroke:#ffffff\n")
+	require.Contains(t, outString, `  ID_1[("test.Component<br/>[component:technology]<br/><br/>description")]`)
+	require.Contains(t, outString, "  class ID_1 DB\n")
 }
 
-func TestNewView_with_two_joined_components_of_view_root_tag(t *testing.T) {
+func TestNewView_mermaid_with_component_shape(t *testing.T) {
+	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID:   "ID_1",
+			Name: "queue",
+			Tags: []string{"Q"},
+		},
+	}
+
+	style := view.NewComponentStyle("Q").
+		WithShape("queue").
+		Build()
+	out := bytes.Buffer{}
+	v := newMermaidView().
+		WithComponentStyle(style).
+		Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	require.Contains(t, out.String(), `  ID_1[/"queue<br/>[]<br/><br/>"/]`)
+}
+
+func TestNewView_mermaid_with_two_joined_components_of_view_root_tag(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -431,31 +355,19 @@ func TestNewView_with_two_joined_components_of_view_root_tag(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithRootComponentTag("ROOT").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
-`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<DEFAULT>> as ID_2
-`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `
-ID_1 .[#000000].> ID_2 : ""
-`
-	require.Contains(t, outString, expectedContent)
+	require.Contains(t, outString, "  class ID_1 ROOT\n")
+	require.Contains(t, outString, "  class ID_2 DEFAULT\n")
+	require.Contains(t, outString, "  ID_1 -.-> ID_2\n")
 }
 
-func TestNewView_with_two_joined_components_where_one_with_no_view_root_tag(t *testing.T) {
+func TestNewView_mermaid_with_two_joined_components_where_one_with_no_view_root_tag(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -483,22 +395,18 @@ func TestNewView_with_two_joined_components_where_one_with_no_view_root_tag(t *t
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithRootComponentTag("ROOT").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `ID_1`
-	require.NotContains(t, outString, expectedContent)
-
-	expectedContent = `ID_2`
-	require.NotContains(t, outString, expectedContent)
+	require.NotContains(t, outString, "ID_1")
+	require.NotContains(t, outString, "ID_2")
 }
 
-func TestNewView_with_component_with_no_connection_to_root(t *testing.T) {
+func TestNewView_mermaid_with_component_with_no_connection_to_root(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
 		"ID_1": {
@@ -522,71 +430,78 @@ func TestNewView_with_component_with_no_connection_to_root(t *testing.T) {
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
+	v := newMermaidView().
 		WithRootComponentTag("ROOT").
 		Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
-
-	expectedContent := `
-	rectangle "==test.Component\n<size:10>[component:technology]</size>\n\ndescription" <<ROOT>> as ID_1
-`
-	require.Contains(t, outString, expectedContent)
-
-	expectedContent = `ID_2`
-	require.NotContains(t, outString, expectedContent)
+	require.Contains(t, outString, "ID_1")
+	require.NotContains(t, outString, "ID_2")
 }
 
-func TestNewView_creates_grouping(t *testing.T) {
+func TestNewView_mermaid_sanitizes_numeric_ids(t *testing.T) {
 	s := model.NewStructure()
 	s.Components = map[string]model.Component{
-		"ID_1": {
-			ID:   "ID_1",
-			Tags: []string{"ROOT"},
+		"123": {
+			ID:   "123",
+			Name: "hashed",
 		},
-		"ID_2": {
-			ID:   "ID_2",
-			Tags: []string{"TAG_A"},
-		},
-		"ID_3": {
-			ID:   "ID_3",
-			Tags: []string{"TAG_B"},
+		"456": {
+			ID:   "456",
+			Name: "other",
 		},
 	}
 	s.Relations = map[string]map[string]struct{}{
-		"ID_1": {
-			"ID_2": {},
-			"ID_3": {},
+		"123": {
+			"456": {},
 		},
 	}
 
 	out := bytes.Buffer{}
 
-	v := view.NewView().
-		WithRootComponentTag("ROOT").
-		Build()
+	v := newMermaidView().Build()
 	err := v.RenderStructureTo(s, &out)
 	require.NoError(t, err)
 
 	outString := out.String()
+	require.Contains(t, outString, `  n123["hashed<br/>[]<br/><br/>"]`)
+	require.Contains(t, outString, `  n456["other<br/>[]<br/><br/>"]`)
+	require.Contains(t, outString, "  n123 -.-> n456\n")
+}
 
-	expectedContent := `
-rectangle 0ROOT <<_GROUP>> {
-	rectangle "==\n<size:10>[]</size>\n\n" <<ROOT>> as ID_1
-}`
-	require.Contains(t, outString, expectedContent)
+func TestNewView_mermaid_sanitizes_special_characters_in_labels(t *testing.T) {
+	s := model.NewStructure()
+	s.Components = map[string]model.Component{
+		"ID_1": {
+			ID:          "ID_1",
+			Kind:        "component",
+			Name:        `foo"bar` + "`baz",
+			Description: "line1\nline2",
+			Technology:  "tech",
+		},
+	}
 
-	expectedContent = `
-rectangle ID_11TAG_A <<_GROUP>> {
-	rectangle "==\n<size:10>[]</size>\n\n" <<TAG_A>> as ID_2
-}`
-	require.Contains(t, outString, expectedContent)
+	out := bytes.Buffer{}
 
-	expectedContent = `
-rectangle ID_11TAG_B <<_GROUP>> {
-	rectangle "==\n<size:10>[]</size>\n\n" <<TAG_B>> as ID_3
-}`
-	require.Contains(t, outString, expectedContent)
+	v := newMermaidView().Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	require.Contains(t, out.String(), `  ID_1["foo'bar'baz<br/>[component:tech]<br/><br/>line1<br/>line2"]`)
+}
+
+func TestNewView_mermaid_escapes_quotes_in_title(t *testing.T) {
+	s := model.NewStructure()
+
+	out := bytes.Buffer{}
+
+	v := newMermaidView().
+		WithTitle(`Title "quoted"`).
+		Build()
+	err := v.RenderStructureTo(s, &out)
+	require.NoError(t, err)
+
+	require.Contains(t, out.String(), `title: "Title \"quoted\""`)
 }

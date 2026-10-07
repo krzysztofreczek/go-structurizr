@@ -36,6 +36,7 @@ rules:
 	testYAMLViews = `
 view:
   title: Title
+  diagram_type: mermaid
   line_color: 000000ff
   styles:
     - id: STYLE_1
@@ -100,8 +101,9 @@ func TestLoadFrom(t *testing.T) {
 			source: testYAMLViews,
 			expected: yaml.Config{
 				View: yaml.ConfigView{
-					Title:     "Title",
-					LineColor: "000000ff",
+					Title:       "Title",
+					DiagramType: "mermaid",
+					LineColor:   "000000ff",
 					Styles: []yaml.ConfigViewStyle{
 						{
 							ID:              "STYLE_1",
